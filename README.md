@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SaaS — Website Builder Platform
 
 Multi-tenant website-builder SaaS. Users sign up, pick a site type (company / blog / reservation / member), edit content, and publish. Platform and generated sites share one stack.
@@ -86,3 +87,7 @@ docker compose logs -f web     # tail web logs
 ## Status
 
 Skeleton only. No features implemented yet. Next work: auth/RBAC, core multi-tenant schema, site CRUD. See [docs/mvp-scope.md](docs/mvp-scope.md) when written.
+=======
+# SaaS
+SaaS Project
+>>>>>>> 48aadfa4e38e61ef489eae39323b1b4e30cda354
