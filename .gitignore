@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+.env
+.env.local
+generated-apps/*
+!generated-apps/.gitkeep
+exports/
+.idea/
+.vscode/
+.DS_Store
+*.log

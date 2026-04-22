@@ -1,0 +1,135 @@
+/*
+ * SiteForge Platform UI — DESKTOP ONLY.
+ * 사유/적용 범위: docs/ui-policy.md 참고.
+ * 이 스타일시트에는 모바일/태블릿 미디어쿼리를 의도적으로 두지 않는다.
+ * 산출물(생성된 회사 사이트) CSS 는 별도 정책: 반응형 필수 (templates/).
+ */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f7f8fa;
+  color: #1f2330;
+  /* 데스크탑 전용 — 작은 화면에서는 가로 스크롤로 노출되어 의도적 비대응을 드러낸다. */
+  min-width: 1024px;
+}
+.app { display: flex; flex-direction: column; min-height: 100%; }
+.app-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; background: #fff; border-bottom: 1px solid #e6e8ee;
+}
+.brand { font-weight: 700; font-size: 18px; color: #1f2330; text-decoration: none; }
+.app-main { flex: 1; padding: 48px 24px; max-width: 880px; width: 100%; margin: 0 auto; }
+
+.health-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; }
+.health-checking { background: #fff5d6; color: #6b5500; }
+.health-ok { background: #dff5e0; color: #1a6a2a; }
+.health-down { background: #fde0e0; color: #8a1a1a; }
+
+.landing { text-align: center; padding-top: 32px; }
+.landing h1 { font-size: 40px; margin-bottom: 12px; }
+.tagline { font-size: 16px; color: #4a4f5e; max-width: 520px; margin: 0 auto 28px; }
+.cta {
+  display: inline-block; padding: 12px 22px; border-radius: 8px;
+  background: #1f2330; color: #fff; border: none; font-size: 15px;
+  cursor: pointer; text-decoration: none;
+}
+.cta:hover { background: #333a4d; }
+
+.start, .site-type-select { padding-top: 16px; }
+.type-list { list-style: none; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.type-card {
+  background: #fff; border: 1px solid #e6e8ee; border-radius: 10px;
+  padding: 20px; display: flex; flex-direction: column; gap: 8px;
+}
+.type-card.active { border-color: #1f2330; }
+.type-card.disabled { opacity: 0.55; }
+.type-card .badge {
+  align-self: flex-start; font-size: 11px; padding: 3px 8px; border-radius: 999px;
+  background: #1f2330; color: #fff;
+}
+.type-card .badge.muted { background: #c9ccd6; color: #3a3f4a; }
+.type-card.selected { box-shadow: 0 0 0 2px #1f2330 inset; }
+.type-card .cta { margin-top: 8px; align-self: flex-start; }
+
+/* ---------- Wizard 공통 ---------- */
+.wizard { display: flex; flex-direction: column; gap: 24px; }
+.wizard-steps {
+  list-style: none; padding: 0; margin: 0; display: flex; gap: 0;
+  background: #fff; border: 1px solid #e6e8ee; border-radius: 10px;
+  padding: 12px 16px; overflow-x: auto;
+}
+.wizard-step {
+  display: flex; align-items: center; gap: 8px; padding-right: 20px;
+  color: #8a8f9c; font-size: 13px; white-space: nowrap;
+}
+.wizard-step + .wizard-step { padding-left: 20px; border-left: 1px dashed #e6e8ee; }
+.wizard-step-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: #d9dce5;
+}
+.wizard-step-active { color: #1f2330; font-weight: 600; }
+.wizard-step-active .wizard-step-dot { background: #1f2330; }
+.wizard-step-done { color: #1a6a2a; }
+.wizard-step-done .wizard-step-dot { background: #1a6a2a; }
+
+.wizard-body { background: #fff; border: 1px solid #e6e8ee; border-radius: 10px; padding: 28px; }
+.step h2 { margin: 0 0 6px; font-size: 22px; }
+.step-desc { margin: 0 0 24px; color: #4a4f5e; }
+
+/* ---------- Form ---------- */
+.form { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.field > span { font-weight: 600; }
+.field input[type="text"] {
+  padding: 10px 12px; border: 1px solid #d9dce5; border-radius: 6px; font-size: 14px;
+}
+.field input[type="text"]:focus { outline: 2px solid #1f2330; border-color: transparent; }
+.field-hint { color: #8a8f9c; font-size: 12px; }
+.field-error { color: #b3261e; font-size: 12px; font-style: normal; }
+.form-error { color: #b3261e; font-size: 13px; margin: 12px 0; }
+
+.form-actions { display: flex; gap: 12px; margin-top: 24px; }
+.form-actions-spread { justify-content: space-between; }
+.btn-ghost {
+  background: transparent; border: 1px solid #d9dce5; color: #1f2330;
+  padding: 10px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 14px;
+}
+.btn-ghost:hover { background: #f0f1f5; }
+.cta:disabled { background: #c9ccd6; cursor: not-allowed; }
+.cta-primary { background: #1a6a2a; }
+.cta-primary:hover { background: #1f7d33; }
+
+/* ---------- Toggle list ---------- */
+.toggle-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.toggle-item {
+  border: 1px solid #e6e8ee; border-radius: 8px; padding: 12px 14px; background: #fcfcfd;
+}
+.toggle-item label { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.toggle-item input[type="checkbox"] { margin-top: 4px; }
+.toggle-text { display: flex; flex-direction: column; gap: 2px; }
+.toggle-text small { color: #6a6f7c; font-size: 12px; }
+.toggle-divider { margin-top: 8px; border-color: #d9dce5; background: #fff; }
+
+/* ---------- Review (좌우 분할) ---------- */
+.review-split {
+  /* 데스크탑 전용 — 항상 좌우 2분할. 작은 화면 대응 미디어쿼리는 두지 않는다. */
+  display: grid; gap: 20px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.review-pane { background: #fcfcfd; border: 1px solid #e6e8ee; border-radius: 8px; padding: 18px; }
+.review-pane h3 { margin: 0 0 12px; font-size: 15px; }
+.page-tree { list-style: none; padding-left: 0; font-size: 14px; line-height: 1.7; }
+.page-tree ul { list-style: none; padding-left: 18px; border-left: 1px dashed #d9dce5; }
+.page-tree code { background: #eef0f4; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+.hint { color: #6a6f7c; font-size: 12px; margin-top: 12px; }
+.kv { display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; font-size: 14px; margin: 0; }
+.kv dt { color: #6a6f7c; }
+.kv dd { margin: 0; }
+.kv code { background: #eef0f4; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+
+/* ---------- Done ---------- */
+.done-card {
+  background: #f3faf4; border: 1px solid #cfe6d4; border-radius: 8px;
+  padding: 16px; display: flex; flex-direction: column; gap: 6px; font-size: 14px;
+  margin: 16px 0 24px;
+}
