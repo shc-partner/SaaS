@@ -1,0 +1,270 @@
+/*
+ * Live preview frame + 미니 기업 사이트 템플릿(`.lp-*`).
+ * 빌더 좌측 라이브 프리뷰와 /sites/:slug 의 public-runtime 양쪽에서 사용.
+ *
+ * 주의: 미리보기 안의 미니 사이트는 "고객용 산출물 톤" 이므로
+ * 플랫폼 다크모드와 분리된 자체 라이트 톤을 유지한다.
+ * 다크모드일 때 프레임(chrome/url/그림자)만 다크에 맞춰 부드럽게 어두워진다.
+ */
+
+/* ---------- Preview frame chrome ---------- */
+.preview-frame {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  max-width: 1080px; margin: 0 auto;
+  transition: max-width var(--t-base);
+}
+/* 모바일 뷰: 실제 모바일 폭(375)을 시뮬레이션 */
+.preview-frame.preview-mobile {
+  max-width: 390px;
+}
+.preview-frame.preview-mobile .preview-viewport-body { font-size: 14px; }
+
+.preview-viewport-toggle {
+  display: inline-flex; gap: 2px; padding: 2px;
+  background: var(--bg-muted); border-radius: var(--radius-sm);
+}
+.preview-viewport-toggle button {
+  width: 28px; height: 24px;
+  display: inline-grid; place-items: center;
+  background: transparent; color: var(--text-3);
+  border: none; cursor: pointer; border-radius: 4px;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.preview-viewport-toggle button:hover { color: var(--text-1); }
+.preview-viewport-toggle button.active {
+  background: var(--bg-surface);
+  color: var(--brand-600);
+  box-shadow: var(--shadow-sm);
+}
+.preview-chrome {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-1);
+}
+.preview-dots { display: flex; gap: 6px; }
+.preview-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--border-2); }
+.preview-dots span:nth-child(1) { background: #ed6a5e; }
+.preview-dots span:nth-child(2) { background: #f5bf4d; }
+.preview-dots span:nth-child(3) { background: #62c554; }
+
+.preview-url {
+  flex: 1; padding: 6px 12px;
+  background: var(--bg-surface); color: var(--text-2);
+  border: 1px solid var(--border-1); border-radius: 4px;
+  font-size: 12px; font-family: ui-monospace, Consolas, monospace;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.preview-template-tag {
+  font-size: 11px; padding: 4px 10px; border-radius: var(--radius-pill);
+  background: var(--brand-600); color: var(--brand-on);
+  font-weight: 600; flex-shrink: 0;
+}
+
+.preview-placeholder {
+  margin: 60px 32px; padding: 56px 32px;
+  border: 2px dashed var(--border-dashed);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
+  text-align: center;
+}
+.preview-placeholder h3 { margin: 0 0 8px; font-size: 16px; color: var(--text-1); }
+.preview-placeholder p  { margin: 0 auto; max-width: 380px; color: var(--text-2); font-size: 13px; line-height: 1.65; }
+
+/* ---------- Public runtime wrapper (동일 SPA 안에서 렌더되는 stage1) ---------- */
+.public-runtime {
+  max-width: 1180px; margin: 32px auto;
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-1);
+}
+
+/* ---------- 미니 기업 사이트 (자체 라이트 톤 고정) ----------
+ * container-type: inline-size 로 선언해, 이 사이트가 담긴 "컨테이너 폭"을 기준으로
+ * 내부 레이아웃이 반응형으로 적응한다. 프리뷰 프레임(데스크탑 1080 ↔ 모바일 390)은 물론,
+ * 공개 런타임에서 브라우저 창이 좁아질 때도 동일한 규칙이 적용된다.
+ */
+.lp-site {
+  color: #1f2330; line-height: 1.55; background: #ffffff;
+  container-type: inline-size; container-name: lp;
+}
+.lp-placeholder { color: #b3b6c0; font-style: italic; }
+
+.lp-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px; border-bottom: 1px solid #eef0f4;
+}
+.lp-brand { font-weight: 700; font-size: 16px; color: #1f2330; }
+.lp-nav {
+  display: flex; gap: 4px;
+  font-size: 13px; color: #6a6f7c;
+}
+.lp-nav span,
+.lp-nav a,
+.lp-nav button {
+  background: transparent; border: none; cursor: pointer;
+  padding: 6px 10px; border-radius: 6px;
+  font: inherit; color: inherit; text-decoration: none;
+  transition: background 120ms ease, color 120ms ease;
+}
+.lp-nav a:hover,
+.lp-nav button:hover { background: #f0f2f6; color: #1f2330; }
+.lp-nav .is-active { color: #1f2330; font-weight: 600; background: #eef0f4; }
+
+.lp-hero {
+  padding: 60px 32px;
+  background: linear-gradient(135deg, #1f2330 0%, #333a4d 100%);
+  color: #fff; text-align: center;
+}
+.lp-hero h1 {
+  margin: 0 0 12px; font-size: 32px; font-weight: 700; letter-spacing: -0.01em;
+  color: #fff;
+}
+.lp-hero h1.lp-placeholder { color: rgba(255,255,255,0.55); }
+.lp-hero p {
+  margin: 0 auto; max-width: 560px; font-size: 14px; color: #c8ccd4; line-height: 1.7;
+}
+.lp-hero p.lp-placeholder { color: rgba(255,255,255,0.45); }
+.lp-hero .lp-cta {
+  display: inline-block; margin-top: 24px;
+  padding: 11px 24px; background: #fff; color: #1f2330; border-radius: 6px;
+  font-size: 13px; font-weight: 600;
+}
+
+.lp-section { padding: 48px 32px; }
+.lp-section h2 { margin: 0 0 6px; font-size: 22px; font-weight: 700; color: #1f2330; }
+.lp-section .lead { margin: 0 0 26px; color: #6a6f7c; font-size: 13px; }
+.lp-section .lead strong { color: #1f2330; font-weight: 600; }
+
+.lp-about-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.lp-about-card {
+  padding: 18px; background: #f7f8fb; border-radius: 8px;
+  font-size: 12px; color: #4a4f5e; line-height: 1.6;
+}
+.lp-about-card strong { display: block; font-size: 13px; color: #1f2330; margin-bottom: 6px; }
+
+.lp-services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.lp-service-card {
+  padding: 20px; background: #fff; border: 1px solid #e6e8ee; border-radius: 8px;
+}
+.lp-service-card .lp-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+  margin-bottom: 12px;
+}
+.lp-service-card strong { display: block; font-size: 13px; color: #1f2330; }
+.lp-service-card p { margin: 4px 0 0; color: #6a6f7c; font-size: 12px; line-height: 1.55; }
+
+.lp-contact { background: #f7f8fb; }
+.lp-contact-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;
+}
+.lp-contact-info dl {
+  display: grid; grid-template-columns: 70px 1fr; gap: 10px 14px;
+  font-size: 13px; margin: 0;
+}
+.lp-contact-info dt { color: #8a8f9c; }
+.lp-contact-info dd { margin: 0; color: #1f2330; }
+.lp-contact-form {
+  background: #fff; padding: 18px; border-radius: 8px; border: 1px solid #e6e8ee;
+}
+.lp-contact-form .lp-field {
+  display: block; height: 34px; background: #f0f1f5; border-radius: 4px; margin-bottom: 10px;
+}
+.lp-contact-form .lp-field.tall { height: 80px; }
+.lp-contact-form .lp-submit {
+  display: inline-block; padding: 9px 20px; background: #1f2330; color: #fff;
+  font-size: 12px; border-radius: 4px; font-weight: 600;
+}
+
+.lp-board { background: #ffffff; }
+.lp-section-head { margin-bottom: 22px; }
+.lp-section-head h2 { margin-bottom: 8px; }
+.lp-section-head p:last-child {
+  margin: 0; color: #6a6f7c; font-size: 13px; line-height: 1.65;
+}
+.lp-kicker {
+  margin: 0 0 6px;
+  color: #6366f1;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.lp-board-list {
+  display: grid; gap: 10px;
+}
+.lp-board-item {
+  display: grid; grid-template-columns: 110px 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid #e6e8ee;
+  border-radius: 8px;
+  background: #fff;
+}
+.lp-board-item time {
+  color: #8a8f9c;
+  font-size: 12px;
+}
+.lp-board-item h3 {
+  grid-column: 2;
+  margin: 0 0 4px;
+  color: #1f2330;
+  font-size: 14px;
+}
+.lp-board-item p {
+  grid-column: 2;
+  margin: 0;
+  color: #6a6f7c;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.lp-footer {
+  padding: 20px 28px; background: #1f2330; color: #c8ccd4;
+  font-size: 12px; text-align: center;
+}
+
+/* ---------- 산출물 사이트 반응형 (container query) ---------- */
+/* 컨테이너 폭 ≤ 640: 태블릿 이하 — 2-column 그리드를 축소 */
+@container lp (max-width: 640px) {
+  .lp-header {
+    padding: 12px 16px; flex-wrap: wrap; gap: 8px;
+  }
+  .lp-brand { font-size: 15px; }
+  .lp-nav { font-size: 12px; gap: 2px; flex-wrap: wrap; }
+  .lp-nav span, .lp-nav a, .lp-nav button { padding: 4px 8px; }
+
+  .lp-hero { padding: 44px 20px; }
+  .lp-hero h1 { font-size: 26px; }
+  .lp-hero p  { font-size: 13px; }
+  .lp-hero .lp-cta { padding: 9px 18px; font-size: 12px; }
+
+  .lp-section { padding: 36px 20px; }
+  .lp-section h2 { font-size: 20px; }
+
+  .lp-about-grid,
+  .lp-services-grid { grid-template-columns: 1fr; gap: 10px; }
+
+  .lp-contact { }
+  .lp-contact-grid { grid-template-columns: 1fr; gap: 18px; }
+  .lp-contact-info dl { grid-template-columns: 60px 1fr; }
+  .lp-board-item { grid-template-columns: 1fr; gap: 6px; }
+  .lp-board-item h3,
+  .lp-board-item p { grid-column: 1; }
+
+  .lp-footer { padding: 16px; font-size: 11px; }
+}
+
+/* 컨테이너 폭 ≤ 420: 모바일 — hero 여백과 폰트 한 단계 더 축소 */
+@container lp (max-width: 420px) {
+  .lp-hero { padding: 36px 18px; }
+  .lp-hero h1 { font-size: 22px; }
+  .lp-section { padding: 28px 18px; }
+  .lp-about-card, .lp-service-card { padding: 14px; }
+}

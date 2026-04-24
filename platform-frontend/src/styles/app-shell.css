@@ -1,0 +1,146 @@
+/*
+ * App shell — 모든 페이지를 감싸는 상단 헤더 / 본문 / 하단 푸터.
+ * 빌더 화면도 같은 셸 안에서 동작.
+ */
+
+.app-shell {
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-app);
+  color: var(--text-1);
+}
+
+.app-main {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+}
+
+/* 컨텐츠 가운데 정렬 wrapper — 일반 페이지에서 사용 */
+.app-main.contained > * {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 32px 28px;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center;
+  height: var(--header-h);
+  padding: 0 24px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-1);
+  backdrop-filter: saturate(160%) blur(8px);
+}
+
+.app-header-brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--text-1);
+  font-weight: 700; font-size: 15px; letter-spacing: -0.01em;
+}
+.app-header-brand .brand-logo {
+  width: 28px; height: 28px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
+  color: #fff; box-shadow: var(--shadow-sm);
+}
+.app-header-brand .brand-logo svg { display: block; }
+.app-header-brand .brand-name { line-height: 1; }
+.app-header-brand .brand-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+  padding: 2px 6px; border-radius: 4px;
+  background: var(--brand-50); color: var(--brand-700);
+}
+
+.app-header-nav {
+  display: flex; align-items: center; gap: 4px;
+  margin-left: 28px;
+}
+.app-nav-link {
+  padding: 7px 12px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500; color: var(--text-2);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.app-nav-link:hover { background: var(--bg-muted); color: var(--text-1); }
+.app-nav-link.active {
+  background: var(--brand-50); color: var(--brand-700); font-weight: 600;
+}
+
+.app-header-right {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* Theme toggle — sun/moon 아이콘 */
+.theme-toggle {
+  width: 36px; height: 36px;
+  display: inline-grid; place-items: center;
+  border-radius: var(--radius-sm);
+  background: transparent; color: var(--text-2);
+  border: 1px solid var(--border-1);
+  cursor: pointer; transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+.theme-toggle:hover { background: var(--bg-muted); color: var(--text-1); border-color: var(--border-2); }
+.theme-toggle:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+
+/* User menu placeholder — avatar bubble */
+.user-menu-trigger {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 8px 4px 4px; border-radius: var(--radius-pill);
+  background: transparent; border: 1px solid var(--border-1); cursor: pointer;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+.user-menu-trigger:hover { background: var(--bg-muted); border-color: var(--border-2); }
+.user-menu-trigger .avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--brand-100); color: var(--brand-700);
+  font-size: 11px; font-weight: 700;
+}
+.user-menu-trigger .user-name { font-size: 12px; color: var(--text-2); font-weight: 500; }
+
+/* ---------- Footer ---------- */
+.app-footer {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-1);
+  padding: 28px 32px 22px;
+  margin-top: auto;
+}
+.app-footer-inner {
+  width: 100%; max-width: var(--content-max);
+  margin: 0 auto;
+  display: grid; grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 36px;
+}
+.app-footer-brand .brand-line {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 700; color: var(--text-1); font-size: 14px;
+  margin-bottom: 8px;
+}
+.app-footer-brand .brand-desc {
+  margin: 0; color: var(--text-3); font-size: 12px; line-height: 1.65;
+  max-width: 320px;
+}
+
+.app-footer-col h4 {
+  font-size: 11px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin: 0 0 12px;
+}
+.app-footer-col ul { list-style: none; padding: 0; margin: 0; }
+.app-footer-col li { margin-bottom: 7px; }
+.app-footer-col a {
+  font-size: 13px; color: var(--text-2);
+  transition: color var(--t-fast);
+}
+.app-footer-col a:hover { color: var(--text-1); }
+
+.app-footer-meta {
+  width: 100%; max-width: var(--content-max);
+  margin: 22px auto 0; padding-top: 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--border-1);
+  font-size: 12px; color: var(--text-3);
+}

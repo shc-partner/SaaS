@@ -1,121 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Navigate, Route, Routes } from 'react-router-dom';
+import AppShell from './components/layout/AppShell';
+import MarketingShell from './components/layout/MarketingShell';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Public (marketing)
+import HomePage      from './pages/marketing/HomePage';
+import FeaturesPage  from './pages/marketing/FeaturesPage';
+import TemplatesPage from './pages/marketing/TemplatesPage';
+import PricingPage   from './pages/marketing/PricingPage';
+import UseCasesPage  from './pages/marketing/UseCasesPage';
+import ContactPage   from './pages/marketing/ContactPage';
+import LoginPage     from './pages/auth/LoginPage';
+import SignupPage    from './pages/auth/SignupPage';
 
+// Authenticated area
+import DashboardPage from './pages/app/DashboardPage';
+import MySitesPage   from './pages/MySitesPage';
+import BuilderPage   from './pages/BuilderPage';
+import AdminPlaceholderPage       from './pages/AdminPlaceholderPage';
+import SitePreviewPlaceholderPage from './pages/SitePreviewPlaceholderPage';
+
+// 3개의 셸:
+//  - MarketingShell : 공개 영역(로그인 전). 상단 헤더는 기능/템플릿/요금/사례/문의 + 로그인/시작하기
+//  - AppShell       : 가입 후 운영 영역. 상단 헤더는 대시보드/내 사이트/빌더
+//  - AppShell flush : 빌더와 공개 사이트 런타임 — 화면 가득 차야 하는 뷰
+export default function App() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Routes>
+      {/* ---------- Public ---------- */}
+      <Route path="/"           element={<MarketingShell flush><HomePage /></MarketingShell>} />
+      <Route path="/features"   element={<MarketingShell><FeaturesPage /></MarketingShell>} />
+      <Route path="/templates"  element={<MarketingShell><TemplatesPage /></MarketingShell>} />
+      <Route path="/pricing"    element={<MarketingShell><PricingPage /></MarketingShell>} />
+      <Route path="/use-cases"  element={<MarketingShell><UseCasesPage /></MarketingShell>} />
+      <Route path="/customers"  element={<Navigate to="/use-cases" replace />} />
+      <Route path="/contact"    element={<MarketingShell><ContactPage /></MarketingShell>} />
 
-      <div className="ticks"></div>
+      {/* ---------- Auth ---------- */}
+      <Route path="/login"  element={<MarketingShell flush><LoginPage /></MarketingShell>} />
+      <Route path="/signup" element={<MarketingShell flush><SignupPage /></MarketingShell>} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {/* ---------- Authenticated app area ---------- */}
+      <Route path="/dashboard" element={<AppShell><DashboardPage /></AppShell>} />
+      <Route path="/sites"     element={<AppShell><MySitesPage /></AppShell>} />
+      {/* /app 은 이전 라우트 호환을 위해 /sites 로 보냄 */}
+      <Route path="/app"       element={<Navigate to="/sites" replace />} />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <Route path="/builder"            element={<AppShell flush><BuilderPage /></AppShell>} />
+      <Route path="/admin"              element={<AppShell><AdminPlaceholderPage /></AppShell>} />
+      <Route path="/admin/sites/:siteId" element={<AppShell><AdminPlaceholderPage /></AppShell>} />
+
+      {/*
+        공개된 생성 사이트 — 멀티페이지.
+        `/sites/:slug` 와 `/sites` (목록)가 공존하지만 React Router 가 정확히 매칭.
+      */}
+      <Route path="/sites/:slug"           element={<AppShell flush><SitePreviewPlaceholderPage /></AppShell>} />
+      <Route path="/sites/:slug/:pageKey"  element={<AppShell flush><SitePreviewPlaceholderPage /></AppShell>} />
+
+      {/* 404 */}
+      <Route
+        path="*"
+        element={
+          <MarketingShell>
+            <div className="page-404">
+              <h1>페이지를 찾을 수 없습니다</h1>
+              <p>주소가 올바른지 확인하거나, 홈에서 다시 시작해 주세요.</p>
+            </div>
+          </MarketingShell>
+        }
+      />
+    </Routes>
+  );
 }
-
-export default App

@@ -1,69 +1,38 @@
-# CodeIgniter 4 Application Starter
+# platform-backend
 
-## What is CodeIgniter?
+SiteForge 플랫폼 API. **CI4 등 프레임워크를 사용하지 않는 plain PHP** 구조.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## 디렉터리
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- `public/` — Apache docroot. `index.php` 가 모든 요청의 단일 진입점.
+- `src/` — 애플리케이션 코드. PSR-4 (`SiteForge\\` → `src/`).
+  - `Http/` — Router, Request, Response. JSON envelope `{ ok, data?, error? }` 통일.
+  - `Db/Connection.php` — PDO 단일 인스턴스.
+  - `Sites/` — 사이트 도메인 (Repository / Service / Controller).
+  - `PublicSite/Controller.php` — 공개 슬러그 기반 조회.
+- `config/db.php` — DB 자격증명 (환경변수 우선).
+- `migrations/` — `*.sql` + `apply.php` (가벼운 러너).
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## 실행
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+```bash
+docker compose up -d
+docker compose exec web php /var/www/html/migrations/apply.php
+curl http://localhost:8080/api/health
+```
 
-## Installation & updates
+## API (단계 1)
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+| Method | Path | 용도 |
+|---|---|---|
+| GET   | `/api/health`              | 헬스체크 |
+| POST  | `/api/sites`               | 빌더 submit |
+| GET   | `/api/sites/{id}`          | 어드민용 단건 조회 |
+| GET   | `/api/public/sites/{slug}` | 공개 (public-web 용) |
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+응답: `{ ok: true, data: { site, features, pages, sections, publicUrl, adminUrl } }`.
 
-## Setup
+## 앞으로
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
-
-## Important Change with index.php
-
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
-
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
-
-**Please** read the user guide for a better explanation of how CI4 works!
-
-## Repository Management
-
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Server Requirements
-
-PHP version 8.2 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+- 단계 2: `public-web/` 프로젝트가 `/api/public/sites/{slug}` 를 호출해 렌더.
+- 단계 3: 어드민 인라인 편집 → `PATCH /api/sites/{id}/sections/{sectionId}`. `site-template/` 이관 패키지 골격.

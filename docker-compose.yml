@@ -1,11 +1,27 @@
-﻿services:
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.frontend
+    container_name: saas_frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./platform-frontend:/app/platform-frontend
+      - ./packages:/app/packages
+      - frontend_node_modules:/app/platform-frontend/node_modules
+    environment:
+      VITE_API_PROXY_TARGET: http://web:80
+    depends_on:
+      - web
+
   web:
     build:
       context: ./infra
       dockerfile: Dockerfile.web
     container_name: saas_web
     ports:
-      - "8080:80"
+      - "8000:80"
     volumes:
       - ./platform-backend:/var/www/html
     depends_on:
@@ -40,3 +56,4 @@
 
 volumes:
   mysql_data:
+  frontend_node_modules:

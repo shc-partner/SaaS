@@ -1,0 +1,106 @@
+/*
+ * SiteForge — Design Tokens.
+ * 모든 색/간격/반경/그림자는 여기서만 선언. 컴포넌트 CSS 는 var() 만 사용.
+ * 다크 테마는 [data-theme="dark"] 로 활성화 (ThemeProvider 가 <html> 에 부여).
+ */
+
+:root {
+  /* Brand — indigo 계열 */
+  --brand-50:  #eef2ff;
+  --brand-100: #e0e7ff;
+  --brand-200: #c7d2fe;
+  --brand-500: #6366f1;
+  --brand-600: #4f46e5;
+  --brand-700: #4338ca;
+  --brand-on:  #ffffff;
+
+  /* Surfaces */
+  --bg-app:      #f4f6fa;          /* 페이지 배경 */
+  --bg-surface:  #ffffff;          /* 카드/패널 */
+  --bg-subtle:   #f7f8fb;          /* 보조 패널/요약 카드 */
+  --bg-muted:    #eef0f4;          /* code chip / divider 영역 */
+  --bg-elevated: #ffffff;          /* hover/popover */
+
+  /* Borders */
+  --border-1: #e4e7ee;             /* 기본 경계 */
+  --border-2: #d4d8e2;             /* 강조 경계/입력 */
+  --border-dashed: #d9dce5;
+
+  /* Text */
+  --text-1: #1a1d2b;               /* 본문/헤딩 */
+  --text-2: #4a4f5e;               /* 보조 */
+  --text-3: #7e8493;               /* 캡션/플레이스홀더 */
+  --text-inverse: #ffffff;
+  --link:    var(--brand-600);
+
+  /* Status */
+  --success:    #1a6a2a;
+  --success-bg: #e7f4e9;
+  --warning:    #6b5500;
+  --warning-bg: #fff3d6;
+  --danger:     #b3261e;
+  --danger-bg:  #fdecea;
+  --info:       #1f4f8b;
+  --info-bg:    #e7eef8;
+
+  /* Radius */
+  --radius-sm:  6px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-pill: 999px;
+
+  /* Shadows — 라이트 톤은 흐릿한 인디고 그림자 */
+  --shadow-sm: 0 1px 2px rgba(20, 24, 40, 0.06), 0 1px 1px rgba(20, 24, 40, 0.04);
+  --shadow-md: 0 4px 14px rgba(20, 24, 40, 0.08), 0 2px 4px rgba(20, 24, 40, 0.04);
+  --shadow-lg: 0 18px 40px rgba(20, 24, 40, 0.10), 0 4px 10px rgba(20, 24, 40, 0.05);
+  --ring-focus: 0 0 0 3px rgba(99, 102, 241, 0.30);
+
+  /* Layout */
+  --header-h:   60px;
+  --content-max: 1200px;
+  --sidebar-w:  440px;
+
+  /* Motion */
+  --t-fast: 120ms ease;
+  --t-base: 180ms ease;
+}
+
+[data-theme="dark"] {
+  --brand-50:  #1f2540;
+  --brand-100: #25305a;
+  --brand-200: #2d3a78;
+  --brand-500: #818cf8;
+  --brand-600: #6366f1;
+  --brand-700: #4f46e5;
+  --brand-on:  #ffffff;
+
+  --bg-app:      #0e1118;
+  --bg-surface:  #161a23;
+  --bg-subtle:   #1b2029;
+  --bg-muted:    #232936;
+  --bg-elevated: #1d2331;
+
+  --border-1: #262b38;
+  --border-2: #353b48;
+  --border-dashed: #2f3543;
+
+  --text-1: #e8eaef;
+  --text-2: #b3b8c4;
+  --text-3: #7e8493;
+  --text-inverse: #0e1118;
+  --link:    var(--brand-500);
+
+  --success:    #5cd673;
+  --success-bg: #142a1c;
+  --warning:    #f5c863;
+  --warning-bg: #2a2510;
+  --danger:     #ff7068;
+  --danger-bg:  #2a1717;
+  --info:       #6fb1ff;
+  --info-bg:    #142235;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.50);
+  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.40);
+  --ring-focus: 0 0 0 3px rgba(129, 140, 248, 0.35);
+}

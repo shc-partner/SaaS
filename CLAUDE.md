@@ -6,6 +6,12 @@ This file guides Claude Code (and any AI collaborator) when working in this repo
 
 A **website-builder SaaS**. Users sign up, choose a site type (company / blog / reservation / member), configure content, and publish a public website. Platform is multi-tenant.
 
+**What "a website" means here** — not a single landing page. SiteForge builds **real multi-page sites**:
+- A **main (home) page** plus **one independent page per user-selected page** (e.g. `/about`, `/services`, `/contact`), each with its own route, URL, and content.
+- An **admin page** (when the user opts in) with dashboard / content / inquiries / visibility modules, living under `/admin/sites/:id`.
+- Unselected pages are **not** created — selection drives actual page/route generation, not section toggles.
+- Navigation is router-based (`<a href>`), not anchor-scroll. Single-page-landing output is explicitly *not* the product.
+
 - **Platform stack**: React (admin SPA) + PHP CodeIgniter 4 (API) + MySQL
 - **Generated-site stack**: React (public runtime) + PHP CI4 (shared API) — *same tech as platform*, not a separate codebase
 - **Tenancy (MVP)**: shared MySQL, tenant rows scoped by `site_id`

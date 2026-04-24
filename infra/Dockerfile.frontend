@@ -1,0 +1,15 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+# package.json 만 먼저 복사해 의존성 캐시 레이어를 분리한다.
+COPY platform-frontend/package.json platform-frontend/package-lock.json* ./platform-frontend/
+WORKDIR /app/platform-frontend
+RUN npm install
+
+WORKDIR /app
+EXPOSE 8080
+
+# 실제 소스는 compose volume 으로 마운트되어 hot-reload 된다.
+# vite 는 컨테이너 외부에서 접속해야 하므로 --host 0.0.0.0 필수.
+CMD ["npm", "--prefix", "platform-frontend", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8080"]
