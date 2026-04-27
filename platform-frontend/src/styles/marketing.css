@@ -216,6 +216,53 @@
   border-radius: var(--radius-sm); font-size: 12px;
 }
 
+/* ---------- Social login ---------- */
+.social-divider {
+  margin: 22px 0 14px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text-3); font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.social-divider::before,
+.social-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border-1);
+}
+.social-list { display: flex; flex-direction: column; gap: 8px; }
+
+.social-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 10px 14px;
+  font-size: 13px; font-weight: 600;
+  border-radius: var(--radius-sm); border: 1px solid var(--border-1);
+  cursor: pointer;
+  transition: filter var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.social-btn:hover { filter: brightness(0.98); }
+.social-btn:focus-visible { outline: none; box-shadow: var(--ring-focus); }
+.social-btn .icon {
+  width: 20px; height: 20px;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+
+/* Google — 흰 배경 + 얇은 보더 (브랜드 가이드) */
+.social-btn.google {
+  background: #fff; color: #202124; border-color: #dadce0;
+}
+.social-btn.google:hover { background: #f8f9fa; }
+
+/* 네이버 — 녹색 필 */
+.social-btn.naver {
+  background: #03c75a; color: #fff; border-color: #03c75a;
+}
+.social-btn.naver:hover { background: #02b150; border-color: #02b150; }
+
+/* 카카오 — 노란 필 + 검정 텍스트 */
+.social-btn.kakao {
+  background: #fee500; color: #181600; border-color: #fee500;
+}
+.social-btn.kakao:hover { background: #ffd900; border-color: #ffd900; }
+
 /* ---------- Dashboard ---------- */
 .dashboard { display: flex; flex-direction: column; gap: 24px; }
 .dashboard-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }

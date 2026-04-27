@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { loadMySites, removeMySite, type MySite } from '../features/mySites/storage';
+import { useMySites } from '../features/mySites/useMySites';
+import { type MySite } from '../features/mySites/storage';
 import { SITE_TYPE_OPTIONS } from '../features/siteBuilder/types';
 
-// /app — 내 사이트 목록.
-// 기획안 5번: "내 사이트 목록(/app 또는 /dashboard)" — 생성 결과를 다시 찾는 핵심 진입점.
-// MVP 에서는 localStorage 에서 읽어오지만, 추후 백엔드 API 로 교체되어도 같은 컴포넌트 유지.
+// /sites — 내 사이트 목록.
+// 백엔드 /api/me/sites 가 진실의 출처 — 본인이 만든 사이트만 노출된다.
 function formatDate(iso: string): string {
   const d = new Date(iso);
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -30,20 +29,7 @@ function statusLabel(s: MySite['status']): string {
 }
 
 export default function MySitesPage() {
-  const [sites, setSites] = useState<MySite[]>(() => loadMySites());
-
-  // 다른 탭/창에서 localStorage 가 바뀌면 즉시 반영.
-  useEffect(() => {
-    const onStorage = () => setSites(loadMySites());
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
-  const onRemove = (id: string) => {
-    if (!confirm('목록에서 삭제하시겠습니까? (실제 사이트는 삭제되지 않습니다)')) return;
-    removeMySite(id);
-    setSites(loadMySites());
-  };
+  const { sites } = useMySites();
 
   return (
     <div className="mysites">
@@ -105,9 +91,6 @@ export default function MySitesPage() {
                   {s.adminRequired && (
                     <Link to={`/admin/sites/${s.id}`} className="btn ghost">관리자</Link>
                   )}
-                  <button type="button" className="btn subtle" onClick={() => onRemove(s.id)}>
-                    목록에서 삭제
-                  </button>
                 </footer>
               </article>
             );

@@ -8,9 +8,8 @@ import {
 } from '../../features/siteBuilder/selectors';
 
 // 이전/다음 네비게이션.
-// - review 단계의 "사이트 생성하기" 버튼은 ReviewStep 내부.
+// - editor 단계(마지막)는 내부에 "사이트 생성하기" 버튼을 가지므로 "다음"을 숨긴다.
 // - 완료 이후에는 완료 화면이 자체 CTA 를 가지므로 푸터를 숨긴다.
-// - activeSteps 는 adminRequired 여부에 따라 adminSetup 이 포함/제외된다.
 export default function BuilderFooter() {
   const dispatch   = useAppDispatch();
   const step       = useAppSelector(selectCurrentStep);
@@ -21,7 +20,7 @@ export default function BuilderFooter() {
   if (completion) return null;
 
   const idx = steps.indexOf(step);
-  const showNext = step !== 'review';
+  const showNext = step !== 'editor'; // editor 단계는 내부에 생성 버튼을 가짐
 
   return (
     <footer className="builder-footer">

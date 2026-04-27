@@ -1,69 +1,52 @@
 import { Link } from 'react-router-dom';
-import { loadMySites } from '../../features/mySites/storage';
+import { useAuth } from '../../features/auth/AuthProvider';
+import useMyWorkspaces from '../../features/workspaces/useMyWorkspaces';
+import { TEMPLATE_OPTIONS } from '../../features/workspaces/constants';
+import { type MyWorkspace } from '../../features/workspaces/types';
 
 // /dashboard — 가입 후 기본 진입점.
-// 실제 통계 API 가 아직 없으므로 지표는 localStorage 의 내 사이트 수에서 derive.
-// 핵심 기능: 인사말 + 상단 지표 + 내 사이트 요약 + 최근 작업/안내 + 플랜 teaser.
-function currentUser(): { name?: string; email?: string } {
-  try {
-    const raw = window.localStorage.getItem('siteforge.auth');
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
+// 워크스페이스 목록은 localStorage 에서 읽어오므로 본인 것만 보인다.
 export default function DashboardPage() {
-  const user = currentUser();
-  const sites = loadMySites();
-  const published = sites.filter((s) => s.status === 'published').length;
-  const greeting = user.name ? `${user.name} 님, 환영합니다` : '환영합니다';
+  const { user } = useAuth();
+  const { workspaces } = useMyWorkspaces();
+
+  const activeCount = workspaces.filter((w) => w.status === 'active').length;
+  const contentCount = workspaces.reduce((acc, w) => acc + w.items.length, 0);
+  const greeting = user?.name ? `${user.name} 님, 환영합니다` : '환영합니다';
 
   return (
     <div className="dashboard">
       <header className="dashboard-head">
         <div>
           <h1>{greeting}</h1>
-          <p>오늘도 SiteForge 에서 사이트를 운영해 보세요.</p>
+          <p>오늘도 크리에이터 워크스페이스를 운영해 보세요.</p>
         </div>
-        <Link to="/builder" className="btn primary">+ 새 사이트 만들기</Link>
+        <Link to="/workspaces/new" className="btn primary">+ 새 워크스페이스 만들기</Link>
       </header>
 
       <section className="dashboard-stats">
-        <StatCard label="내 사이트" value={String(sites.length)} hint="생성된 사이트 총 개수" />
-        <StatCard label="공개 중"   value={String(published)}    hint="임시 URL 로 접근 가능" />
-        <StatCard label="관리자"    value={String(sites.filter((s) => s.adminRequired).length)} hint="관리자 페이지 포함 사이트" />
-        <StatCard label="플랜"      value="Free" hint="업그레이드 가능" />
+        <StatCard label="내 워크스페이스" value={String(workspaces.length)} hint="생성된 워크스페이스 총 개수" />
+        <StatCard label="활성"            value={String(activeCount)}        hint="현재 활성 상태인 워크스페이스" />
+        <StatCard label="관리 항목"       value={String(contentCount)}       hint="설정된 관리 항목 수" />
+        <StatCard label="플랜"            value="Free"                       hint="업그레이드 가능" />
       </section>
 
       <section className="dashboard-grid">
         <article className="dashboard-card">
-          <h3>내 사이트 요약</h3>
-          {sites.length === 0 ? (
+          <h3>최근 워크스페이스</h3>
+          {workspaces.length === 0 ? (
             <div className="dashboard-empty">
-              <h4>아직 만든 사이트가 없어요</h4>
-              <p>빌더에서 첫 사이트를 만들면 이곳에 자동으로 나타납니다.</p>
-              <Link to="/builder" className="btn primary">지금 시작하기</Link>
+              <h4>아직 만든 워크스페이스가 없어요</h4>
+              <p>워크스페이스를 만들면 이곳에 자동으로 나타납니다.</p>
+              <Link to="/workspaces/new" className="btn primary">지금 시작하기</Link>
             </div>
           ) : (
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {sites.slice(0, 4).map((s) => (
-                <li key={s.id} style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '12px 14px', border: '1px solid var(--border-1)', borderRadius: 'var(--radius-md)',
-                }}>
-                  <div>
-                    <strong style={{ display: 'block', fontSize: 14 }}>{s.name || '(이름 없음)'}</strong>
-                    <code style={{ fontSize: 11, color: 'var(--text-3)', background: 'transparent', padding: 0 }}>/sites/{s.slug}</code>
-                  </div>
-                  <div style={{ display: 'inline-flex', gap: 6 }}>
-                    <Link to={`/sites/${s.slug}`} className="btn subtle">열기</Link>
-                    {s.adminRequired && <Link to={`/admin/sites/${s.id}`} className="btn subtle">관리자</Link>}
-                  </div>
-                </li>
+              {workspaces.slice(0, 4).map((ws) => (
+                <WorkspaceRow key={ws.id} workspace={ws} />
               ))}
               <li style={{ textAlign: 'right', marginTop: 4 }}>
-                <Link to="/sites" className="link">전체 보기 →</Link>
+                <Link to="/workspaces" className="link">전체 보기 →</Link>
               </li>
             </ul>
           )}
@@ -73,22 +56,40 @@ export default function DashboardPage() {
           <div className="dashboard-card">
             <h3>최근 안내</h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, color: 'var(--text-2)' }}>
-              <li>✓ 빌더 7단계 flow 가 공개되었습니다.</li>
-              <li>✓ 페이지별 라우팅이 적용되어 멀티페이지로 생성됩니다.</li>
-              <li>• 관리자 편집기는 다음 스테이지에서 연결됩니다.</li>
+              <li>✓ 워크스페이스 생성 마법사(6단계)가 준비되었습니다.</li>
+              <li>✓ 유튜버·스트리머·숏폼 등 목적별 템플릿이 적용됩니다.</li>
+              <li>• 보드·캘린더·콘텐츠 기능이 다음 스테이지에서 연결됩니다.</li>
             </ul>
           </div>
 
           <div className="dashboard-card">
             <h3>계정 · 플랜</h3>
             <p style={{ fontSize: 13, color: 'var(--text-2)', margin: '0 0 10px' }}>
-              현재 <strong>Free</strong> 플랜입니다. 사이트를 여러 개 만들거나 커스텀 도메인이 필요하면 Pro 로 업그레이드하세요.
+              현재 <strong>Free</strong> 플랜입니다. 워크스페이스를 여러 개 운영하거나 팀 협업이 필요하면 Pro 로 업그레이드하세요.
             </p>
             <Link to="/pricing" className="btn ghost btn-block">요금제 보기</Link>
           </div>
         </aside>
       </section>
     </div>
+  );
+}
+
+// 워크스페이스 행 컴포넌트
+function WorkspaceRow({ workspace }: { workspace: MyWorkspace }) {
+  const tmpl = TEMPLATE_OPTIONS.find((t) => t.id === workspace.templateKey);
+
+  return (
+    <li style={{
+      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      padding: '12px 14px', border: '1px solid var(--border-1)', borderRadius: 'var(--radius-md)',
+    }}>
+      <div>
+        <strong style={{ display: 'block', fontSize: 14 }}>{workspace.name || '(이름 없음)'}</strong>
+        <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{tmpl?.label ?? workspace.templateKey}</span>
+      </div>
+      <Link to={`/workspaces/${workspace.id}`} className="btn subtle">열기</Link>
+    </li>
   );
 }
 

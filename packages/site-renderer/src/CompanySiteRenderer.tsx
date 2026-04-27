@@ -25,6 +25,8 @@ interface Props {
   onNavigate?: (key: string) => void;
   /** 실제 페이지 URL 빌더. 제공되면 헤더 nav 가 <a href> 로 렌더돼 새 탭 열기/북마크가 정상 동작. */
   getPageHref?: (key: string) => string;
+  /** 템플릿 variant 식별자 — data-variant 속성으로 전달되어 CSS 테마가 적용됨. */
+  variant?: string;
 }
 
 // 기업 소개형 사이트의 풀 렌더링.
@@ -38,7 +40,7 @@ interface Props {
 //
 // 같은 컴포넌트 트리를 — 빌더 라이브 프리뷰 / public-web 런타임 / 어드민 편집기 / 산출물 이관본 —
 // 네 군데가 모두 사용한다. 현재 페이지 제어권(currentPageKey / onNavigate)만 각 컨텍스트가 주입한다.
-export default function CompanySiteRenderer({ data, currentPageKey, onNavigate, getPageHref }: Props) {
+export default function CompanySiteRenderer({ data, currentPageKey, onNavigate, getPageHref, variant }: Props) {
   const pages = data.pages;
   const firstKey = pages[0]?.key ?? 'home';
 
@@ -62,7 +64,7 @@ export default function CompanySiteRenderer({ data, currentPageKey, onNavigate, 
   const brand = data.site.name;
 
   return (
-    <article className="lp-site">
+    <article className="lp-site" data-variant={variant ?? undefined}>
       {headerSec && (
         <HeaderSection
           content={headerSec.content as HeaderContent}
@@ -75,7 +77,7 @@ export default function CompanySiteRenderer({ data, currentPageKey, onNavigate, 
 
       {pageSecs.map((s) => {
         switch (s.kind) {
-          case 'hero':     return <HeroSection     key={s.id} content={s.content as HeroContent} />;
+          case 'hero':     return <HeroSection     key={s.id} content={s.content as HeroContent} variant={variant} />;
           case 'about':    return <AboutSection    key={s.id} content={s.content as AboutContent} brand={brand} />;
           case 'services': return <ServicesSection key={s.id} content={s.content as ServicesContent} />;
           case 'contact':  return <ContactSection  key={s.id} content={s.content as ContactContent} />;

@@ -404,3 +404,261 @@
 /* ---------- 404 ---------- */
 .page-404 { padding: 80px 32px; text-align: center; color: var(--text-2); }
 .page-404 h1 { font-size: 28px; margin-bottom: 8px; }
+
+/* ---------- 집중형 선택 레이아웃 (startMode step 전용) ---------- */
+.builder-selection-layout {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  background: var(--bg-app);
+}
+.builder-selection-body {
+  flex: 1; overflow: auto;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 48px 32px 32px;
+}
+
+/* ---------- Start mode screen ---------- */
+.start-mode-screen {
+  width: 100%; max-width: 900px;
+  display: flex; flex-direction: column; gap: 40px;
+}
+.start-mode-header { text-align: center; }
+.start-mode-title {
+  font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
+  color: var(--text-1); margin: 0 0 12px;
+}
+.start-mode-subtitle {
+  font-size: 15px; color: var(--text-2); margin: 0; line-height: 1.6;
+  max-width: 520px; margin-inline: auto;
+}
+
+/* 3-column card grid */
+.start-mode-cards {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+}
+
+/* Individual card */
+.sm-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+  width: 100%; min-height: 260px; padding: 24px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-1);
+  border-radius: var(--radius-xl, 16px);
+  text-align: left; cursor: pointer;
+  color: var(--text-1); font: inherit;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast), background var(--t-fast), transform var(--t-fast);
+}
+.sm-card:hover {
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.sm-card--selected {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 1px var(--brand-500), var(--shadow-md);
+  background: linear-gradient(160deg, var(--brand-50) 0%, var(--bg-surface) 60%);
+  transform: translateY(-2px);
+}
+
+/* 상단 태그 */
+.sm-card__tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+  padding: 4px 10px; border-radius: var(--radius-pill);
+  background: var(--bg-muted); color: var(--text-3);
+  white-space: nowrap;
+}
+.sm-card__tag--selected {
+  background: var(--brand-100); color: var(--brand-700);
+}
+.sm-card__badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+  padding: 1px 6px; border-radius: var(--radius-pill);
+  background: var(--brand-600); color: var(--brand-on);
+}
+
+/* 아이콘 버블 */
+.sm-card__icon {
+  width: 64px; height: 64px; border-radius: var(--radius-lg);
+  display: grid; place-items: center;
+  background: var(--bg-muted); color: var(--text-3);
+  transition: background var(--t-fast), color var(--t-fast);
+  flex-shrink: 0;
+}
+.sm-card__icon--selected {
+  background: var(--brand-100); color: var(--brand-600);
+}
+
+/* 텍스트 */
+.sm-card__label {
+  font-size: 17px; font-weight: 700; color: var(--text-1); line-height: 1.25;
+}
+.sm-card__desc {
+  font-size: 13px; color: var(--text-2); line-height: 1.65; flex: 1;
+}
+
+/* 선택 indicator */
+.sm-card__indicator {
+  margin-top: auto;
+  font-size: 12px; font-weight: 600;
+  color: var(--text-3);
+  padding: 6px 14px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border-1);
+  align-self: flex-start;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+.sm-card__indicator--on {
+  background: var(--brand-600); color: var(--brand-on); border-color: var(--brand-600);
+}
+.sm-card:hover .sm-card__indicator:not(.sm-card__indicator--on) {
+  background: var(--bg-muted); color: var(--text-1); border-color: var(--border-2);
+}
+
+/* ---------- Page set cards (step 4) ---------- */
+.page-set-grid {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.page-set-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.page-set-card:hover:not(.locked) { border-color: var(--border-2); }
+.page-set-card.checked {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 1px var(--brand-500);
+  background: var(--brand-50);
+}
+.page-set-card.locked { opacity: 0.85; cursor: default; }
+.page-set-card-check {
+  flex-shrink: 0;
+  width: 20px; height: 20px; border-radius: 5px;
+  display: grid; place-items: center;
+  border: 1.5px solid var(--border-2);
+  background: var(--bg-surface);
+  font-size: 12px; font-weight: 700;
+  color: var(--brand-600);
+  transition: background var(--t-fast), border-color var(--t-fast);
+  margin-top: 2px;
+}
+.page-set-card.checked .page-set-card-check {
+  background: var(--brand-600); border-color: var(--brand-600); color: var(--brand-on);
+}
+.page-set-card-body { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.page-set-card-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; color: var(--text-1);
+}
+.page-set-required-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+  padding: 2px 7px; border-radius: var(--radius-pill);
+  background: var(--bg-muted); color: var(--text-3);
+}
+.page-set-card-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+.page-set-card-path { font-size: 11px; color: var(--text-3); font-family: var(--font-mono, monospace); }
+
+/* ---------- Editor step submit area ---------- */
+.step-editor { display: flex; flex-direction: column; }
+.editor-submit-area {
+  margin-top: 24px; padding-top: 20px;
+  border-top: 1px solid var(--border-1);
+}
+
+/* ---------- Template select cards (templateSelect step) ---------- */
+.tpl-grid {
+  list-style: none; padding: 0; margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.tpl-card {
+  display: flex; flex-direction: column;
+  width: 100%; padding: 0;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-1);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-align: left; cursor: pointer;
+  color: var(--text-1); font: inherit;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast);
+}
+.tpl-card:hover {
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.tpl-card--selected {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 1px var(--brand-500), var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* 상단 컬러 바 */
+.tpl-card__bar {
+  display: block; height: 4px; width: 100%;
+  flex-shrink: 0;
+}
+
+/* SVG 썸네일 */
+.tpl-card__thumb {
+  display: block; width: 100%;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-1);
+  overflow: hidden;
+}
+.tpl-card__thumb svg {
+  display: block; width: 100%; height: auto;
+}
+
+/* 텍스트 영역 */
+.tpl-card__body {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 14px 14px 10px; flex: 1;
+}
+.tpl-card__name {
+  font-size: 13px; font-weight: 700; color: var(--text-1);
+}
+.tpl-card__tagline {
+  font-size: 11px; color: var(--text-2); line-height: 1.5;
+}
+.tpl-card__tone-row {
+  margin-top: 2px;
+}
+.tpl-card__tone {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+}
+.tpl-card__industries {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  margin-top: 6px;
+}
+.tpl-card__industry-tag {
+  font-size: 10px; font-weight: 500;
+  padding: 2px 7px; border-radius: var(--radius-pill);
+  background: var(--bg-muted); color: var(--text-3);
+}
+.tpl-card__industry-more {
+  color: var(--brand-600); background: var(--brand-50);
+}
+
+/* 선택 indicator */
+.tpl-card__indicator {
+  display: block;
+  margin: 0 14px 12px;
+  padding: 6px 0; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; text-align: center;
+  color: var(--text-3); border: 1px solid var(--border-1);
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+.tpl-card:hover .tpl-card__indicator:not(.tpl-card__indicator--on) {
+  background: var(--bg-muted); color: var(--text-1);
+}
+.tpl-card__indicator--on {
+  background: var(--brand-600); color: var(--brand-on); border-color: var(--brand-600);
+}
+.tpl-card--selected .tpl-card__body .tpl-card__name { color: var(--brand-700); }

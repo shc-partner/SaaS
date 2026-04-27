@@ -12,8 +12,8 @@ export default function FeaturesStep() {
   const dispatch = useAppDispatch();
   const selected = useAppSelector(selectSelectedFeatures);
 
-  const adminFeature = FEATURE_OPTIONS.find((f) => f.branch === 'admin');
-  const otherFeatures = FEATURE_OPTIONS.filter((f) => f.branch !== 'admin');
+  const adminFeature = FEATURE_OPTIONS.find((f) => f.id === 'adminPage');
+  const otherFeatures = FEATURE_OPTIONS.filter((f) => f.id !== 'adminPage');
 
   return (
     <section className="step">

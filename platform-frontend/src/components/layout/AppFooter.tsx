@@ -13,11 +13,11 @@ export default function AppFooter() {
             <span className="brand-logo" style={{ width: 22, height: 22, display: 'inline-grid', placeItems: 'center', borderRadius: 6, background: 'linear-gradient(135deg, var(--brand-500), var(--brand-700))', color: '#fff' }}>
               <Logo size={12} />
             </span>
-            SiteForge
+            CreatorDesk
           </span>
           <p className="brand-desc">
-            클릭 몇 번으로 사이트를 만들고 운영하세요. 디자인부터 콘텐츠까지,
-            전문 지식 없이도 비즈니스에 필요한 웹사이트를 빠르게 시작할 수 있습니다.
+            유튜버, 스트리머, 숏폼 크리에이터를 위한 콘텐츠 운영 워크스페이스.
+            아이디어부터 업로드까지, 제작 흐름 전체를 한 곳에서 관리하세요.
           </p>
         </div>
 
@@ -50,7 +50,7 @@ export default function AppFooter() {
       </div>
 
       <div className="app-footer-meta">
-        <span>© {YEAR} SiteForge. All rights reserved.</span>
+        <span>© {YEAR} CreatorDesk. All rights reserved.</span>
         <span>v0.1.0 · MVP</span>
       </div>
     </footer>

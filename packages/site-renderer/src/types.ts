@@ -8,6 +8,7 @@ export interface SiteRow {
   id: number;
   slug: string;
   type: string;
+  templateKey?: string | null;
   name: string;
   industry: string | null;
   summary: string | null;

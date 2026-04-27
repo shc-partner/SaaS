@@ -12,6 +12,14 @@ services:
       - frontend_node_modules:/app/platform-frontend/node_modules
     environment:
       VITE_API_PROXY_TARGET: http://web:80
+      # Windows + Docker Desktop(WSL2) bind mount 에서는 inotify 가 끊긴다.
+      # Vite 의 watcher 를 polling 모드로 전환해 HMR 을 살린다.
+      VITE_USE_POLLING: "1"
+      # chokidar 폴백용(라이브러리 직접 사용 케이스 대비).
+      CHOKIDAR_USEPOLLING: "true"
+      # 개발자 전용 latency/debug 오버레이.
+      # 운영 빌드에선 반드시 비활성/삭제. 활성화돼도 사용자 name='dev' 일 때만 렌더된다.
+      VITE_ENABLE_LATENCY_OVERLAY: "true"
     depends_on:
       - web
 

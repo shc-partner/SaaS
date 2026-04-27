@@ -9,26 +9,31 @@ import {
   selectPreviewViewport,
   selectSelectedFeatures,
   selectSelectedPages,
+  selectSelectedTemplateKey,
   selectSiteType,
 } from '../../features/siteBuilder/selectors';
-import { SITE_TYPE_OPTIONS, type PageKey } from '../../features/siteBuilder/types';
+import { COMPANY_TEMPLATES, SITE_TYPE_OPTIONS, type PageKey } from '../../features/siteBuilder/types';
 
 // 빌더 좌측 — 모든 단계에서 상시 노출되는 실시간 사이트 미리보기.
 // PC/모바일 뷰포트 토글: 모바일 상태에서는 프레임 폭을 375px 로 제한해 모바일 렌더링을 확인할 수 있게 한다.
 // 페이지 선택/기능 선택/페이지별 입력이 모두 이 한 곳에서 실시간 합성된다.
 export default function BuilderPreviewPanel() {
-  const dispatch  = useAppDispatch();
-  const siteType  = useAppSelector(selectSiteType);
-  const basic     = useAppSelector(selectBasicInfo);
-  const pages     = useAppSelector(selectSelectedPages);
-  const features  = useAppSelector(selectSelectedFeatures);
-  const contents  = useAppSelector(selectPageContents);
-  const url       = useAppSelector(selectPreviewUrl);
-  const viewport  = useAppSelector(selectPreviewViewport);
-  const activeTab = useAppSelector(selectActivePageTab);
+  const dispatch      = useAppDispatch();
+  const siteType      = useAppSelector(selectSiteType);
+  const templateKey   = useAppSelector(selectSelectedTemplateKey);
+  const basic         = useAppSelector(selectBasicInfo);
+  const pages         = useAppSelector(selectSelectedPages);
+  const features      = useAppSelector(selectSelectedFeatures);
+  const contents      = useAppSelector(selectPageContents);
+  const url           = useAppSelector(selectPreviewUrl);
+  const viewport      = useAppSelector(selectPreviewViewport);
+  const activeTab     = useAppSelector(selectActivePageTab);
 
   const opt = SITE_TYPE_OPTIONS.find((o) => o.id === siteType);
-  const templateLabel = opt ? `${opt.label} 템플릿` : '템플릿 선택 필요';
+  const templateLabel = templateKey
+    ? (COMPANY_TEMPLATES.find((t) => t.key === templateKey)?.name ?? templateKey)
+    : opt ? `${opt.label} 템플릿` : '템플릿 선택 필요';
+  const variant = templateKey ?? undefined;
 
   const data = siteType === 'company'
     ? buildPreviewSiteData({
@@ -81,6 +86,7 @@ export default function BuilderPreviewPanel() {
             data={data}
             currentPageKey={activeTab}
             onNavigate={(key) => dispatch(setActivePageTab(key as PageKey))}
+            variant={variant}
           />
         </div>
       ) : (

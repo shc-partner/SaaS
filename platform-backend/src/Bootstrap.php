@@ -6,6 +6,7 @@ namespace SiteForge;
 use SiteForge\Http\Router;
 use SiteForge\Http\Request;
 use SiteForge\Http\Response;
+use SiteForge\Auth\Controller as AuthController;
 use SiteForge\Sites\Controller as SitesController;
 use SiteForge\PublicSite\Controller as PublicSiteController;
 use Throwable;
@@ -72,8 +73,22 @@ final class Bootstrap
             return Response::ok(['status' => 'ok']);
         });
 
+        // 인증 — 이메일/비밀번호 기반. 성공 시 서버 세션 발급, Bearer 토큰으로 반환.
+        $r->post('/api/auth/register', [AuthController::class, 'register']);
+        $r->post('/api/auth/login',    [AuthController::class, 'login']);
+        $r->post('/api/auth/logout',   [AuthController::class, 'logout']);
+        $r->get ('/api/auth/me',       [AuthController::class, 'me']);
+
+        // SNS 로그인 (OAuth 2.0 Authorization Code).
+        //   start    : GET  → 302 로 provider 동의 페이지로
+        //   callback : GET  → provider 에서 돌아와 세션 발급 후 프론트로 302
+        $r->get('/api/auth/oauth/{provider}/start',    [AuthController::class, 'oauthStart']);
+        $r->get('/api/auth/oauth/{provider}/callback', [AuthController::class, 'oauthCallback']);
+
         // 어드민/빌더용 — 사이트 생성 + 단건 조회.
+        // /api/me/sites: 현재 로그인한 사용자가 만든 사이트 목록 (대시보드/내 사이트 화면이 사용).
         $r->post('/api/sites', [SitesController::class, 'create']);
+        $r->get ('/api/me/sites', [SitesController::class, 'listMine']);
         $r->get ('/api/sites/{id}', [SitesController::class, 'show']);
 
         // 공개 (public-web 런타임이 호출) — 슬러그로 site payload.

@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace SiteForge\Http;
 
-// 모든 응답은 { ok: bool, data?, error? } 형태. 컨트롤러는 이 헬퍼만 쓴다.
+// 응답 헬퍼.
+// - JSON envelope: { ok: bool, data?, error? }  (API 응답 전부)
+// - redirect:      OAuth 플로우처럼 브라우저를 다른 URL 로 보내는 경우
 final class Response
 {
-    /** @param array<string,mixed> $payload */
+    /** @param array<string,mixed>|null $payload */
     private function __construct(
         public readonly int $status,
-        public readonly array $payload,
+        public readonly ?array $payload = null,
+        public readonly ?string $redirectTo = null,
     ) {}
 
     public static function ok(mixed $data = null, int $status = 200): self
@@ -27,9 +30,18 @@ final class Response
         return new self($status, ['ok' => false, 'error' => $error]);
     }
 
+    public static function redirect(string $url, int $status = 302): self
+    {
+        return new self($status, null, $url);
+    }
+
     public function send(): void
     {
         http_response_code($this->status);
+        if ($this->redirectTo !== null) {
+            header('Location: ' . $this->redirectTo);
+            return;
+        }
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($this->payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }

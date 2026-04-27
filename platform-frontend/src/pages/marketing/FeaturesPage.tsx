@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import AuthAwareCta from '../../components/auth/AuthAwareCta';
 
 // /features — 기능 소개 페이지.
 // SaaS 제품 기능 소개 톤. 개발자 문서 아님.
@@ -9,7 +9,7 @@ export default function FeaturesPage() {
         <div className="mk-hero-inner">
           <span className="mk-eyebrow">Product</span>
           <h1 style={{ fontSize: 40 }}>제작부터 운영·이관까지, 한곳에서</h1>
-          <p>SiteForge 는 사이트 생성에서 끝나지 않습니다. 만든 뒤에도 계속 쓰이는 SaaS 가 되도록 설계되어 있습니다.</p>
+          <p>CreatorDesk 는 워크스페이스 생성에서 끝나지 않습니다. 만든 뒤에도 계속 쓰이는 SaaS 가 되도록 설계되어 있습니다.</p>
         </div>
       </section>
 
@@ -59,7 +59,7 @@ export default function FeaturesPage() {
               <h3>지금 가장 확실한 1종부터 시작</h3>
               <p>회사 소개형 사이트는 바로 만들 수 있습니다. 나머지 유형은 순차 공개됩니다.</p>
             </div>
-            <Link to="/signup" className="btn primary">무료로 시작하기</Link>
+            <AuthAwareCta intent="start" className="btn primary">무료로 시작하기</AuthAwareCta>
           </div>
         </div>
       </section>

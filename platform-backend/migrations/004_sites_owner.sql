@@ -1,0 +1,2 @@
+-- [SUPERSEDED] sites.owner_user_id 컬럼 추가.
+-- sites 테이블이 006_workspace_pivot.sql 에서 DROP 되므로 이 ALTER 는 불필요.

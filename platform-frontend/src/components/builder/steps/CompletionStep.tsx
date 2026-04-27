@@ -35,7 +35,7 @@ export default function CompletionStep() {
   const siteTypeLabel =
     SITE_TYPE_OPTIONS.find((o) => o.id === siteType)?.label ?? '—';
   const featureLabels = FEATURE_OPTIONS
-    .filter((f) => f.branch !== 'admin' && features.includes(f.id))
+    .filter((f) => f.id !== 'adminPage' && features.includes(f.id))
     .map((f) => f.label);
 
   const slug = completion.slug || basic.slug;

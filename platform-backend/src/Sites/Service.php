@@ -25,14 +25,16 @@ final class Service
     /**
      * @param array{
      *     siteType:string,
+     *     selectedTemplateKey?:string,
      *     basic:array{siteName:string,slug:string,industry?:string,summary?:string},
      *     selectedPages?:array<int,string>,
      *     pageContents?:array<string,array{heading?:string,lead?:string,body?:string}>,
      *     features:array<int,string>
      * } $input
+     * @param int|null $ownerUserId 사이트를 만든 사용자 id. 비로그인 생성은 null.
      * @return array<string,mixed>
      */
-    public function create(array $input): array
+    public function create(array $input, ?int $ownerUserId = null): array
     {
         $this->validate($input);
 
@@ -40,6 +42,7 @@ final class Service
         $name = trim((string)$input['basic']['siteName']);
         $industry = $this->nullableTrim($input['basic']['industry'] ?? null);
         $summary = $this->nullableTrim($input['basic']['summary'] ?? null);
+        $templateKey = $this->nullableTrim($input['selectedTemplateKey'] ?? null);
         $features = array_values(array_unique(array_map('strval', $input['features'])));
         $selectedPagesInput = is_array($input['selectedPages'] ?? null) ? $input['selectedPages'] : ['home'];
         $selectedPages = $this->normalizeSelectedPages($selectedPagesInput);
@@ -53,11 +56,13 @@ final class Service
         $pdo->beginTransaction();
         try {
             $siteId = $this->repo->insertSite([
-                'slug'     => $slug,
-                'type'     => $input['siteType'],
-                'name'     => $name,
-                'industry' => $industry,
-                'summary'  => $summary,
+                'slug'          => $slug,
+                'type'          => $input['siteType'],
+                'template_key'  => $templateKey,
+                'name'          => $name,
+                'industry'      => $industry,
+                'summary'       => $summary,
+                'owner_user_id' => $ownerUserId,
             ]);
             $this->repo->insertFeatures($siteId, $features);
 
@@ -102,6 +107,50 @@ final class Service
     {
         $site = $this->repo->findSiteById($id);
         return $site === null ? null : $this->buildPayloadFromRow($site);
+    }
+
+    /**
+     * 내가 만든 사이트 목록 — 대시보드/내 사이트 목록 페이지에서 사용.
+     * 무거운 sections 까지 싣지 않고 카드에 필요한 만큼만 채운다.
+     * @return array<int,array<string,mixed>>
+     */
+    public function listMine(int $ownerUserId): array
+    {
+        $rows = $this->repo->listByOwner($ownerUserId);
+        $out = [];
+        foreach ($rows as $row) {
+            $siteId = (int)$row['id'];
+            $features = $this->repo->listFeatures($siteId);
+            $pages = $this->repo->listPages($siteId);
+            $out[] = [
+                'id'            => $siteId,
+                'slug'          => (string)$row['slug'],
+                'type'          => (string)$row['type'],
+                'name'          => (string)$row['name'],
+                'status'        => (string)$row['status'],
+                'createdAt'     => (string)$row['created_at'],
+                'updatedAt'     => (string)$row['updated_at'],
+                'adminRequired' => in_array('adminPage', $features, true),
+                'pages'         => array_map(
+                    static fn (array $r): array => [
+                        'key'   => (string)$r['page_key'],
+                        'label' => (string)$r['label'],
+                        'path'  => (string)$r['path'],
+                    ],
+                    $pages,
+                ),
+            ];
+        }
+        return $out;
+    }
+
+    /** 사이트 소유자 user id 조회 — 단건 조회 권한 검사용. 없으면 null. */
+    public function ownerOf(int $siteId): ?int
+    {
+        $site = $this->repo->findSiteById($siteId);
+        if ($site === null) return null;
+        $owner = $site['owner_user_id'] ?? null;
+        return $owner === null ? null : (int)$owner;
     }
 
     /** @return array<string,mixed>|null */
@@ -295,6 +344,7 @@ final class Service
                 'id' => $siteId,
                 'slug' => (string)$site['slug'],
                 'type' => (string)$site['type'],
+                'templateKey' => $site['template_key'] ?? null,
                 'name' => (string)$site['name'],
                 'industry' => $site['industry'],
                 'summary' => $site['summary'],

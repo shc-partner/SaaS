@@ -1,5 +1,5 @@
 /*
- * SiteForge — Design Tokens.
+ * CreatorDesk — Design Tokens.
  * 모든 색/간격/반경/그림자는 여기서만 선언. 컴포넌트 CSS 는 var() 만 사용.
  * 다크 테마는 [data-theme="dark"] 로 활성화 (ThemeProvider 가 <html> 에 부여).
  */

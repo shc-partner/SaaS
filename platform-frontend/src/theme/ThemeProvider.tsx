@@ -17,7 +17,7 @@ interface ThemeContextValue {
   toggle: () => void;
 }
 
-const STORAGE_KEY = 'siteforge.theme';
+const STORAGE_KEY = 'creatordesk.theme';
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function readInitial(): Theme {

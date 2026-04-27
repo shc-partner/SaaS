@@ -1,8 +1,23 @@
 import { Link } from 'react-router-dom';
+import AuthAwareCta from '../../components/auth/AuthAwareCta';
+import type { CtaIntent } from '../../components/auth/AuthAwareCta';
 
 // /pricing — 요금제 비교.
 // 실제 과금 로직은 없음. 플랜 이름/가격/기능 매트릭스만 mock.
-const PLANS = [
+// CTA 는 다음 중 하나:
+//   - intent: AuthAwareCta 가 로그인 상태에 따라 분기 (Free/Pro)
+//   - href:   고정 경로 (Business → /contact)
+type PlanCta =
+  | { intent: CtaIntent; href?: never }
+  | { href: string;     intent?: never };
+
+interface Plan {
+  id: string; name: string; price: string; period: string;
+  desc: string; cta: string; ctaTarget: PlanCta; featured: boolean;
+  items: { on: boolean; text: string }[];
+}
+
+const PLANS: Plan[] = [
   {
     id: 'free',
     name: 'Free',
@@ -10,7 +25,7 @@ const PLANS = [
     period: '/ 영구 무료',
     desc: '처음 사이트를 만들어 보고 싶을 때.',
     cta: '무료로 시작하기',
-    ctaTo: '/signup',
+    ctaTarget: { intent: 'start' },
     featured: false,
     items: [
       { on: true,  text: '사이트 최대 1개 생성' },
@@ -28,7 +43,7 @@ const PLANS = [
     period: '/ 월',
     desc: '본격 운영하는 1인 · 팀 단위.',
     cta: 'Pro 시작하기',
-    ctaTo: '/signup',
+    ctaTarget: { intent: 'start' },
     featured: true,
     items: [
       { on: true,  text: '사이트 최대 5개 생성' },
@@ -46,7 +61,7 @@ const PLANS = [
     period: '/ 월',
     desc: '조직 단위 운영 · 엔터프라이즈.',
     cta: '도입 문의',
-    ctaTo: '/contact',
+    ctaTarget: { href: '/contact' },
     featured: false,
     items: [
       { on: true,  text: '사이트 무제한' },
@@ -85,7 +100,11 @@ export default function PricingPage() {
                     <li key={i} className={it.on ? '' : 'off'}>{it.text}</li>
                   ))}
                 </ul>
-                <Link to={p.ctaTo} className={`btn ${p.featured ? 'primary' : 'ghost'} btn-block`}>{p.cta}</Link>
+                {p.ctaTarget.intent ? (
+                  <AuthAwareCta intent={p.ctaTarget.intent} className={`btn ${p.featured ? 'primary' : 'ghost'} btn-block`}>{p.cta}</AuthAwareCta>
+                ) : (
+                  <Link to={p.ctaTarget.href!} className={`btn ${p.featured ? 'primary' : 'ghost'} btn-block`}>{p.cta}</Link>
+                )}
               </article>
             ))}
           </div>

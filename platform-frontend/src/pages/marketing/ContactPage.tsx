@@ -22,7 +22,7 @@ export default function ContactPage() {
             <h3>문의 채널</h3>
             <p>비즈니스 일정에 맞춰 평일 내 회신드립니다.</p>
             <dl>
-              <dt>이메일</dt><dd>hello@siteforge.app</dd>
+              <dt>이메일</dt><dd>hello@creatordesk.app</dd>
               <dt>전화</dt>  <dd>02-0000-0000</dd>
               <dt>운영</dt>  <dd>평일 10:00 — 18:00</dd>
               <dt>주소</dt>  <dd>서울특별시 ○○구 ○○로 00</dd>

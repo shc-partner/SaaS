@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { loadMySites } from '../features/mySites/storage';
+import { useMySites } from '../features/mySites/useMySites';
 
 // /admin/sites/:siteId — 관리자 화면 placeholder.
 // 기획안의 "관리자 페이지 생성 Flow" 4영역(대시보드/콘텐츠/문의/공개 상태)을
@@ -33,7 +33,8 @@ const ADMIN_SECTIONS = [
 
 export default function AdminPlaceholderPage() {
   const { siteId } = useParams<{ siteId?: string }>();
-  const site = siteId ? loadMySites().find((s) => s.id === siteId) : undefined;
+  const { sites } = useMySites();
+  const site = siteId ? sites.find((s) => s.id === siteId) : undefined;
 
   return (
     <div className="admin-page">

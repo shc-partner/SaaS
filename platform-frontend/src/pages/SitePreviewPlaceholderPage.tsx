@@ -51,6 +51,8 @@ export default function SitePreviewPlaceholderPage() {
   const pageToHref = (key: string): string =>
     key === firstKey ? `/sites/${slug}` : `/sites/${slug}/${key}`;
 
+  const variant = data.site.templateKey ?? undefined;
+
   // 사이트 안 404 — 선택되지 않은 페이지로 들어온 경우.
   if (!exists) {
     return (
@@ -60,6 +62,7 @@ export default function SitePreviewPlaceholderPage() {
           currentPageKey={firstKey}
           onNavigate={(k) => navigate(pageToHref(k))}
           getPageHref={pageToHref}
+          variant={variant}
         />
         <div className="placeholder-page" style={{ marginTop: 0 }}>
           <span className="badge warning" style={{ marginBottom: 12 }}>페이지 없음</span>
@@ -81,6 +84,7 @@ export default function SitePreviewPlaceholderPage() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         getPageHref={pageToHref}
+        variant={variant}
       />
     </div>
   );

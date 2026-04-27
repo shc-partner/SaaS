@@ -1,6 +1,6 @@
-// "내 사이트 목록" 로컬 저장소.
-// MVP 단계 — 인증이 붙기 전까지는 브라우저 localStorage 에 누적한다.
-// 추후 계정 모델이 붙으면 GET /api/me/sites 로 교체하면 되고, UI/데이터 모양은 그대로 재사용.
+// "내 사이트 목록" 로컬 캐시.
+// **소스 오브 트루스는 백엔드 (/api/me/sites)** — localStorage 는 첫 페인트를 위한 옵티미스틱 캐시일 뿐.
+// 캐시는 사용자 id 별로 분리한다 (`creatordesk.mySites.v3.<userId>`) — 같은 브라우저를 다른 계정이 쓰더라도 섞이지 않게.
 
 export type MySiteStatus = 'published' | 'draft' | 'wip';
 
@@ -11,7 +11,7 @@ export interface MySitePageInfo {
 }
 
 export interface MySite {
-  id: string;        // 백엔드가 돌려준 site id (문자열 저장 — string/number 혼용 방지)
+  id: string;        // 백엔드가 돌려준 site id (문자열로 저장 — string/number 혼용 방지)
   slug: string;
   name: string;
   type: string;      // 'company' 등
@@ -22,12 +22,28 @@ export interface MySite {
   pages: MySitePageInfo[];
 }
 
-const KEY = 'siteforge.mySites';
+// v3 부터 사용자별 키. v2/v1 은 더 이상 읽지 않으며 자동으로 정리된다.
+const KEY_PREFIX = 'creatordesk.mySites.v3.';
+const ANON_KEY = `${KEY_PREFIX}anon`;
+const LEGACY_KEYS = ['creatordesk.mySites', 'creatordesk.mySites.v2'] as const;
 
-export function loadMySites(): MySite[] {
+function keyFor(userId: string | number | null | undefined): string {
+  if (userId === null || userId === undefined || userId === '') return ANON_KEY;
+  return `${KEY_PREFIX}${userId}`;
+}
+
+/** 더 이상 사용하지 않는 글로벌(사용자 무관) 캐시 키를 정리한다 — 호출되어도 안전. */
+export function purgeLegacyCaches(): void {
+  if (typeof window === 'undefined') return;
+  for (const k of LEGACY_KEYS) {
+    try { window.localStorage.removeItem(k); } catch { /* noop */ }
+  }
+}
+
+export function loadMySites(userId: string | number | null | undefined): MySite[] {
   if (typeof window === 'undefined') return [];
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = window.localStorage.getItem(keyFor(userId));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed as MySite[] : [];
@@ -36,17 +52,21 @@ export function loadMySites(): MySite[] {
   }
 }
 
-export function saveMySite(entry: MySite): void {
+export function saveMySites(userId: string | number | null | undefined, list: MySite[]): void {
   if (typeof window === 'undefined') return;
-  const list = loadMySites();
-  // 중복 id 는 최신으로 교체
-  const filtered = list.filter((s) => s.id !== entry.id);
-  filtered.unshift(entry);
-  window.localStorage.setItem(KEY, JSON.stringify(filtered));
+  window.localStorage.setItem(keyFor(userId), JSON.stringify(list));
 }
 
-export function removeMySite(id: string): void {
+/** 단건 추가/갱신 — 빌더 완료 직후 사용. 같은 id 는 최신으로 교체. */
+export function upsertMySite(userId: string | number | null | undefined, entry: MySite): void {
+  const list = loadMySites(userId);
+  const filtered = list.filter((s) => s.id !== entry.id);
+  filtered.unshift(entry);
+  saveMySites(userId, filtered);
+}
+
+/** 내 사이트 캐시 비우기 — 로그아웃 시 호출. */
+export function clearMySites(userId: string | number | null | undefined): void {
   if (typeof window === 'undefined') return;
-  const list = loadMySites().filter((s) => s.id !== id);
-  window.localStorage.setItem(KEY, JSON.stringify(list));
+  window.localStorage.removeItem(keyFor(userId));
 }

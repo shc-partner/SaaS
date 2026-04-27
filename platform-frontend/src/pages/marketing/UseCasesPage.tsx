@@ -16,7 +16,7 @@ export default function UseCasesPage() {
       <section className="mk-hero" style={{ padding: '80px 28px 48px' }}>
         <div className="mk-hero-inner">
           <span className="mk-eyebrow">Use cases</span>
-          <h1 style={{ fontSize: 40 }}>SiteForge, 이런 곳에 씁니다</h1>
+          <h1 style={{ fontSize: 40 }}>CreatorDesk, 이런 분들이 씁니다</h1>
           <p>8가지 대표적인 활용 시나리오. 지금은 회사 소개형부터 시작해, 필요에 따라 유형이 확대됩니다.</p>
         </div>
       </section>

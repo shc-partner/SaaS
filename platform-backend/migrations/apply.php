@@ -25,15 +25,29 @@ $pdo = \SiteForge\Db\Connection::pdo();
 $files = glob(__DIR__ . '/*.sql') ?: [];
 sort($files);
 
+// 멱등 처리할 SQLSTATE 클래스 / 에러 코드.
+//   42S21 / 1060 = 중복 컬럼  (ADD COLUMN 재실행)
+//   42000 / 1061 = 중복 키 이름
+//          1826 = 중복 FK 이름
+//          1091 = DROP 대상이 이미 없음
+$IDEMPOTENT_CODES = [1060, 1061, 1091, 1826];
+
 foreach ($files as $file) {
     $sql = file_get_contents($file);
     if ($sql === false || trim($sql) === '') {
         continue;
     }
     echo "[migrate] applying " . basename($file) . " ... ";
-    // 여러 statement 을 안전하게 실행 — 세미콜론으로 분리.
     foreach (array_filter(array_map('trim', explode(';', $sql))) as $stmt) {
-        $pdo->exec($stmt);
+        try {
+            $pdo->exec($stmt);
+        } catch (\PDOException $e) {
+            $code = (int)($e->errorInfo[1] ?? 0);
+            if (in_array($code, $IDEMPOTENT_CODES, true)) {
+                continue;
+            }
+            throw $e;
+        }
     }
     echo "ok\n";
 }

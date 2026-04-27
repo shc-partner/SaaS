@@ -29,21 +29,41 @@ final class Repository
     }
 
     /**
-     * @param array{slug:string,type:string,name:string,industry:?string,summary:?string} $row
+     * @param array{slug:string,type:string,template_key:?string,name:string,industry:?string,summary:?string,owner_user_id:?int} $row
      */
     public function insertSite(array $row): int
     {
         $st = $this->pdo->prepare(
-            'INSERT INTO sites (slug, type, name, industry, summary) VALUES (:slug, :type, :name, :industry, :summary)'
+            'INSERT INTO sites (owner_user_id, slug, type, template_key, name, industry, summary)
+             VALUES (:owner, :slug, :type, :template_key, :name, :industry, :summary)'
         );
         $st->execute([
-            ':slug'     => $row['slug'],
-            ':type'     => $row['type'],
-            ':name'     => $row['name'],
-            ':industry' => $row['industry'],
-            ':summary'  => $row['summary'],
+            ':owner'        => $row['owner_user_id'] ?? null,
+            ':slug'         => $row['slug'],
+            ':type'         => $row['type'],
+            ':template_key' => $row['template_key'] ?? null,
+            ':name'         => $row['name'],
+            ':industry'     => $row['industry'],
+            ':summary'      => $row['summary'],
         ]);
         return (int)$this->pdo->lastInsertId();
+    }
+
+    /**
+     * 특정 소유자가 만든 사이트 목록 — 대시보드/내 사이트 목록 화면에서 사용.
+     * 각 사이트의 features / pages 도 함께 채워 한 번에 반환한다.
+     * @return array<int,array<string,mixed>>
+     */
+    public function listByOwner(int $ownerUserId): array
+    {
+        $st = $this->pdo->prepare(
+            'SELECT id, slug, type, name, industry, summary, status, created_at, updated_at
+               FROM sites
+              WHERE owner_user_id = :uid
+              ORDER BY created_at DESC, id DESC'
+        );
+        $st->execute([':uid' => $ownerUserId]);
+        return $st->fetchAll();
     }
 
     /** @param array<int,string> $features */

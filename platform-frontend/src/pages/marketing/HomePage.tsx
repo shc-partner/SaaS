@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
+import AuthAwareCta from '../../components/auth/AuthAwareCta';
 
-// 공개 메인 랜딩 — SiteForge 가 무엇을 주는 서비스인지 1화면 안에서 보여주는 역할.
+// 공개 메인 랜딩 — CreatorDesk 가 무엇을 주는 서비스인지 1화면 안에서 보여주는 역할.
 // 세부 섹션 순서: hero → 핵심 가치 3 → 주요 기능 4 → 템플릿 프리뷰 → 사용 흐름 → 사례 teaser → 요금 teaser → 최종 CTA.
 export default function HomePage() {
   return (
@@ -19,7 +20,7 @@ export default function HomePage() {
             관리자 화면에서 바로 운영할 수 있습니다.
           </p>
           <div className="mk-hero-ctas">
-            <Link to="/signup"  className="btn primary">무료로 시작하기</Link>
+            <AuthAwareCta intent="start" className="btn primary">무료로 시작하기</AuthAwareCta>
             <Link to="/features" className="btn ghost">기능 둘러보기</Link>
           </div>
           <div className="mk-hero-hint">신용카드 없이 바로 시작 · 언제든 export 가능</div>
@@ -30,7 +31,7 @@ export default function HomePage() {
       <section className="mk-section">
         <div className="mk-section-inner">
           <div className="mk-section-head">
-            <span className="mk-eyebrow">Why SiteForge</span>
+            <span className="mk-eyebrow">Why CreatorDesk</span>
             <h2>쉽게 만들고, 바로 운영하세요</h2>
             <p>필요한 만큼만 선택해 나만의 사이트를 빠르게 시작하고, 성장에 따라 확장하세요.</p>
           </div>
@@ -150,11 +151,11 @@ export default function HomePage() {
       <section className="mk-section">
         <div className="mk-cta-band">
           <div>
-            <h3>지금 바로 SiteForge 로 시작하세요</h3>
+            <h3>지금 바로 CreatorDesk 로 시작하세요</h3>
             <p>신용카드 없이 무료로 멀티페이지 사이트를 만들 수 있습니다.</p>
           </div>
           <div style={{ display: 'inline-flex', gap: 10 }}>
-            <Link to="/signup" className="btn primary">무료로 시작하기</Link>
+            <AuthAwareCta intent="start" className="btn primary">무료로 시작하기</AuthAwareCta>
             <Link to="/templates" className="btn ghost" style={{ background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}>템플릿 보기</Link>
           </div>
         </div>

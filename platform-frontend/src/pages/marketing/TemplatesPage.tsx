@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { SITE_TYPE_OPTIONS } from '../../features/siteBuilder/types';
+import AuthAwareCta from '../../components/auth/AuthAwareCta';
 
 // /templates — 지원 템플릿/사이트 유형 목록.
 // SITE_TYPE_OPTIONS 를 단일 출처로 사용해 빌더와 마케팅 페이지가 어긋나지 않게 한다.
@@ -41,7 +41,7 @@ export default function TemplatesPage() {
               <h3>회사 소개형부터 시작해 보세요</h3>
               <p>가장 먼저 공개된 템플릿으로 바로 사이트를 생성할 수 있습니다.</p>
             </div>
-            <Link to="/signup" className="btn primary">무료로 시작하기</Link>
+            <AuthAwareCta intent="template" className="btn primary">템플릿으로 시작하기</AuthAwareCta>
           </div>
         </div>
       </section>

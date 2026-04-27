@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { createSite } from '../../../api/sites';
-import { saveMySite } from '../../../features/mySites/storage';
+import { useAuth } from '../../../features/auth/AuthProvider';
+import { upsertMySite } from '../../../features/mySites/storage';
 import {
   setSiteCreated,
   setSubmitError,
@@ -15,6 +16,7 @@ import {
   selectPageContents,
   selectSelectedFeatures,
   selectSelectedPages,
+  selectSelectedTemplateKey,
   selectSiteType,
   selectSubmitError,
 } from '../../../features/siteBuilder/selectors';
@@ -30,7 +32,9 @@ import CompletionStep from './CompletionStep';
 //       페이지별 콘텐츠(pageContents) 역시 다음 스테이지에서 API 에 추가 예정.
 export default function ReviewStep() {
   const dispatch = useAppDispatch();
+  const { user } = useAuth();
   const siteType      = useAppSelector(selectSiteType);
+  const templateKey   = useAppSelector(selectSelectedTemplateKey);
   const basic         = useAppSelector(selectBasicInfo);
   const pages         = useAppSelector(selectSelectedPages);
   const pageContents  = useAppSelector(selectPageContents);
@@ -51,6 +55,7 @@ export default function ReviewStep() {
     try {
       const data = await createSite({
         siteType: 'company',
+        selectedTemplateKey: templateKey ?? undefined,
         basic,
         selectedPages: pages,
         pageContents,
@@ -72,7 +77,9 @@ export default function ReviewStep() {
         .filter((p) => pages.includes(p.id))
         .map((p) => ({ key: p.id, label: p.label, path: p.path }));
 
-      saveMySite({
+      // 백엔드 /api/me/sites 가 진실의 출처지만, 다음 페이지로 넘어가기 전에
+      // 로컬 캐시에도 즉시 반영해 두면 첫 페인트 시 빈 목록이 보이지 않는다.
+      upsertMySite(user?.id ?? null, {
         id:            String(data.site.id),
         slug:          data.site.slug,
         name:          data.site.name,

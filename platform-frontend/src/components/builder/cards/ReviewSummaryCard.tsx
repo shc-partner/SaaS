@@ -24,7 +24,7 @@ export default function ReviewSummaryCard() {
   const typeLabel    = SITE_TYPE_OPTIONS.find((t) => t.id === siteType)?.label ?? '-';
   const pageLabels   = PAGE_OPTIONS.filter((p) => pages.includes(p.id)).map((p) => p.label);
   const featureLabels = FEATURE_OPTIONS
-    .filter((f) => f.branch !== 'admin' && features.includes(f.id))
+    .filter((f) => f.id !== 'adminPage' && features.includes(f.id))
     .map((f) => f.label);
 
   return (
