@@ -1,55 +1,52 @@
 import { Link } from 'react-router-dom';
 import AuthAwareCta from '../../components/auth/AuthAwareCta';
 
-// 공개 메인 랜딩 — CreatorDesk 가 무엇을 주는 서비스인지 1화면 안에서 보여주는 역할.
-// 세부 섹션 순서: hero → 핵심 가치 3 → 주요 기능 4 → 템플릿 프리뷰 → 사용 흐름 → 사례 teaser → 요금 teaser → 최종 CTA.
 export default function HomePage() {
   return (
     <>
       {/* ---------- Hero ---------- */}
       <section className="mk-hero">
         <div className="mk-hero-inner">
-          <span className="mk-eyebrow">Website Builder SaaS</span>
+          <span className="mk-eyebrow">Creator Content Workspace</span>
           <h1>
-            클릭 몇 번으로 <em>내 사이트</em>를<br />
-            만들고, 운영해 보세요.
+            아이디어부터 업로드 일정까지<br />
+            <em>콘텐츠 제작 흐름</em>을 한곳에서 관리하세요.
           </h1>
           <p>
-            회사 소개부터 포트폴리오, 쇼핑몰, 예약까지 —
-            전문 지식 없이 필요한 페이지만 골라 멀티페이지 사이트를 생성하고,
-            관리자 화면에서 바로 운영할 수 있습니다.
+            유튜버, 스트리머, 숏폼 제작자, 콘텐츠 팀을 위한 작업공간을 몇 번의 선택만으로 구성합니다.
+            아이디어 보관함, 제작 보드, 대본/구성안, 썸네일 후보, 업로드 캘린더까지
+            콘텐츠 운영에 필요한 흐름을 하나로 연결합니다.
           </p>
           <div className="mk-hero-ctas">
             <AuthAwareCta intent="start" className="btn primary">무료로 시작하기</AuthAwareCta>
-            <Link to="/features" className="btn ghost">기능 둘러보기</Link>
+            <Link to="/templates" className="btn ghost">템플릿 둘러보기</Link>
           </div>
-          <div className="mk-hero-hint">신용카드 없이 바로 시작 · 언제든 export 가능</div>
+          <div className="mk-hero-hint">신용카드 없이 바로 시작 · 크리에이터 전용 워크스페이스 자동 구성</div>
         </div>
       </section>
 
-      {/* ---------- 핵심 가치 ---------- */}
+      {/* ---------- Why CreatorDesk ---------- */}
       <section className="mk-section">
         <div className="mk-section-inner">
           <div className="mk-section-head">
             <span className="mk-eyebrow">Why CreatorDesk</span>
-            <h2>쉽게 만들고, 바로 운영하세요</h2>
-            <p>필요한 만큼만 선택해 나만의 사이트를 빠르게 시작하고, 성장에 따라 확장하세요.</p>
+            <h2>흩어진 콘텐츠 작업을 하나의 운영 공간으로 모으세요</h2>
           </div>
           <div className="mk-grid-3">
             <article className="mk-card">
-              <div className="mk-card-icon"><Icon d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></div>
-              <h3>클릭 몇 번으로 제작</h3>
-              <p>템플릿 선택 → 페이지 고르기 → 콘텐츠 입력. 복잡한 개발 지식 없이 멀티페이지 사이트가 완성됩니다.</p>
+              <div className="mk-card-icon"><Icon d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></div>
+              <h3>아이디어를 놓치지 않게</h3>
+              <p>댓글, 트렌드, 경쟁 채널, 시청자 요청에서 나온 아이디어를 빠르게 저장하고 태그와 우선순위로 정리하세요.</p>
             </article>
             <article className="mk-card">
-              <div className="mk-card-icon"><Icon d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM12 8v4l3 2" /></div>
-              <h3>생성 즉시 운영</h3>
-              <p>임시 URL 이 즉시 발급되고, 관리자에서 콘텐츠를 바로 수정할 수 있습니다.</p>
+              <div className="mk-card-icon"><Icon d="M9 17V7m0 10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m0 10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m0 10V7m0 10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2" /></div>
+              <h3>제작 상태를 한눈에</h3>
+              <p>아이디어 → 기획 → 대본 → 촬영 → 편집 → 업로드 예약까지 콘텐츠 진행 상황을 보드에서 확인하세요.</p>
             </article>
             <article className="mk-card">
-              <div className="mk-card-icon"><Icon d="M4 4h16v4H4zm0 6h10v10H4zm14 0h2v4M18 16h2v4" /></div>
-              <h3>언제든 export</h3>
-              <p>플랫폼 안에서 운영하다가 필요하면 내 서버로 옮길 수 있는 구조로 설계됩니다.</p>
+              <div className="mk-card-icon"><Icon d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z" /></div>
+              <h3>업로드 일정을 체계적으로</h3>
+              <p>촬영일, 편집 마감일, 업로드 예정일, 라이브 방송 일정을 캘린더로 관리하세요.</p>
             </article>
           </div>
         </div>
@@ -60,29 +57,54 @@ export default function HomePage() {
         <div className="mk-section-inner">
           <div className="mk-section-head">
             <span className="mk-eyebrow">Features</span>
-            <h2>SaaS 빌더가 갖춰야 할 모든 것</h2>
-            <p>제작·운영·이관까지 연결된 기능 세트.</p>
+            <h2>크리에이터 운영에 필요한 기능을 한곳에 담았습니다</h2>
           </div>
-          <div className="mk-grid-4">
-            <FeatureTile icon={<Icon d="M4 4h16v12H4zM8 20h8M12 16v4" />} title="사이트 빌더" desc="유형 · 페이지 · 기능을 선택해 실제 멀티페이지를 생성합니다." />
-            <FeatureTile icon={<Icon d="M4 6h16M4 12h16M4 18h10" />}       title="페이지 · 콘텐츠 관리" desc="페이지별 텍스트·이미지·섹션을 관리자에서 즉시 편집." />
-            <FeatureTile icon={<Icon d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" />} title="템플릿 기반 시작" desc="업종·용도별 템플릿으로 빈 화면에서 시작하지 않습니다." />
-            <FeatureTile icon={<Icon d="M12 3v18M3 12h18" />}               title="확장 가능 구조" desc="커스텀 도메인, export, dedicated DB 까지 로드맵에 준비됨." />
+          <div className="mk-grid-3">
+            <FeatureTile
+              icon={<Icon d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />}
+              title="콘텐츠 아이디어 보관함"
+              desc="갑자기 떠오른 소재, 댓글에서 나온 요청, 트렌드 키워드, 참고 링크를 빠르게 저장하고 분류합니다."
+            />
+            <FeatureTile
+              icon={<Icon d="M9 17V7m0 10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m0 10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m0 10V7m0 10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2" />}
+              title="콘텐츠 제작 보드"
+              desc="아이디어, 기획중, 대본 작성, 촬영, 편집, 썸네일 작업, 업로드 예약, 발행 완료 상태를 칸반 보드로 관리합니다."
+            />
+            <FeatureTile
+              icon={<Icon d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" />}
+              title="대본 / 구성안 관리"
+              desc="오프닝 멘트, 핵심 내용, 장면 구성, B-roll, 자막 포인트, 엔딩 CTA를 콘텐츠별로 정리합니다."
+            />
+            <FeatureTile
+              icon={<Icon d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2 1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z" />}
+              title="제목 / 썸네일 후보 관리"
+              desc="제목 후보, 썸네일 문구, 클릭 유도 포인트, 설명란 메모를 콘텐츠별로 모아 비교할 수 있습니다."
+            />
+            <FeatureTile
+              icon={<Icon d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z" />}
+              title="업로드 캘린더"
+              desc="촬영일, 편집 마감일, 업로드 예정일, 라이브 방송 일정, 협찬 마감일을 캘린더에서 확인합니다."
+            />
+            <FeatureTile
+              icon={<Icon d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9" />}
+              title="채널별 운영 관리"
+              desc="YouTube, Shorts, Twitch, TikTok, Reels, Blog, Newsletter 등 여러 채널을 하나의 워크스페이스에서 관리합니다."
+            />
           </div>
         </div>
       </section>
 
-      {/* ---------- 템플릿 프리뷰 ---------- */}
+      {/* ---------- 템플릿 ---------- */}
       <section className="mk-section">
         <div className="mk-section-inner">
           <div className="mk-section-head">
             <span className="mk-eyebrow">Templates</span>
-            <h2>업종·용도에 맞는 템플릿</h2>
-            <p>현재는 <strong>회사 소개형</strong>을 우선 제공하며, 다른 유형도 순차 공개됩니다.</p>
+            <h2>콘텐츠 유형에 맞는 운영 템플릿으로 시작하세요</h2>
+            <p>활동 유형에 맞는 템플릿을 선택하면 기본 보드, 관리 항목, 문서 템플릿이 자동으로 구성됩니다.</p>
           </div>
           <TemplatePreviewGrid />
           <div style={{ textAlign: 'center', marginTop: 28 }}>
-            <Link to="/templates" className="btn ghost">전체 템플릿 보기</Link>
+            <Link to="/templates" className="btn ghost">운영 템플릿 보기</Link>
           </div>
         </div>
       </section>
@@ -92,39 +114,46 @@ export default function HomePage() {
         <div className="mk-section-inner">
           <div className="mk-section-head">
             <span className="mk-eyebrow">How it works</span>
-            <h2>4단계로 나만의 사이트</h2>
+            <h2>6단계로 콘텐츠 운영 공간 만들기</h2>
           </div>
           <div className="mk-flow">
-            <FlowStep n={1} title="가입" desc="이메일로 계정을 만들고 바로 시작합니다." />
-            <FlowStep n={2} title="사이트 생성" desc="유형·페이지·기능을 고르고 콘텐츠를 입력합니다." />
-            <FlowStep n={3} title="운영" desc="임시 URL 공유, 관리자에서 콘텐츠 수정." />
-            <FlowStep n={4} title="성장 · export" desc="필요 시 내 서버로 이관하거나 유료 플랜으로 확장." />
+            <FlowStep n={1} title="사용 목적 선택"   desc="유튜브, 스트리밍, 숏폼, 블로그, 브랜드 팀 등 운영 목적을 선택합니다." />
+            <FlowStep n={2} title="운영 채널 선택"   desc="YouTube, Twitch, TikTok, Reels, Blog, Newsletter 등 운영 채널을 고릅니다." />
+            <FlowStep n={3} title="콘텐츠 형식 선택" desc="게임 방송, 리뷰, 브이로그, 정보 전달, 쇼츠 등 주 제작 형식을 선택합니다." />
+            <FlowStep n={4} title="제작 흐름 선택"   desc="간단형, 표준형, 팀 협업형 중 내 콘텐츠 제작 방식에 맞는 흐름을 선택합니다." />
+            <FlowStep n={5} title="운영 템플릿 선택" desc="유튜브 채널 운영, 스트리머 방송 운영, 쇼츠 제작 등 추천 템플릿을 고릅니다." />
+            <FlowStep n={6} title="워크스페이스 생성" desc="콘텐츠 보드, 아이디어 보관함, 대본 템플릿, 업로드 캘린더가 자동으로 구성됩니다." />
           </div>
         </div>
       </section>
 
-      {/* ---------- 사례 teaser ---------- */}
+      {/* ---------- Use cases ---------- */}
       <section className="mk-section">
         <div className="mk-section-inner">
           <div className="mk-section-head">
             <span className="mk-eyebrow">Use cases</span>
-            <h2>이런 분들이 사용합니다</h2>
+            <h2>이런 크리에이터에게 필요합니다</h2>
           </div>
-          <div className="mk-grid-3">
+          <div className="mk-grid-4">
             <article className="mk-usecase-card">
-              <span className="tag">Company</span>
-              <h3>스타트업 · 중소기업 홈페이지</h3>
-              <p>회사 소개/서비스/문의로 구성된 기업 사이트를 몇 분 안에 구축.</p>
+              <span className="tag">YouTuber</span>
+              <h3>유튜브 크리에이터</h3>
+              <p>영상 아이디어, 대본, 촬영 일정, 편집 상태, 업로드 계획을 한곳에서 관리합니다.</p>
             </article>
             <article className="mk-usecase-card">
-              <span className="tag">Creator</span>
-              <h3>프리랜서 · 디자이너 포트폴리오</h3>
-              <p>작업물을 보여주고, 문의 폼으로 프로젝트를 연결.</p>
+              <span className="tag">Streamer</span>
+              <h3>스트리머 / 개인 방송인</h3>
+              <p>방송 주제, 라이브 일정, 클립 아이디어, 다시보기 콘텐츠를 체계적으로 운영합니다.</p>
             </article>
             <article className="mk-usecase-card">
-              <span className="tag">Service</span>
-              <h3>예약/신청이 필요한 로컬 비즈니스</h3>
-              <p>예약 폼과 운영 시간을 공개하고 관리자에서 접수 처리.</p>
+              <span className="tag">Short-form</span>
+              <h3>쇼츠 / 릴스 / 틱톡 제작자</h3>
+              <p>짧은 영상 아이디어, 훅, 자막 문구, 업로드 루틴을 빠르게 관리합니다.</p>
+            </article>
+            <article className="mk-usecase-card">
+              <span className="tag">Content Team</span>
+              <h3>브랜드 / 마케팅 콘텐츠 팀</h3>
+              <p>캠페인 콘텐츠, 담당자, 검수 상태, 채널별 발행 일정을 팀 단위로 관리합니다.</p>
             </article>
           </div>
           <div style={{ textAlign: 'center', marginTop: 28 }}>
@@ -133,13 +162,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- 요금 teaser ---------- */}
+      {/* ---------- Pricing teaser ---------- */}
       <section className="mk-section alt">
         <div className="mk-section-inner">
           <div className="mk-section-head">
             <span className="mk-eyebrow">Pricing</span>
-            <h2>가볍게 시작하고 필요할 때 확장</h2>
-            <p>Free 로 만들어 보고, 사업이 커지면 Pro · Business 로 전환하세요.</p>
+            <h2>가볍게 시작하고 콘텐츠 운영이 커지면 확장하세요</h2>
+            <p>Free로 개인 콘텐츠 운영 공간을 만들어 보고, 채널이 늘어나거나 팀 작업이 필요해지면 Pro · Team 플랜으로 확장하세요.</p>
           </div>
           <div style={{ textAlign: 'center' }}>
             <Link to="/pricing" className="btn primary">요금제 비교하기</Link>
@@ -151,12 +180,12 @@ export default function HomePage() {
       <section className="mk-section">
         <div className="mk-cta-band">
           <div>
-            <h3>지금 바로 CreatorDesk 로 시작하세요</h3>
-            <p>신용카드 없이 무료로 멀티페이지 사이트를 만들 수 있습니다.</p>
+            <h3>지금 바로 CreatorDesk로 콘텐츠 운영 공간을 만들어보세요</h3>
+            <p>아이디어, 대본, 촬영, 편집, 업로드 일정까지 크리에이터의 반복되는 콘텐츠 제작 흐름을 하나의 워크스페이스에서 관리할 수 있습니다.</p>
           </div>
           <div style={{ display: 'inline-flex', gap: 10 }}>
             <AuthAwareCta intent="start" className="btn primary">무료로 시작하기</AuthAwareCta>
-            <Link to="/templates" className="btn ghost" style={{ background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}>템플릿 보기</Link>
+            <Link to="/templates" className="btn ghost" style={{ background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}>운영 템플릿 보기</Link>
           </div>
         </div>
       </section>
@@ -194,14 +223,16 @@ function FlowStep({ n, title, desc }: { n: number; title: string; desc: string }
 }
 
 const TEMPLATE_PREVIEW = [
-  { id: 'company',   label: '회사 소개',   desc: '기업·서비스·문의 구성', mono: 'Co', enabled: true },
-  { id: 'portfolio', label: '포트폴리오',  desc: '작업물 갤러리',         mono: 'Po', enabled: false },
-  { id: 'blog',      label: '블로그',      desc: '글 발행 / 카테고리',    mono: 'Bl', enabled: false },
-  { id: 'shop',      label: '쇼핑몰',      desc: '카탈로그 / 결제',       mono: 'Sh', enabled: false },
+  { id: 'youtube-channel', label: '유튜브 채널 운영', desc: '영상 아이디어, 대본, 촬영, 편집, 업로드 일정 관리',  mono: 'YT', enabled: true  },
+  { id: 'streaming',       label: '스트리머 방송 운영', desc: '방송 일정, 클립 아이디어, 다시보기 관리',          mono: 'ST', enabled: true  },
+  { id: 'shortform',       label: '쇼츠 / 릴스 제작',  desc: '짧은 영상 아이디어, 훅, 업로드 루틴 관리',         mono: 'SF', enabled: true  },
+  { id: 'blog-newsletter', label: '블로그 / 뉴스레터',  desc: '글감, 초안, 발행 일정, SEO 키워드 관리',           mono: 'BL', enabled: false },
+  { id: 'brand-team',      label: '브랜드 콘텐츠 팀',   desc: '캠페인, 담당자, 검수, 채널별 발행 상태 관리',       mono: 'BR', enabled: false },
 ];
+
 function TemplatePreviewGrid() {
   return (
-    <div className="mk-grid-4">
+    <div className="mk-grid-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
       {TEMPLATE_PREVIEW.map((t) => (
         <article key={t.id} className="mk-template-card">
           <div className="mk-template-thumb">{t.mono}</div>
@@ -209,7 +240,7 @@ function TemplatePreviewGrid() {
             <div className="title">
               {t.label}
               {t.enabled
-                ? <span className="badge success">지원</span>
+                ? <span className="badge success">추천</span>
                 : <span className="badge">준비중</span>}
             </div>
             <p className="desc">{t.desc}</p>

@@ -11,7 +11,7 @@ export default function MarketingHeader() {
   const { isAuthenticated } = useAuth();
   return (
     <header className="app-header marketing-header">
-      <Link to="/" className="app-header-brand" aria-label="CreatorDesk 홈">
+      <Link to="/home" className="app-header-brand" aria-label="CreatorDesk 홈">
         <span className="brand-logo">
           <Logo size={16} />
         </span>

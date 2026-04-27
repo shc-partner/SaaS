@@ -11,7 +11,7 @@ export default function AppHeader() {
   const { isAuthenticated } = useAuth();
   return (
     <header className="app-header">
-      <Link to="/" className="app-header-brand" aria-label="CreatorDesk 홈">
+      <Link to="/home" className="app-header-brand" aria-label="CreatorDesk 홈">
         <span className="brand-logo">
           <Logo size={16} />
         </span>
@@ -27,7 +27,7 @@ export default function AppHeader() {
 
       <div className="app-header-right">
         <ThemeToggle />
-        <Link to="/" className="btn subtle" title="공개 사이트로">홈</Link>
+        <Link to="/home" className="btn subtle" title="메인 페이지로">홈</Link>
         {isAuthenticated
           ? <UserMenu />
           : <Link to="/login" className="btn primary">로그인</Link>}

@@ -49,6 +49,8 @@ export default function App() {
       <Routes>
         {/* ---------- Root ---------- */}
         <Route path="/" element={<RootRedirect />} />
+        {/* /home 은 인증 여부 무관하게 항상 마케팅 홈을 보여준다 (헤더 로고/홈 버튼 대상) */}
+        <Route path="/home" element={<MarketingShell flush><HomePage /></MarketingShell>} />
 
         {/* ---------- Public marketing ---------- */}
         <Route path="/features"   element={<MarketingShell><FeaturesPage /></MarketingShell>} />
