@@ -1,20 +1,12 @@
-# OS / editor
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/
-*.swp
-
-# Env / local overrides
+node_modules/
+dist/
+.vite/
 .env
 .env.local
-*.local
-
-# Build / deps (sub-projects have their own .gitignore; this is a safety net)
-node_modules/
-vendor/
-dist/
-build/
-
-# Logs
+generated-apps/*
+!generated-apps/.gitkeep
+exports/
+.idea/
+.vscode/
+.DS_Store
 *.log

@@ -1,20 +1,18 @@
-FROM php:8.4-apache
+FROM php:8.3-apache
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        libicu-dev \
-        libzip-dev \
-        zip \
-        unzip \
-        git \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl pdo_mysql mysqli zip \
+        libzip-dev unzip \
+    && docker-php-ext-install -j"$(nproc)" pdo_mysql mysqli zip \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
-    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-WORKDIR /var/www/html
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+        /etc/apache2/sites-available/000-default.conf \
+        /etc/apache2/apache2.conf \
+        /etc/apache2/conf-available/*.conf
+
+RUN printf '<Directory ${APACHE_DOCUMENT_ROOT}>\n    AllowOverride All\n    Require all granted\n</Directory>\n' \
+    > /etc/apache2/conf-available/zz-override.conf \
+    && a2enconf zz-override

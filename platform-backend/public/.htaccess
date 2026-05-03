@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Options -Indexes
 
 <IfModule mod_rewrite.c>
@@ -15,3 +16,9 @@ Options -Indexes
 </IfModule>
 
 ServerSignature Off
+=======
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+>>>>>>> 3e4b835ce910371b1be45acf592df021faeaa6e8
