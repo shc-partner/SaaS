@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Auth;
+namespace CreatorDesk\Auth;
 
 use PDO;
-use SiteForge\Db\Connection;
+use CreatorDesk\Db\Connection;
 
-// 사용자 · 세션 DB 접근. 비즈니스 규칙(비번 해시 등)은 Service 에서.
+// ?�용??· ?�션 DB ?�근. 비즈?�스 규칙(비번 ?�시 ???� Service ?�서.
 final class Repository
 {
     private PDO $pdo;

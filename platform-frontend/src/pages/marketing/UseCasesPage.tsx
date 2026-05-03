@@ -1,13 +1,52 @@
-// /use-cases — 활용 예시. mock 사례 카드.
 const CASES = [
-  { tag: '기업',       title: '스타트업 홈페이지',   desc: '회사 소개/서비스/문의로 구성된 B2B 사이트.',    bullets: ['회사 소개 페이지', '제품·서비스 소개', '문의 폼'] },
-  { tag: '크리에이터', title: '포트폴리오 사이트',    desc: '프로젝트/작업물을 갤러리 형태로 소개.',         bullets: ['작업물 갤러리', '연락·협업 문의', '블로그 teaser'] },
-  { tag: '미디어',     title: '블로그 · 뉴스',       desc: '카테고리 기반 콘텐츠 발행.',                     bullets: ['포스트 관리', '카테고리/태그', '구독 placeholder'] },
-  { tag: '커머스',     title: '쇼핑몰',              desc: '상품 카탈로그 + 결제(로드맵).',                  bullets: ['카탈로그', '장바구니', '결제 연동'] },
-  { tag: '서비스',     title: '예약 · 신청',         desc: '시간/슬롯 단위 예약 폼과 상태 관리.',           bullets: ['예약 폼', '관리자 승인', '알림 hook'] },
-  { tag: '내부도구',   title: '사내 업무 관리',      desc: '게시판·일정·문서 등 내부 도구.',                 bullets: ['게시판', '일정 공유', '문서 보관'] },
-  { tag: '회원',       title: '회원 전용 사이트',    desc: '로그인한 회원에게만 콘텐츠 제공.',               bullets: ['회원 가입/로그인', '권한별 열람', '구독 관리'] },
-  { tag: '교육',       title: '강의 · 교육 사이트',  desc: '강의 콘텐츠 제공과 수강 관리.',                   bullets: ['강의 목록', '수강 진도', '과제/퀴즈'] },
+  {
+    tag: 'YouTuber',
+    title: '유튜브 채널 운영',
+    desc: '영상 아이디어, 대본, 촬영일, 편집 마감, 업로드 일정을 한 워크스페이스에서 관리합니다.',
+    bullets: ['9단계 제작 보드', '제목 후보와 썸네일 문구', '촬영·편집·업로드 캘린더'],
+  },
+  {
+    tag: 'Streamer',
+    title: '스트리밍 콘텐츠 운영',
+    desc: '라이브 방송 주제와 클립 아이디어, 다시보기 편집 상태를 콘텐츠 단위로 묶어 추적합니다.',
+    bullets: ['방송 아이디어 보관함', '클립·하이라이트 편집 메모', '라이브 일정 관리'],
+  },
+  {
+    tag: 'Short-form',
+    title: '숏폼 반복 제작',
+    desc: '릴스, 쇼츠, 틱톡처럼 빠르게 반복되는 콘텐츠를 아이디어부터 예약 업로드까지 정리합니다.',
+    bullets: ['짧은 훅과 자막 메모', '채널별 업로드 일정', '트렌드 태그 정리'],
+  },
+  {
+    tag: 'Podcast',
+    title: '팟캐스트 에피소드 관리',
+    desc: '에피소드 주제, 녹음 일정, 편집 상태, 발행일을 월간 흐름으로 관리합니다.',
+    bullets: ['에피소드 기획 카드', '녹음·편집 마감일', '참고 링크와 쇼노트'],
+  },
+  {
+    tag: 'Blogger',
+    title: '블로그·뉴스레터 운영',
+    desc: '글감, 초안, 교정, 예약 발행을 콘텐츠 제작 흐름에 맞춰 관리합니다.',
+    bullets: ['글감 보관함', 'SEO 키워드와 제목 후보', '발행 캘린더'],
+  },
+  {
+    tag: 'Brand Team',
+    title: '브랜드 콘텐츠팀',
+    desc: '캠페인 콘텐츠의 담당자, 검토 상태, 채널별 발행 일정을 팀 관점으로 확인합니다.',
+    bullets: ['캠페인별 콘텐츠 카드', '검토 상태와 편집 메모', '채널별 발행 일정'],
+  },
+  {
+    tag: 'Solo Creator',
+    title: '1인 크리에이터 운영',
+    desc: '머릿속에 흩어진 아이디어와 작업 메모를 잃어버리지 않도록 가볍게 모아둡니다.',
+    bullets: ['빠른 아이디어 저장', '우선순위와 태그', '오늘 해야 할 콘텐츠 확인'],
+  },
+  {
+    tag: 'Content Studio',
+    title: '소규모 제작 스튜디오',
+    desc: '여러 채널의 콘텐츠 제작 상황을 워크스페이스별로 분리해 운영합니다.',
+    bullets: ['채널 단위 워크스페이스', '제작 단계별 진행률', '월간 콘텐츠 일정'],
+  },
 ];
 
 export default function UseCasesPage() {
@@ -16,20 +55,22 @@ export default function UseCasesPage() {
       <section className="mk-hero" style={{ padding: '80px 28px 48px' }}>
         <div className="mk-hero-inner">
           <span className="mk-eyebrow">Use cases</span>
-          <h1 style={{ fontSize: 40 }}>CreatorDesk, 이런 분들이 씁니다</h1>
-          <p>8가지 대표적인 활용 시나리오. 지금은 회사 소개형부터 시작해, 필요에 따라 유형이 확대됩니다.</p>
+          <h1 style={{ fontSize: 40 }}>크리에이터 운영 방식에 맞게</h1>
+          <p>
+            CreatorDesk는 콘텐츠 아이디어부터 발행까지의 운영 흐름을 워크스페이스로 정리하는 SaaS입니다.
+          </p>
         </div>
       </section>
 
       <section className="mk-section">
         <div className="mk-section-inner">
           <div className="mk-grid-3">
-            {CASES.map((c) => (
-              <article key={c.title} className="mk-usecase-card">
-                <span className="tag">{c.tag}</span>
-                <h3>{c.title}</h3>
-                <p>{c.desc}</p>
-                <ul>{c.bullets.map((b) => <li key={b}>{b}</li>)}</ul>
+            {CASES.map((item) => (
+              <article key={item.title} className="mk-usecase-card">
+                <span className="tag">{item.tag}</span>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+                <ul>{item.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
               </article>
             ))}
           </div>

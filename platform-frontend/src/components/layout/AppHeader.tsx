@@ -10,7 +10,7 @@ import { useAuth } from '../../features/auth/AuthProvider';
 export default function AppHeader() {
   const { isAuthenticated } = useAuth();
   return (
-    <header className="app-header">
+    <header className="app-header app-sidebar">
       <Link to="/home" className="app-header-brand" aria-label="CreatorDesk 홈">
         <span className="brand-logo">
           <Logo size={16} />
@@ -20,14 +20,16 @@ export default function AppHeader() {
       </Link>
 
       <nav className="app-header-nav" aria-label="주요 메뉴">
-        <NavLink to="/dashboard"      className={({ isActive }) => `app-nav-link ${isActive ? 'active' : ''}`}>대시보드</NavLink>
-        <NavLink to="/workspaces"     className={({ isActive }) => `app-nav-link ${isActive ? 'active' : ''}`}>내 워크스페이스</NavLink>
-        <NavLink to="/workspaces/new" className={({ isActive }) => `app-nav-link ${isActive ? 'active' : ''}`}>+ 새 워크스페이스</NavLink>
+        <NavLink to="/dashboard"      className={({ isActive }) => `app-nav-link ${isActive ? 'active' : ''}`}><span className="app-nav-icon">⌂</span><span>대시보드</span></NavLink>
+        <NavLink to="/workspaces" end className={({ isActive }) => `app-nav-link ${isActive ? 'active' : ''}`}><span className="app-nav-icon">▦</span><span>워크스페이스</span></NavLink>
+        <NavLink to="/workspaces/new" className={({ isActive }) => `app-nav-link ${isActive ? 'active' : ''}`}><span className="app-nav-icon">＋</span><span>새 워크스페이스</span></NavLink>
       </nav>
 
       <div className="app-header-right">
-        <ThemeToggle />
-        <Link to="/home" className="btn subtle" title="메인 페이지로">홈</Link>
+        <div className="app-sidebar-quick-actions">
+          <ThemeToggle />
+          <Link to="/home" className="app-nav-link app-nav-link--home" title="메인 페이지로"><span className="app-nav-icon">⌂</span><span>홈</span></Link>
+        </div>
         {isAuthenticated
           ? <UserMenu />
           : <Link to="/login" className="btn primary">로그인</Link>}

@@ -16,8 +16,8 @@ import { useAuth } from '../../features/auth/AuthProvider';
 //   - Render: 마지막 라우트 변경 후 첫 paint 까지(ms)         — rAF 기반
 //   - API   : 가장 최근 fetch 호출의 응답 시간(ms)            — fetch 래핑
 
-const DEV_NAME = 'dev';
-const ENABLED  = import.meta.env.VITE_ENABLE_LATENCY_OVERLAY === 'true';
+const DEV_EMAIL = 'dev@dev.com';
+const ENABLED   = import.meta.env.VITE_ENABLE_LATENCY_OVERLAY === 'true';
 
 // ---------- API 측정: 한 번만 fetch 를 monkey-patch. 구독자에게 최신 latency 알림. ----------
 type ApiSample = { url: string; ms: number; status: number; at: number };
@@ -47,8 +47,7 @@ export default function LatencyOverlay() {
   const { user } = useAuth();
   const location = useLocation();
 
-  // 노출 가드 — name 비교는 trim + lowercase 로 방어.
-  const isDevUser = user?.name?.trim().toLowerCase() === DEV_NAME;
+  const isDevUser = user?.email?.trim().toLowerCase() === DEV_EMAIL;
   const visible = ENABLED && isDevUser;
 
   const [routeMs, setRouteMs]   = useState<number | null>(null);

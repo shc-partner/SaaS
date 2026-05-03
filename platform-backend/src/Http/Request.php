@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Http;
+namespace CreatorDesk\Http;
 
-// 들어온 HTTP 요청의 좁은 표면만 노출 — superglobal 직접 접근을 컨트롤러에서 막기 위해.
+// ?�어??HTTP ?�청??좁�? ?�면�??�출 ??superglobal 직접 ?�근??컨트롤러?�서 막기 ?�해.
 final class Request
 {
     /**
      * @param array<string,string> $params
-     * @param array<string,string> $query   URL 쿼리 파라미터 (?key=value)
-     * @param array<string,string> $headers 소문자 키로 정규화된 헤더 맵
+     * @param array<string,string> $query   URL 쿼리 ?�라미터 (?key=value)
+     * @param array<string,string> $headers ?�문???�로 ?�규?�된 ?�더 �?
      */
     public function __construct(
         public readonly string $method,
@@ -26,7 +26,7 @@ final class Request
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
         $path = parse_url($uri, PHP_URL_PATH) ?: '/';
 
-        // JSON body 만 지원. form-encoded 가 필요한 엔드포인트는 현재 없다.
+        // JSON body �?지?? form-encoded 가 ?�요???�드?�인?�는 ?�재 ?�다.
         $body = null;
         $raw = file_get_contents('php://input');
         if ($raw !== false && $raw !== '') {
@@ -46,7 +46,7 @@ final class Request
             }
         }
 
-        // Headers — $_SERVER 의 HTTP_* 프리픽스를 정규화.
+        // Headers ??$_SERVER ??HTTP_* ?�리?�스�??�규??
         $headers = [];
         foreach ($_SERVER as $k => $v) {
             if (strncmp($k, 'HTTP_', 5) === 0) {

@@ -10,6 +10,21 @@ function reducer(state: BoardState, action: BoardAction): BoardState {
       return { ...state, items: [action.payload, ...state.items], showNewContentModal: false };
     case 'ADD_IDEA':
       return { ...state, ideas: [action.payload, ...state.ideas], showNewIdeaModal: false };
+    case 'UPDATE_ITEM_DATES':
+      return {
+        ...state,
+        items: state.items.map((item) => (
+          item.id === action.payload.id
+            ? {
+                ...item,
+                shootDate: action.payload.shootDate,
+                editDueDate: action.payload.editDueDate,
+                publishDate: action.payload.publishDate,
+                updatedAt: new Date().toISOString(),
+              }
+            : item
+        )),
+      };
     case 'SELECT_ITEM':
       return { ...state, selectedItemId: action.payload };
     case 'TOGGLE_NEW_CONTENT_MODAL':

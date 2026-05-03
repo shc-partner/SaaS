@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Http;
+namespace CreatorDesk\Http;
 
-// 작은 정적 라우터. {param} 자리표시자만 지원 — 정규식이나 그룹은 의도적으로 없음.
+// ?��? ?�적 ?�우?? {param} ?�리?�시?�만 지?????�규?�이??그룹?� ?�도?�으�??�음.
 final class Router
 {
     /** @var array<int,array{method:string,pattern:string,regex:string,paramNames:array<int,string>,handler:callable|array{0:class-string,1:string}}> */

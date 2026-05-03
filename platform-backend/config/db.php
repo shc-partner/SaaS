@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// docker-compose 의 db 서비스와 동일 자격증명. 환경변수 override 가 우선.
+// docker-compose ??db ?�비?��? ?�일 ?�격증명. ?�경변??override 가 ?�선.
 return [
     'host'    => getenv('DB_HOST')    ?: 'db',
     'port'    => (int)(getenv('DB_PORT') ?: 3306),

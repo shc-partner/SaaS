@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-// Front controller — 모든 요청은 여기로 들어와 라우터로 위임된다.
-// .htaccess 가 정적 파일이 아닌 모든 경로를 index.php 로 rewrite.
+// Front controller ??모든 ?�청?� ?�기�??�어?� ?�우?�로 ?�임?�다.
+// .htaccess 가 ?�적 ?�일???�닌 모든 경로�?index.php �?rewrite.
 
 require __DIR__ . '/../src/Bootstrap.php';
 
-\SiteForge\Bootstrap::run();
+\CreatorDesk\Bootstrap::run();

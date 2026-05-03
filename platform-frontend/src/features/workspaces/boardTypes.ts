@@ -69,6 +69,7 @@ export interface BoardState {
 export type BoardAction =
   | { type: 'ADD_ITEM'; payload: ContentItem }
   | { type: 'ADD_IDEA'; payload: Idea }
+  | { type: 'UPDATE_ITEM_DATES'; payload: { id: string; shootDate: string; editDueDate: string; publishDate: string } }
   | { type: 'SELECT_ITEM'; payload: string | null }
   | { type: 'TOGGLE_NEW_CONTENT_MODAL' }
   | { type: 'TOGGLE_NEW_IDEA_MODAL' }

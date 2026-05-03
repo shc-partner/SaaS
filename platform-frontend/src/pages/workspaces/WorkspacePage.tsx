@@ -4,7 +4,7 @@
 
 import { useParams, useSearchParams } from 'react-router-dom';
 import useMyWorkspaces from '../../features/workspaces/useMyWorkspaces';
-import { TEMPLATE_OPTIONS, PRESET_OPTIONS, CHANNEL_OPTIONS } from '../../features/workspaces/constants';
+import { PRESET_OPTIONS, CHANNEL_OPTIONS } from '../../features/workspaces/constants';
 import { BoardProvider } from '../../features/workspaces/boardStore';
 import { useBoardDispatch } from '../../features/workspaces/boardStore';
 import { getMockItems, getMockIdeas } from '../../features/workspaces/boardData';
@@ -28,12 +28,8 @@ const TABS: { id: TabKey; label: string }[] = [
   { id: 'settings', label: '설정' },
 ];
 
-function channelLabel(ch: string): string {
-  return CHANNEL_OPTIONS.find((c) => c.id === ch)?.label ?? ch;
-}
-
-function _templateLabel(key: MyWorkspace['templateKey']): string {
-  return TEMPLATE_OPTIONS.find((t) => t.id === key)?.label ?? key;
+function channelLabel(ch: string): string | null {
+  return CHANNEL_OPTIONS.find((c) => c.id === ch)?.label ?? null;
 }
 
 function presetLabel(preset: MyWorkspace['preset']): string {
@@ -47,8 +43,11 @@ function WorkspaceHeader({ workspace }: { workspace: MyWorkspace }) {
     <div className="ws-page-header">
       <div className="ws-page-header-info">
         <h1 className="ws-page-title">{workspace.name}</h1>
+        {workspace.description && (
+          <p className="ws-page-description">{workspace.description}</p>
+        )}
         <p className="ws-page-subtitle">
-          {workspace.channels.map(channelLabel).join(' · ')}
+          {workspace.channels.map(channelLabel).filter(Boolean).join(' · ')}
           {workspace.preset ? ` · ${presetLabel(workspace.preset)} 제작 흐름` : ''}
         </p>
       </div>
@@ -86,27 +85,34 @@ function WorkspaceInner({ workspace }: { workspace: MyWorkspace }) {
     <div className="ws-page">
       <WorkspaceHeader workspace={workspace} />
 
-      {/* 탭 네비게이션 */}
-      <div className="ws-tabs">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            className={`ws-tab${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => switchTab(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <div className="ws-workspace-layout">
+        {/* 탭 네비게이션 */}
+        <aside className="ws-tabs" aria-label="워크스페이스 메뉴">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={`ws-tab${activeTab === tab.id ? ' active' : ''}`}
+              onClick={() => switchTab(tab.id)}
+            >
+              <span className="ws-tab-dot" aria-hidden />
+              {tab.label}
+            </button>
+          ))}
+        </aside>
 
-      {/* 탭 본문 */}
-      <div className="ws-tab-body">
-        {activeTab === 'board'    && <BoardTab    workspace={workspace} />}
-        {activeTab === 'calendar' && <CalendarTab workspace={workspace} />}
-        {activeTab === 'contents' && <ContentsTab workspace={workspace} />}
-        {activeTab === 'ideas'    && <IdeasTab    workspace={workspace} />}
-        {activeTab === 'settings' && <SettingsTab workspace={workspace} />}
+        {/* 탭 본문 */}
+        <div className="ws-tab-body">
+          {activeTab === 'board'    && <BoardTab    workspace={workspace} />}
+          {activeTab !== 'board' && (
+            <div className="ws-board-main ws-tab-panel-main">
+              {activeTab === 'calendar' && <CalendarTab workspace={workspace} />}
+              {activeTab === 'contents' && <ContentsTab workspace={workspace} />}
+              {activeTab === 'ideas'    && <IdeasTab    workspace={workspace} />}
+              {activeTab === 'settings' && <SettingsTab workspace={workspace} />}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 보드 탭 이외의 탭에서도 모달 접근 가능하도록 최상위에서 렌더 */}
@@ -125,12 +131,13 @@ function makeFallbackWorkspace(id: string): MyWorkspace {
   return {
     id,
     name: '내 워크스페이스',
+    description: '',
     purpose:     'youtube',
     channels:    ['youtube'],
     format:      'info',
     templateKey: 'youtube-channel',
     preset:      'standard',
-    items:       ['script', 'thumbnail', 'upload', 'performance'],
+    items:       ['title', 'status', 'publishDate', 'channel', 'format', 'priority', 'tags', 'memo', 'thumbnail', 'script', 'upload'],
     createdAt:   new Date().toISOString(),
     status:      'active',
   };

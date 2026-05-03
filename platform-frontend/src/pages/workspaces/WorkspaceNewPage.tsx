@@ -1,63 +1,109 @@
-import { useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/AuthProvider';
 import { upsertMyWorkspace } from '../../features/workspaces/storage';
 import {
-  PURPOSE_OPTIONS,
+  BASE_MANAGEMENT_ITEMS,
   CHANNEL_OPTIONS,
+  FORMAT_MANAGEMENT_ITEM_GROUPS,
   FORMAT_OPTIONS,
+  MANAGEMENT_ITEM_GROUPS,
   PRESET_OPTIONS,
-  ITEM_OPTIONS,
-  TEMPLATE_OPTIONS,
+  PRESET_RECOMMENDED_ITEMS,
+  PURPOSE_OPTIONS,
   STEP_LABELS,
 } from '../../features/workspaces/constants';
 import {
+  type ContentFormat,
+  type ManagementItem,
+  type MyWorkspace,
+  type ProductionPreset,
+  type WorkspaceChannel,
   type WorkspaceCreationState,
   type WorkspacePurpose,
-  type WorkspaceChannel,
-  type ContentFormat,
-  type ProductionPreset,
-  type ManagementItem,
-  type WorkspaceTemplateKey,
-  type MyWorkspace,
   type WorkspaceStatus,
+  type WorkspaceTemplateKey,
 } from '../../features/workspaces/types';
 
-// /workspaces/new — 워크스페이스 생성 6단계 마법사.
-
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 3;
 
 const INITIAL_STATE: WorkspaceCreationState = {
   step: 1,
+  name: '',
+  description: '',
   purpose: null,
   channels: [],
   format: null,
   preset: null,
-  items: [],
-  templateKey: null,
-  name: '',
+  items: BASE_MANAGEMENT_ITEMS,
 };
+
+function uniqItems(items: ManagementItem[]): ManagementItem[] {
+  return Array.from(new Set(items));
+}
+
+function getRecommendedItems(
+  preset: ProductionPreset | null,
+  format: ContentFormat | null,
+): ManagementItem[] {
+  const presetItems = preset ? PRESET_RECOMMENDED_ITEMS[preset] : BASE_MANAGEMENT_ITEMS;
+  const formatItems = format
+    ? FORMAT_MANAGEMENT_ITEM_GROUPS[format]?.items.map((item) => item.id) ?? []
+    : [];
+
+  return uniqItems([...presetItems, ...formatItems]);
+}
+
+function getTemplateKey(preset: ProductionPreset): WorkspaceTemplateKey {
+  if (preset === 'simple') return 'creator-simple';
+  if (preset === 'team') return 'creator-team';
+  return 'creator-standard';
+}
+
+function getWorkspaceName(state: WorkspaceCreationState): string {
+  const channel = CHANNEL_OPTIONS.find((option) => option.id === state.channels[0])?.label;
+  const format = FORMAT_OPTIONS.find((option) => option.id === state.format)?.label;
+
+  if (channel && format) return `${channel} ${format} 워크스페이스`;
+  if (channel) return `${channel} 콘텐츠 워크스페이스`;
+  return 'CreatorDesk 워크스페이스';
+}
 
 export default function WorkspaceNewPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [state, setState] = useState<WorkspaceCreationState>(INITIAL_STATE);
 
-  // 다음 단계로 진행 가능 여부 검사
+  const recommendedItems = useMemo(
+    () => getRecommendedItems(state.preset, state.format),
+    [state.preset, state.format],
+  );
+
   function canProceed(): boolean {
     switch (state.step) {
-      case 1: return state.purpose !== null;
-      case 2: return state.channels.length > 0;
-      case 3: return state.format !== null;
-      case 4: return state.preset !== null;
-      case 5: return true; // 관리항목은 선택 선택 사항
-      case 6: return state.templateKey !== null && state.name.trim().length > 0;
-      default: return false;
+      case 1:
+        return state.purpose !== null && state.channels.length > 0 && state.format !== null;
+      case 2:
+        return state.preset !== null && state.name.trim().length > 0;
+      case 3:
+        return uniqItems([...BASE_MANAGEMENT_ITEMS, ...state.items]).length > 0;
+      default:
+        return false;
     }
   }
 
   function handleNext() {
     if (!canProceed()) return;
+
+    if (state.step === 2) {
+      setState((prev) => ({
+        ...prev,
+        step: 3,
+        items: getRecommendedItems(prev.preset, prev.format),
+      }));
+      return;
+    }
+
     if (state.step < TOTAL_STEPS) {
       setState((prev) => ({ ...prev, step: prev.step + 1 }));
     } else {
@@ -72,17 +118,18 @@ export default function WorkspaceNewPage() {
   }
 
   function handleSubmit() {
-    if (!state.purpose || !state.format || !state.preset || !state.templateKey) return;
+    if (!state.purpose || !state.format || !state.preset) return;
 
     const workspace: MyWorkspace = {
       id: crypto.randomUUID(),
       name: state.name.trim(),
+      description: state.description.trim(),
       purpose: state.purpose,
       channels: state.channels,
       format: state.format,
-      templateKey: state.templateKey,
+      templateKey: getTemplateKey(state.preset),
       preset: state.preset,
-      items: state.items,
+      items: uniqItems([...BASE_MANAGEMENT_ITEMS, ...state.items]),
       createdAt: new Date().toISOString(),
       status: 'active' as WorkspaceStatus,
     };
@@ -93,7 +140,6 @@ export default function WorkspaceNewPage() {
 
   return (
     <div className="workspace-new">
-      {/* 진행 상태 바 */}
       <div className="workspace-new-progress">
         {STEP_LABELS.map((label, i) => {
           const stepNum = i + 1;
@@ -106,51 +152,52 @@ export default function WorkspaceNewPage() {
           return <div key={label} className={cls} title={label} />;
         })}
       </div>
-      <div style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 24 }}>
-        {state.step}단계 / {TOTAL_STEPS}단계 — {STEP_LABELS[state.step - 1]}
+      <div className="workspace-new-step-text">
+        {state.step}단계 / {TOTAL_STEPS}단계 · {STEP_LABELS[state.step - 1]}
       </div>
 
-      {/* 단계별 콘텐츠 */}
       {state.step === 1 && (
-        <Step1
-          value={state.purpose}
-          onChange={(v) => setState((prev) => ({ ...prev, purpose: v }))}
+        <StepTarget
+          purpose={state.purpose}
+          channels={state.channels}
+          format={state.format}
+          onPurposeChange={(purpose) => setState((prev) => ({ ...prev, purpose }))}
+          onChannelsChange={(channels) => setState((prev) => ({ ...prev, channels }))}
+          onFormatChange={(format) => {
+            setState((prev) => ({
+              ...prev,
+              format,
+              items: prev.step >= 3 ? getRecommendedItems(prev.preset, format) : prev.items,
+            }));
+          }}
         />
       )}
       {state.step === 2 && (
-        <Step2
-          value={state.channels}
-          onChange={(v) => setState((prev) => ({ ...prev, channels: v }))}
+        <StepTemplate
+          value={state.preset}
+          name={state.name}
+          description={state.description}
+          onChange={(preset) => {
+            setState((prev) => ({
+              ...prev,
+              preset,
+              name: prev.name || getWorkspaceName({ ...prev, preset }),
+              items: getRecommendedItems(preset, prev.format),
+            }));
+          }}
+          onNameChange={(name) => setState((prev) => ({ ...prev, name }))}
+          onDescriptionChange={(description) => setState((prev) => ({ ...prev, description }))}
         />
       )}
       {state.step === 3 && (
-        <Step3
-          value={state.format}
-          onChange={(v) => setState((prev) => ({ ...prev, format: v }))}
-        />
-      )}
-      {state.step === 4 && (
-        <Step4
-          value={state.preset}
-          onChange={(v) => setState((prev) => ({ ...prev, preset: v }))}
-        />
-      )}
-      {state.step === 5 && (
-        <Step5
+        <StepManagementItems
           value={state.items}
-          onChange={(v) => setState((prev) => ({ ...prev, items: v }))}
-        />
-      )}
-      {state.step === 6 && (
-        <Step6
-          templateKey={state.templateKey}
-          name={state.name}
-          onTemplateChange={(v) => setState((prev) => ({ ...prev, templateKey: v }))}
-          onNameChange={(v) => setState((prev) => ({ ...prev, name: v }))}
+          recommendedItems={recommendedItems}
+          format={state.format}
+          onChange={(items) => setState((prev) => ({ ...prev, items }))}
         />
       )}
 
-      {/* 하단 이전/다음 버튼 */}
       <div className="workspace-new-footer">
         <button
           type="button"
@@ -173,130 +220,133 @@ export default function WorkspaceNewPage() {
   );
 }
 
-// ── Step 1: 사용 목적 ──────────────────────────────────────────
-function Step1({
-  value,
-  onChange,
+function StepTarget({
+  purpose,
+  channels,
+  format,
+  onPurposeChange,
+  onChannelsChange,
+  onFormatChange,
 }: {
-  value: WorkspacePurpose | null;
-  onChange: (v: WorkspacePurpose) => void;
+  purpose: WorkspacePurpose | null;
+  channels: WorkspaceChannel[];
+  format: ContentFormat | null;
+  onPurposeChange: (value: WorkspacePurpose) => void;
+  onChannelsChange: (value: WorkspaceChannel[]) => void;
+  onFormatChange: (value: ContentFormat) => void;
 }) {
-  return (
-    <div>
-      <div className="workspace-new-header">
-        <h2>어떤 목적으로 운영하시나요?</h2>
-        <p>운영 유형에 맞는 워크스페이스 구조를 추천해 드립니다.</p>
-      </div>
-      <div className="ws-card-grid">
-        {PURPOSE_OPTIONS.map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            className={`ws-card-option${value === opt.id ? ' selected' : ''}`}
-            onClick={() => onChange(opt.id as WorkspacePurpose)}
-          >
-            <div className="ws-card-option-icon">{opt.icon}</div>
-            <span className="ws-card-option-label">{opt.label}</span>
-            <span className="ws-card-option-desc">{opt.desc}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Step 2: 운영 채널 (다중 선택) ─────────────────────────────
-function Step2({
-  value,
-  onChange,
-}: {
-  value: WorkspaceChannel[];
-  onChange: (v: WorkspaceChannel[]) => void;
-}) {
-  function toggle(id: WorkspaceChannel) {
-    if (value.includes(id)) {
-      onChange(value.filter((c) => c !== id));
+  function toggleChannel(id: WorkspaceChannel) {
+    if (channels.includes(id)) {
+      onChannelsChange(channels.filter((channel) => channel !== id));
     } else {
-      onChange([...value, id]);
+      onChannelsChange([...channels, id]);
     }
   }
 
   return (
-    <div>
-      <div className="workspace-new-header">
-        <h2>어떤 채널에서 활동하시나요?</h2>
-        <p>복수 선택 가능합니다.</p>
-      </div>
-      <div className="ws-pill-grid">
-        {CHANNEL_OPTIONS.map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            className={`ws-pill-option${value.includes(opt.id as WorkspaceChannel) ? ' selected' : ''}`}
-            onClick={() => toggle(opt.id as WorkspaceChannel)}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
+    <div className="workspace-new-flow">
+      <WizardQuestion title="어떤 목적으로 운영하시나요?">
+        <div className="ws-card-grid compact">
+          {PURPOSE_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className={`ws-card-option${purpose === option.id ? ' selected' : ''}`}
+              onClick={() => onPurposeChange(option.id)}
+            >
+              <span className="ws-card-option-label">{option.label}</span>
+              <span className="ws-card-option-desc">{option.desc}</span>
+            </button>
+          ))}
+        </div>
+      </WizardQuestion>
+
+      <WizardQuestion title="어떤 채널에서 활동하시나요?">
+        <div className="ws-pill-grid">
+          {CHANNEL_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className={`ws-pill-option${channels.includes(option.id) ? ' selected' : ''}`}
+              onClick={() => toggleChannel(option.id)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </WizardQuestion>
+
+      <WizardQuestion title="주로 어떤 형식의 콘텐츠를 만드시나요?">
+        <div className="ws-pill-grid">
+          {FORMAT_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className={`ws-pill-option${format === option.id ? ' selected' : ''}`}
+              onClick={() => onFormatChange(option.id)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </WizardQuestion>
     </div>
   );
 }
 
-// ── Step 3: 콘텐츠 형식 ───────────────────────────────────────
-function Step3({
+function StepTemplate({
   value,
+  name,
+  description,
   onChange,
-}: {
-  value: ContentFormat | null;
-  onChange: (v: ContentFormat) => void;
-}) {
-  return (
-    <div>
-      <div className="workspace-new-header">
-        <h2>주로 어떤 형식의 콘텐츠를 만드시나요?</h2>
-        <p>가장 가까운 형식을 하나 선택해 주세요.</p>
-      </div>
-      <div className="ws-pill-grid">
-        {FORMAT_OPTIONS.map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            className={`ws-pill-option${value === opt.id ? ' selected' : ''}`}
-            onClick={() => onChange(opt.id as ContentFormat)}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Step 4: 제작 흐름 프리셋 ──────────────────────────────────
-function Step4({
-  value,
-  onChange,
+  onNameChange,
+  onDescriptionChange,
 }: {
   value: ProductionPreset | null;
-  onChange: (v: ProductionPreset) => void;
+  name: string;
+  description: string;
+  onChange: (value: ProductionPreset) => void;
+  onNameChange: (value: string) => void;
+  onDescriptionChange: (value: string) => void;
 }) {
   return (
-    <div>
+    <div className="workspace-new-step">
       <div className="workspace-new-header">
-        <h2>제작 흐름을 선택해 주세요</h2>
-        <p>나중에 변경할 수 있습니다.</p>
+        <h2>템플릿 형식을 선택해 주세요.</h2>
+        <p>나중에 추가하거나 제거할 수 있습니다.</p>
+      </div>
+      <div className="ws-workspace-form">
+        <label className="ws-workspace-field">
+          <span>워크스페이스 이름 *</span>
+          <input
+            type="text"
+            value={name}
+            onChange={(event) => onNameChange(event.target.value)}
+            placeholder="예: 유튜브 게임방송 워크스페이스"
+            maxLength={80}
+          />
+        </label>
+        <label className="ws-workspace-field">
+          <span>디스크립션</span>
+          <textarea
+            value={description}
+            onChange={(event) => onDescriptionChange(event.target.value)}
+            placeholder="이 워크스페이스에서 관리할 콘텐츠 방향을 간단히 적어주세요."
+            maxLength={180}
+            rows={3}
+          />
+        </label>
       </div>
       <div className="ws-preset-list">
-        {PRESET_OPTIONS.map((opt) => (
+        {PRESET_OPTIONS.map((option) => (
           <button
-            key={opt.id}
+            key={option.id}
             type="button"
-            className={`ws-preset-option${value === opt.id ? ' selected' : ''}`}
-            onClick={() => onChange(opt.id as ProductionPreset)}
+            className={`ws-preset-option${value === option.id ? ' selected' : ''}`}
+            onClick={() => onChange(option.id)}
           >
-            <span className="ws-preset-option-label">{opt.label}</span>
-            <span className="ws-preset-option-desc">{opt.desc}</span>
+            <span className="ws-preset-option-label">{option.label}</span>
+            <span className="ws-preset-option-desc">{option.desc}</span>
           </button>
         ))}
       </div>
@@ -304,19 +354,42 @@ function Step4({
   );
 }
 
-// ── Step 5: 관리 항목 (다중 선택, 선택 선택 사항) ──────────────────────
-function Step5({
+function StepManagementItems({
   value,
+  recommendedItems,
+  format,
   onChange,
 }: {
   value: ManagementItem[];
-  onChange: (v: ManagementItem[]) => void;
+  recommendedItems: ManagementItem[];
+  format: ContentFormat | null;
+  onChange: (value: ManagementItem[]) => void;
 }) {
-  function toggle(id: ManagementItem) {
+  const formatGroup = format ? FORMAT_MANAGEMENT_ITEM_GROUPS[format] : null;
+  const [openGroups, setOpenGroups] = useState<string[]>([
+    'base',
+    'production',
+    'collaboration',
+    'revenue',
+    formatGroup ? 'format' : '',
+  ].filter(Boolean));
+  const groups = formatGroup
+    ? [...MANAGEMENT_ITEM_GROUPS, { id: 'format', title: formatGroup.title, items: formatGroup.items }]
+    : MANAGEMENT_ITEM_GROUPS;
+
+  function toggleGroup(groupId: string) {
+    setOpenGroups((prev) => (
+      prev.includes(groupId) ? prev.filter((id) => id !== groupId) : [...prev, groupId]
+    ));
+  }
+
+  function toggleItem(id: ManagementItem) {
+    if (BASE_MANAGEMENT_ITEMS.includes(id)) return;
+
     if (value.includes(id)) {
-      onChange(value.filter((i) => i !== id));
+      onChange(value.filter((item) => item !== id));
     } else {
-      onChange([...value, id]);
+      onChange(uniqItems([...value, id]));
     }
   }
 
@@ -324,84 +397,72 @@ function Step5({
     <div>
       <div className="workspace-new-header">
         <h2>어떤 항목을 관리할까요?</h2>
-        <p>필요한 항목을 선택해 주세요. 나중에 추가하거나 제거할 수 있습니다.</p>
+        <p>
+          콘텐츠 카드에 표시하고 싶은 관리 항목을 선택해 주세요.
+          선택한 항목은 나중에 추가하거나 제거할 수 있습니다.
+        </p>
       </div>
-      <div className="ws-pill-grid">
-        {ITEM_OPTIONS.map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            className={`ws-pill-option${value.includes(opt.id as ManagementItem) ? ' selected' : ''}`}
-            onClick={() => toggle(opt.id as ManagementItem)}
-          >
-            {opt.label}
-          </button>
-        ))}
+
+      <div className="ws-checkbox-groups">
+        {groups.map((group) => {
+          const isOpen = openGroups.includes(group.id);
+
+          return (
+            <section key={group.id} className="ws-item-group">
+              <button
+                type="button"
+                className="ws-item-group-head"
+                onClick={() => toggleGroup(group.id)}
+                aria-expanded={isOpen}
+              >
+                <span>{group.title}</span>
+                <span className="ws-item-group-toggle">{isOpen ? '접기' : '펼치기'}</span>
+              </button>
+
+              {isOpen && (
+                <div className="ws-item-check-grid">
+                  {group.items.map((item) => {
+                    const isBase = BASE_MANAGEMENT_ITEMS.includes(item.id);
+                    const checked = isBase || value.includes(item.id);
+                    const recommended = recommendedItems.includes(item.id);
+
+                    return (
+                      <label
+                        key={item.id}
+                        className={`ws-check-option${checked ? ' selected' : ''}${isBase ? ' locked' : ''}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={isBase}
+                          onChange={() => toggleItem(item.id)}
+                        />
+                        <span>{item.label}</span>
+                        {recommended && <em>추천</em>}
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-// ── Step 6: 템플릿 선택 + 이름 입력 ──────────────────────────
-function Step6({
-  templateKey,
-  name,
-  onTemplateChange,
-  onNameChange,
+function WizardQuestion({
+  title,
+  children,
 }: {
-  templateKey: WorkspaceTemplateKey | null;
-  name: string;
-  onTemplateChange: (v: WorkspaceTemplateKey) => void;
-  onNameChange: (v: string) => void;
+  title: string;
+  children: ReactNode;
 }) {
   return (
-    <div>
-      <div className="workspace-new-header">
-        <h2>워크스페이스 템플릿을 선택해 주세요</h2>
-        <p>운영 목적에 맞는 기본 구조가 적용됩니다.</p>
-      </div>
-      <div className="ws-card-grid">
-        {TEMPLATE_OPTIONS.map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            className={`ws-card-option${templateKey === opt.id ? ' selected' : ''}`}
-            onClick={() => onTemplateChange(opt.id as WorkspaceTemplateKey)}
-          >
-            <div className="ws-card-option-icon">{opt.icon}</div>
-            <span className="ws-card-option-label">{opt.label}</span>
-            <span className="ws-card-option-desc">{opt.desc}</span>
-          </button>
-        ))}
-      </div>
-
-      <div style={{ marginTop: 8 }}>
-        <label
-          htmlFor="ws-name"
-          style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--text-1)' }}
-        >
-          워크스페이스 이름
-        </label>
-        <input
-          id="ws-name"
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="예: 내 유튜브 채널 워크스페이스"
-          maxLength={80}
-          style={{
-            width: '100%',
-            padding: '10px 14px',
-            border: '1.5px solid var(--border-1)',
-            borderRadius: 'var(--radius-md)',
-            fontSize: 14,
-            background: 'var(--bg-card)',
-            color: 'var(--text-1)',
-            boxSizing: 'border-box',
-            outline: 'none',
-          }}
-        />
-      </div>
-    </div>
+    <section className="ws-wizard-question">
+      <h2>{title}</h2>
+      {children}
+    </section>
   );
 }

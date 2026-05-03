@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\OAuth;
+namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// Google OAuth 2.0 — OpenID Connect 베이스. userinfo 엔드포인트는 sub/email/name 반환.
+// Google OAuth 2.0 ??OpenID Connect 베이?? userinfo ?�드?�인?�는 sub/email/name 반환.
 final class GoogleProvider implements Provider
 {
     /** @param array<string,string> $config */
@@ -41,7 +41,7 @@ final class GoogleProvider implements Provider
             'redirect_uri'  => $this->config['redirectUri'],
         ]);
         if (!isset($tok['access_token'])) {
-            throw new RuntimeException('Google 토큰 응답에 access_token 이 없습니다.');
+            throw new RuntimeException('Google ?�큰 ?�답??access_token ???�습?�다.');
         }
         return ['accessToken' => (string)$tok['access_token'], 'raw' => $tok];
     }
@@ -53,7 +53,7 @@ final class GoogleProvider implements Provider
         ]);
         $sub = (string)($p['sub'] ?? '');
         if ($sub === '') {
-            throw new RuntimeException('Google 프로필에 sub 가 없습니다.');
+            throw new RuntimeException('Google ?�로?�에 sub 가 ?�습?�다.');
         }
         return new NormalizedProfile(
             providerUserId: $sub,

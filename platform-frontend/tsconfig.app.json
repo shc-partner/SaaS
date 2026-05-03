@@ -22,11 +22,9 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
-      "@app/site-renderer": ["../packages/site-renderer/src/index.ts"],
-      "@app/site-renderer/*": ["../packages/site-renderer/src/*"],
       "react": ["./node_modules/@types/react"],
       "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime"]
     }
   },
-  "include": ["src", "../packages/site-renderer/src"]
+  "include": ["src"]
 }

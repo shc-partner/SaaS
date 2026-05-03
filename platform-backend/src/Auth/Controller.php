@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Auth;
+namespace CreatorDesk\Auth;
 
 use InvalidArgumentException;
-use SiteForge\Http\Request;
-use SiteForge\Http\Response;
-use SiteForge\OAuth\Service as OAuthService;
+use CreatorDesk\Http\Request;
+use CreatorDesk\Http\Response;
+use CreatorDesk\OAuth\Service as OAuthService;
 
-// Auth 엔드포인트 컨트롤러. 얇은 HTTP ↔ Service 변환만.
+// Auth ?�드?�인??컨트롤러. ?��? HTTP ??Service 변?�만.
 final class Controller
 {
     public function __construct(
@@ -75,11 +75,11 @@ final class Controller
         return Response::ok(['user' => $user]);
     }
 
-    // ---------- OAuth (SNS 로그인) ----------
+    // ---------- OAuth (SNS 로그?? ----------
 
     /**
-     * 1) 프론트가 이 엔드포인트로 진입 → 302 로 provider 동의 화면으로 리다이렉트.
-     *    provider 미설정 시 백엔드 자체 콜백으로 바로 되돌아 mock 로그인 완결.
+     * 1) ?�론?��? ???�드?�인?�로 진입 ??302 �?provider ?�의 ?�면?�로 리다?�렉??
+     *    provider 미설????백엔???�체 콜백?�로 바로 ?�돌??mock 로그???�결.
      */
     public function oauthStart(Request $req): Response
     {
@@ -93,9 +93,9 @@ final class Controller
     }
 
     /**
-     * 2) provider → 여기로 돌아옴. code/state 검증 → 사용자 find-or-create → 세션 발급 →
-     *    프론트 /auth/callback 으로 리다이렉트하며 토큰을 URL fragment 로 전달.
-     *    fragment 는 서버 로그에 남지 않음.
+     * 2) provider ???�기�??�아?? code/state 검�????�용??find-or-create ???�션 발급 ??
+     *    ?�론??/auth/callback ?�로 리다?�렉?�하�??�큰??URL fragment �??�달.
+     *    fragment ???�버 로그???��? ?�음.
      */
     public function oauthCallback(Request $req): Response
     {
@@ -138,7 +138,7 @@ final class Controller
 
     private function clientIp(): ?string
     {
-        // 프록시 뒤에 있을 수 있으니 X-Forwarded-For 우선.
+        // ?�록???�에 ?�을 ???�으??X-Forwarded-For ?�선.
         $fwd = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
         if (\is_string($fwd) && $fwd !== '') {
             return trim(explode(',', $fwd)[0]);

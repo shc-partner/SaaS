@@ -23,17 +23,17 @@ const PLANS: Plan[] = [
     name: 'Free',
     price: '₩0',
     period: '/ 영구 무료',
-    desc: '처음 사이트를 만들어 보고 싶을 때.',
+    desc: '혼자 운영하는 크리에이터를 위한 시작 플랜.',
     cta: '무료로 시작하기',
     ctaTarget: { intent: 'start' },
     featured: false,
     items: [
-      { on: true,  text: '사이트 최대 1개 생성' },
-      { on: true,  text: '회사 소개형 템플릿' },
-      { on: true,  text: '임시 URL (/sites/:slug)' },
-      { on: true,  text: '관리자 페이지 기본' },
-      { on: false, text: '커스텀 도메인' },
-      { on: false, text: 'export' },
+      { on: true,  text: '워크스페이스 1개' },
+      { on: true,  text: '콘텐츠 아이템 최대 30개' },
+      { on: true,  text: '아이디어 보관함' },
+      { on: true,  text: '칸반 보드 · 캘린더 뷰' },
+      { on: false, text: '팀원 초대' },
+      { on: false, text: '성과 기록' },
     ],
   },
   {
@@ -41,16 +41,16 @@ const PLANS: Plan[] = [
     name: 'Pro',
     price: '₩19,000',
     period: '/ 월',
-    desc: '본격 운영하는 1인 · 팀 단위.',
+    desc: '본격 운영하는 크리에이터 · 소규모 팀.',
     cta: 'Pro 시작하기',
     ctaTarget: { intent: 'start' },
     featured: true,
     items: [
-      { on: true,  text: '사이트 최대 5개 생성' },
-      { on: true,  text: '모든 무료 템플릿' },
-      { on: true,  text: '커스텀 도메인 연결' },
-      { on: true,  text: '관리자 고급 편집기' },
-      { on: true,  text: 'export (정적 HTML)' },
+      { on: true,  text: '워크스페이스 5개' },
+      { on: true,  text: '콘텐츠 아이템 무제한' },
+      { on: true,  text: '팀원 초대 (최대 3명)' },
+      { on: true,  text: '성과 기록 · 리포트' },
+      { on: true,  text: '콘텐츠 담당자 배정' },
       { on: false, text: '전용 DB (dedicated)' },
     ],
   },
@@ -59,17 +59,17 @@ const PLANS: Plan[] = [
     name: 'Business',
     price: '문의',
     period: '/ 월',
-    desc: '조직 단위 운영 · 엔터프라이즈.',
+    desc: '다채널 · 조직 단위 크리에이터 팀.',
     cta: '도입 문의',
     ctaTarget: { href: '/contact' },
     featured: false,
     items: [
-      { on: true,  text: '사이트 무제한' },
-      { on: true,  text: '유료 템플릿 포함' },
-      { on: true,  text: '커스텀 도메인 · SSL 자동화' },
+      { on: true,  text: '워크스페이스 무제한' },
+      { on: true,  text: '팀원 무제한' },
+      { on: true,  text: '고급 권한 관리 (RBAC)' },
       { on: true,  text: '전용 DB (dedicated)' },
       { on: true,  text: 'SLA · 우선 지원' },
-      { on: true,  text: 'SSO / 권한 관리' },
+      { on: true,  text: 'SSO 연동' },
     ],
   },
 ] as const;
@@ -81,7 +81,7 @@ export default function PricingPage() {
         <div className="mk-hero-inner">
           <span className="mk-eyebrow">Pricing</span>
           <h1 style={{ fontSize: 40 }}>간단한 3단계 요금제</h1>
-          <p>Free 로 만들고, 필요해지면 Pro · Business 로 자연스럽게 확장하세요.</p>
+          <p>Free 로 시작하고, 팀이 커지면 Pro · Business 로 자연스럽게 확장하세요.</p>
         </div>
       </section>
 

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Http;
+namespace CreatorDesk\Http;
 
-// 응답 헬퍼.
-// - JSON envelope: { ok: bool, data?, error? }  (API 응답 전부)
-// - redirect:      OAuth 플로우처럼 브라우저를 다른 URL 로 보내는 경우
+// ?�답 ?�퍼.
+// - JSON envelope: { ok: bool, data?, error? }  (API ?�답 ?��?)
+// - redirect:      OAuth ?�로?�처??브라?��?�??�른 URL �?보내??경우
 final class Response
 {
     /** @param array<string,mixed>|null $payload */

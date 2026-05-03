@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-// 가벼운 마이그레이션 러너 — `php migrations/apply.php` 로 실행.
-// migrations/*.sql 을 사전순으로 순차 실행. 멱등성은 각 .sql 내부의 IF NOT EXISTS 등이 책임.
+// 가벼운 마이그레?�션 ?�너 ??`php migrations/apply.php` �??�행.
+// migrations/*.sql ???�전?�으�??�차 ?�행. 멱등?��? �?.sql ?��???IF NOT EXISTS ?�이 책임.
 
 require __DIR__ . '/../src/Bootstrap.php';
-\SiteForge\Bootstrap::class; // autoloader 등록 트리거용
+\CreatorDesk\Bootstrap::class; // autoloader ?�록 ?�리거용
 
-// Bootstrap::run() 은 HTTP 처리 루틴이므로 여기서 호출하면 안 됨.
-// 대신 autoload 만 등록되도록 동일 로직을 인라인.
+// Bootstrap::run() ?� HTTP 처리 루틴?��?�??�기???�출?�면 ????
+// ?�??autoload �??�록?�도�??�일 로직???�라??
 spl_autoload_register(static function (string $class): void {
-    $prefix = 'SiteForge\\';
+    $prefix = 'CreatorDesk\\';
     if (strncmp($class, $prefix, strlen($prefix)) !== 0) {
         return;
     }
@@ -20,16 +20,16 @@ spl_autoload_register(static function (string $class): void {
     }
 });
 
-$pdo = \SiteForge\Db\Connection::pdo();
+$pdo = \CreatorDesk\Db\Connection::pdo();
 
 $files = glob(__DIR__ . '/*.sql') ?: [];
 sort($files);
 
-// 멱등 처리할 SQLSTATE 클래스 / 에러 코드.
-//   42S21 / 1060 = 중복 컬럼  (ADD COLUMN 재실행)
-//   42000 / 1061 = 중복 키 이름
-//          1826 = 중복 FK 이름
-//          1091 = DROP 대상이 이미 없음
+// 멱등 처리??SQLSTATE ?�래??/ ?�러 코드.
+//   42S21 / 1060 = 중복 컬럼  (ADD COLUMN ?�실??
+//   42000 / 1061 = 중복 ???�름
+//          1826 = 중복 FK ?�름
+//          1091 = DROP ?�?�이 ?��? ?�음
 $IDEMPOTENT_CODES = [1060, 1061, 1091, 1826];
 
 foreach ($files as $file) {

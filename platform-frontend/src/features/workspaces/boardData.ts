@@ -8,7 +8,7 @@ export const COLUMNS_BY_PRESET: Record<ProductionPreset, BoardColumn[]> = {
     { id: 'idea',      label: '아이디어' },
     { id: 'editing',   label: '제작중' },
     { id: 'scheduled', label: '예약됨' },
-    { id: 'published', label: '발행완료' },
+    { id: 'published', label: '작업완료' },
   ],
   standard: [
     { id: 'idea',      label: '아이디어' },
@@ -16,7 +16,7 @@ export const COLUMNS_BY_PRESET: Record<ProductionPreset, BoardColumn[]> = {
     { id: 'shooting',  label: '촬영 / 녹화' },
     { id: 'editing',   label: '편집중' },
     { id: 'scheduled', label: '업로드 예약' },
-    { id: 'published', label: '발행완료' },
+    { id: 'published', label: '작업완료' },
   ],
   team: [
     { id: 'idea',        label: '아이디어' },
@@ -27,7 +27,7 @@ export const COLUMNS_BY_PRESET: Record<ProductionPreset, BoardColumn[]> = {
     { id: 'edit-review', label: '편집 검수' },
     { id: 'thumbnail',   label: '썸네일 작업' },
     { id: 'scheduled',   label: '예약됨' },
-    { id: 'published',   label: '발행완료' },
+    { id: 'published',   label: '작업완료' },
   ],
 };
 
@@ -35,8 +35,8 @@ export function getMockItems(workspaceId: string): ContentItem[] {
   const now = new Date().toISOString();
   return [
     {
-      id: 'item-1', workspaceId, title: '신작 게임 업데이트 리뷰',
-      status: 'editing', channels: ['YouTube'], contentFormat: '리뷰',
+      id: 'item-1', workspaceId, title: '제작 중인 것. 타이틀 길이 길게 해봄 ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ',
+      status: 'editing', channels: ['유튜브'], contentFormat: '리뷰',
       tags: ['#게임', '#리뷰', '#신작'], assignee: 'HC', priority: 'high',
       isSponsored: true, publishDate: '2026-04-30', shootDate: '2026-04-25', editDueDate: '2026-04-29',
       script: '', titleCandidates: ['신작 게임 업데이트 완벽 리뷰', '이 게임 진짜 달라졌다'],
@@ -45,7 +45,7 @@ export function getMockItems(workspaceId: string): ContentItem[] {
     },
     {
       id: 'item-2', workspaceId, title: '채널 구독자 1만 기념 브이로그',
-      status: 'planning', channels: ['YouTube', 'Instagram'], contentFormat: '브이로그',
+      status: 'planning', channels: ['유튜브'], contentFormat: '브이로그',
       tags: ['#일상', '#마일스톤'], assignee: 'HC', priority: 'medium',
       isSponsored: false, publishDate: '2026-05-05', shootDate: '', editDueDate: '2026-05-04',
       script: '', titleCandidates: [], thumbnailTexts: [], editingNotes: '',
@@ -53,7 +53,7 @@ export function getMockItems(workspaceId: string): ContentItem[] {
     },
     {
       id: 'item-3', workspaceId, title: '최신 스마트폰 언박싱 & 첫인상',
-      status: 'idea', channels: ['YouTube'], contentFormat: '언박싱',
+      status: 'idea', channels: ['유튜브'], contentFormat: '언박싱',
       tags: ['#언박싱', '#스마트폰', '#테크'], assignee: '', priority: 'low',
       isSponsored: false, publishDate: '', shootDate: '', editDueDate: '',
       script: '', titleCandidates: [], thumbnailTexts: [], editingNotes: '',
@@ -61,7 +61,7 @@ export function getMockItems(workspaceId: string): ContentItem[] {
     },
     {
       id: 'item-4', workspaceId, title: 'PC 조립 완전 정복 튜토리얼',
-      status: 'scripting', channels: ['YouTube'], contentFormat: '튜토리얼',
+      status: 'scripting', channels: ['유튜브'], contentFormat: '튜토리얼',
       tags: ['#PC', '#조립', '#입문'], assignee: 'HC', priority: 'high',
       isSponsored: false, publishDate: '2026-05-10', shootDate: '2026-05-01', editDueDate: '2026-05-08',
       script: '1. 인트로 — 이 영상을 만든 이유\n2. 부품 소개\n3. 조립 과정\n4. 테스트 및 마무리',
@@ -70,7 +70,7 @@ export function getMockItems(workspaceId: string): ContentItem[] {
     },
     {
       id: 'item-5', workspaceId, title: '봄 게임 추천 TOP 5',
-      status: 'published', channels: ['YouTube'], contentFormat: '정보전달',
+      status: 'published', channels: ['유튜브'], contentFormat: '정보전달',
       tags: ['#게임추천', '#봄'], assignee: 'HC', priority: 'medium',
       isSponsored: false, publishDate: '2026-04-15', shootDate: '2026-04-10', editDueDate: '2026-04-14',
       script: '', titleCandidates: [], thumbnailTexts: [], editingNotes: '',
@@ -78,8 +78,8 @@ export function getMockItems(workspaceId: string): ContentItem[] {
     },
     {
       id: 'item-6', workspaceId, title: '스트리밍 셋업 공개',
-      status: 'scheduled', channels: ['YouTube', 'Twitch'], contentFormat: '브이로그',
-      tags: ['#셋업', '#스트리머'], assignee: 'HC', priority: 'medium',
+      status: 'scheduled', channels: ['유튜브', '트위치'], contentFormat: '브이로그',
+      tags: ['#셋업', '#라이브 스트리밍'], assignee: 'HC', priority: 'medium',
       isSponsored: true, publishDate: '2026-05-01', shootDate: '2026-04-28', editDueDate: '2026-04-30',
       script: '', titleCandidates: ['내 방송 셋업 전부 공개', '스트리밍 시작하려면 이것만'], thumbnailTexts: [],
       editingNotes: '', referenceLinks: [], createdAt: now, updatedAt: now,

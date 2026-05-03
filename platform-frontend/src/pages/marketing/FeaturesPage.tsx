@@ -8,8 +8,8 @@ export default function FeaturesPage() {
       <section className="mk-hero" style={{ padding: '80px 28px 48px' }}>
         <div className="mk-hero-inner">
           <span className="mk-eyebrow">Product</span>
-          <h1 style={{ fontSize: 40 }}>제작부터 운영·이관까지, 한곳에서</h1>
-          <p>CreatorDesk 는 워크스페이스 생성에서 끝나지 않습니다. 만든 뒤에도 계속 쓰이는 SaaS 가 되도록 설계되어 있습니다.</p>
+          <h1 style={{ fontSize: 40 }}>아이디어부터 업로드까지, 한곳에서</h1>
+          <p>CreatorDesk 는 콘텐츠 제작 흐름 전체를 워크스페이스 하나로 관리합니다. 아이디어가 떠오른 순간부터 업로드 완료까지, 흩어진 메모·대본·일정을 하나의 보드에서 추적하세요.</p>
         </div>
       </section>
 
@@ -17,47 +17,47 @@ export default function FeaturesPage() {
         <div className="mk-section-inner">
           <div className="mk-grid-2">
             <Block
-              eyebrow="Site Builder"
-              title="사이트 빌더"
-              desc="유형 선택 → 기본 정보 → 페이지 선택 → 기능 선택 → 페이지별 콘텐츠 입력 → 결과 확인 순서로 진행됩니다. 좌측 실시간 미리보기에서 바로 결과를 보며 구성할 수 있습니다."
-              bullets={['회사 소개/포트폴리오 등 8종 유형 준비', '홈 + 회사소개 + 서비스 + 문의 등 개별 페이지 생성', 'PC/모바일 뷰 실시간 스위칭']}
+              eyebrow="Idea Vault"
+              title="아이디어 보관함"
+              desc="떠오른 아이디어를 바로 저장하고, 우선순위·태그·참고 링크를 붙여 관리합니다. 준비가 되면 콘텐츠 아이디어로 전환하세요."
+              bullets={['빠른 메모 → 아이디어 저장', '우선순위 · 태그 · 출처 기록', '아이디어 → 콘텐츠 아이템 전환']}
             />
             <Block
-              eyebrow="Admin"
-              title="관리자 운영 기능"
-              desc="만든 사이트를 실제로 운영할 수 있는 관리자 화면이 함께 생성됩니다. 대시보드 · 콘텐츠 · 문의 · 공개 상태 4영역으로 구성됩니다."
-              bullets={['페이지별 텍스트/이미지/섹션 편집', '방문자 문의 관리', '사이트 공개/비공개 전환']}
+              eyebrow="Content Board"
+              title="콘텐츠 상태 보드"
+              desc="아이디어 · 기획 · 대본 · 촬영 · 편집 · 검수 · 썸네일 · 예약 · 발행까지 9단계 상태를 칸반 보드로 한눈에 파악합니다."
+              bullets={['9단계 상태 머신 (idea → published)', '칸반 보드 + 목록 뷰 전환', '상태 변경 이력 기록']}
             />
             <Block
-              eyebrow="Page & Content"
-              title="페이지 · 콘텐츠 관리"
-              desc="사용자가 선택한 페이지는 각각 독립 라우트와 URL 을 가진 진짜 웹페이지로 생성됩니다. 하나의 긴 랜딩 페이지가 아닙니다."
-              bullets={['/about, /services, /contact 개별 경로', '페이지 단위 콘텐츠 저장 구조', '네비게이션은 실제 라우터 기반 이동']}
+              eyebrow="Production Assets"
+              title="제작 자산 관리"
+              desc="콘텐츠별로 대본, 제목 후보, 썸네일 문구, 편집 메모, 참고 링크를 한 카드에 모아 관리합니다."
+              bullets={['대본 직접 작성 · 저장', '제목 후보 · 썸네일 문구 후보 목록', '편집 메모 · 참고 링크']}
             />
             <Block
-              eyebrow="Multi-tenant"
-              title="멀티테넌트 운영 구조"
-              desc="한 인프라 위에서 수많은 고객 사이트를 안전하게 격리합니다. site_id 단위의 데이터 스코프로 설계되어, 커질수록 깔끔하게 확장됩니다."
-              bullets={['site_id 기반 테넌트 격리', '향후 dedicated DB 전환 가능', '플랫폼 공통 업데이트 적용']}
+              eyebrow="Calendar"
+              title="월간 콘텐츠 캘린더"
+              desc="촬영일 · 편집 마감일 · 업로드 예정일을 월간 캘린더로 확인합니다. 겹치는 일정을 한눈에 파악해 제작 흐름을 조율하세요."
+              bullets={['촬영 · 편집마감 · 업로드 일정 통합', '월간 그리드 뷰', '이벤트 유형별 색상 구분']}
             />
             <Block
-              eyebrow="Export"
-              title="Export 가능한 구조"
-              desc="SaaS 안에서 운영하다가 필요해지면 자기 서버로 산출물을 이관할 수 있는 경로를 열어둡니다."
-              bullets={['렌더러는 플랫폼/공개/export 3컨텍스트 공용', '정적 HTML 출력 경로 (로드맵)']}
+              eyebrow="Workspace"
+              title="채널별 워크스페이스"
+              desc="유튜브 채널, 틱톡 계정, 블로그 등 채널 단위로 워크스페이스를 분리해 운영합니다. 채널별 목적·포맷·톤앤매너를 설정하세요."
+              bullets={['채널 단위 워크스페이스 생성', '채널 목적 · 콘텐츠 포맷 설정', '워크스페이스별 독립 데이터']}
             />
             <Block
               eyebrow="Roadmap"
-              title="커스텀 도메인 · 엔터프라이즈"
-              desc="장기적으로 커스텀 도메인·SSL 자동화·전용 DB 분리 플랜을 제공할 예정입니다."
-              bullets={['커스텀 도메인 연결', 'SSL 자동 프로비저닝', '엔터프라이즈 전용 DB']}
+              title="팀 협업 · 성과 기록"
+              desc="팀원 초대, 담당자 배정, 검수 흐름과 콘텐츠별 성과 기록은 v2 로드맵에 포함되어 있습니다."
+              bullets={['팀원 역할 초대 (owner / editor / viewer)', '콘텐츠 담당자 배정', '조회수 · 구독 증감 성과 기록']}
             />
           </div>
 
           <div className="mk-cta-band" style={{ marginTop: 56 }}>
             <div>
-              <h3>지금 가장 확실한 1종부터 시작</h3>
-              <p>회사 소개형 사이트는 바로 만들 수 있습니다. 나머지 유형은 순차 공개됩니다.</p>
+              <h3>무료로 워크스페이스를 만들어보세요</h3>
+              <p>첫 워크스페이스는 무료입니다. 지금 바로 콘텐츠 제작 흐름을 정리하세요.</p>
             </div>
             <AuthAwareCta intent="start" className="btn primary">무료로 시작하기</AuthAwareCta>
           </div>

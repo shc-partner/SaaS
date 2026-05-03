@@ -57,7 +57,7 @@ export default function DashboardPage() {
             <h3>최근 안내</h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, color: 'var(--text-2)' }}>
               <li>✓ 워크스페이스 생성 마법사(6단계)가 준비되었습니다.</li>
-              <li>✓ 유튜버·스트리머·숏폼 등 목적별 템플릿이 적용됩니다.</li>
+              <li>✓ 유튜버·라이브 스트리밍·숏폼 등 목적별 템플릿이 적용됩니다.</li>
               <li>• 보드·캘린더·콘텐츠 기능이 다음 스테이지에서 연결됩니다.</li>
             </ul>
           </div>

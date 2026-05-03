@@ -49,19 +49,6 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: saas_phpmyadmin
-    restart: always
-    depends_on:
-      - db
-    environment:
-      PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: root1234
-    ports:
-      - "8081:80"
-
 volumes:
   mysql_data:
   frontend_node_modules:

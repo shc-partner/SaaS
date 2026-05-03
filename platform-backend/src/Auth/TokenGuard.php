@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Auth;
+namespace CreatorDesk\Auth;
 
-use SiteForge\Http\Request;
+use CreatorDesk\Http\Request;
 
-// 컨트롤러에서 "현재 로그인한 사용자" 를 얻기 위한 얇은 헬퍼.
-// 별도 미들웨어 계층이 아직 없으므로 — 라우트 단위로 명시적으로 호출한다.
+// 컨트롤러?�서 "?�재 로그?�한 ?�용?? �??�기 ?�한 ?��? ?�퍼.
+// 별도 미들?�어 계층???�직 ?�으므�????�우???�위�?명시?�으�??�출?�다.
 final class TokenGuard
 {
     public function __construct(
         private Service $service = new Service(),
     ) {}
 
-    /** 현재 요청의 Bearer 토큰으로 사용자 정보를 찾아 반환. 없거나 만료면 null. */
+    /** ?�재 ?�청??Bearer ?�큰?�로 ?�용???�보�?찾아 반환. ?�거??만료�?null. */
     public function user(Request $req): ?array
     {
         $token = $req->bearerToken();

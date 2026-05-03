@@ -1,4 +1,4 @@
-/* Minimal base reset — 빌더 UI 스타일은 styles/builder.css 가 담당. */
+/* Minimal base reset. */
 :root {
   font-synthesis: none;
   text-rendering: optimizeLegibility;

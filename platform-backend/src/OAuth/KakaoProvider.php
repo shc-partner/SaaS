@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\OAuth;
+namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// 카카오 로그인 — kakao_account.email, properties.nickname 사용.
+// 카카??로그????kakao_account.email, properties.nickname ?�용.
 final class KakaoProvider implements Provider
 {
     /** @param array<string,string> $config */
@@ -42,7 +42,7 @@ final class KakaoProvider implements Provider
         }
         $tok = $this->http->postForm($this->config['tokenUrl'], $params);
         if (!isset($tok['access_token'])) {
-            throw new RuntimeException('Kakao 토큰 응답에 access_token 이 없습니다.');
+            throw new RuntimeException('Kakao ?�큰 ?�답??access_token ???�습?�다.');
         }
         return ['accessToken' => (string)$tok['access_token'], 'raw' => $tok];
     }
@@ -54,7 +54,7 @@ final class KakaoProvider implements Provider
         ]);
         $id = isset($p['id']) ? (string)$p['id'] : '';
         if ($id === '') {
-            throw new RuntimeException('Kakao 프로필에 id 가 없습니다.');
+            throw new RuntimeException('Kakao ?�로?�에 id 가 ?�습?�다.');
         }
         $account = is_array($p['kakao_account'] ?? null) ? $p['kakao_account'] : [];
         $props   = is_array($p['properties'] ?? null)    ? $p['properties']    : [];

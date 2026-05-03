@@ -7,10 +7,11 @@
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 9px 16px; border-radius: var(--radius-sm);
-  font-size: 14px; font-weight: 600; line-height: 1.2;
+  font-size: 14px; font-weight: 600; line-height: 1.25;
   border: 1px solid transparent; cursor: pointer;
   transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast), box-shadow var(--t-fast);
   white-space: nowrap;
+  word-break: keep-all;
 }
 .btn:focus-visible { outline: none; box-shadow: var(--ring-focus); }
 
@@ -76,7 +77,8 @@ a.btn.btn-block { display: flex; }
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
   color: var(--text-1);
-  font: inherit; font-size: 14px;
+  font: inherit; font-size: 15px;
+  line-height: 1.5;
   transition: border-color var(--t-fast), box-shadow var(--t-fast);
 }
 .field input::placeholder,
@@ -89,9 +91,6 @@ a.btn.btn-block { display: flex; }
   outline: none; border-color: var(--brand-500); box-shadow: var(--ring-focus);
 }
 
-.field-hint  { color: var(--text-3); font-size: 12px; }
-.field-error { color: var(--danger); font-size: 12px; font-style: normal; }
-
 .form-error {
   margin: 4px 0 0; padding: 10px 12px; font-size: 13px;
   color: var(--danger); background: var(--danger-bg);
@@ -101,30 +100,14 @@ a.btn.btn-block { display: flex; }
 /* ---------- Badges / chips ---------- */
 .badge {
   display: inline-flex; align-items: center;
-  font-size: 11px; font-weight: 600; line-height: 1;
+  font-size: 12px; font-weight: 600; line-height: 1.15;
   padding: 4px 9px; border-radius: var(--radius-pill);
   background: var(--bg-muted); color: var(--text-2);
+  white-space: nowrap;
+  word-break: keep-all;
 }
 .badge.brand   { background: var(--brand-50);    color: var(--brand-700); }
 .badge.success { background: var(--success-bg);  color: var(--success); }
 .badge.warning { background: var(--warning-bg);  color: var(--warning); }
 .badge.danger  { background: var(--danger-bg);   color: var(--danger); }
 .badge.info    { background: var(--info-bg);     color: var(--info); }
-
-/* alias: 기존 markup 의 .chip / .pricing-* — badge 와 동일한 시각 토큰 */
-.chip,
-.pricing {
-  display: inline-flex; align-items: center;
-  font-size: 11px; font-weight: 600; line-height: 1;
-  padding: 4px 9px; border-radius: var(--radius-pill);
-}
-.chip          { background: var(--bg-muted);   color: var(--text-2); }
-.pricing-free  { background: var(--success-bg); color: var(--success); }
-.pricing-paid  { background: var(--warning-bg); color: var(--warning); }
-
-/* ---------- Section heads ---------- */
-.section-eyebrow {
-  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--brand-600);
-  margin: 0 0 6px;
-}

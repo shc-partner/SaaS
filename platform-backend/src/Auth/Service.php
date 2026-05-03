@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Auth;
+namespace CreatorDesk\Auth;
 
 use InvalidArgumentException;
 use RuntimeException;
 
-// 계정 · 세션 관련 비즈니스 규칙.
-// - 비밀번호: password_hash + password_verify (bcrypt)
-// - 세션 토큰: 32바이트 random_bytes → hex(64자). user_sessions.id 에 저장.
-// - 세션 만료: 기본 14일 (환경변수 AUTH_SESSION_DAYS 로 오버라이드 가능).
+// 계정 · ?�션 관??비즈?�스 규칙.
+// - 비�?번호: password_hash + password_verify (bcrypt)
+// - ?�션 ?�큰: 32바이??random_bytes ??hex(64??. user_sessions.id ???�??
+// - ?�션 만료: 기본 14??(?�경변??AUTH_SESSION_DAYS �??�버?�이??가??.
 final class Service
 {
     private const EMAIL_REGEX = '/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/';
@@ -67,7 +67,7 @@ final class Service
 
         $user = $this->repo->findUserByEmail($email);
         if ($user === null || !password_verify($pw, (string)$user['password_hash'])) {
-            // 계정 존재 여부를 흘리지 않기 위해 동일 메시지.
+            // 계정 존재 ?��?�??�리지 ?�기 ?�해 ?�일 메시지.
             throw new InvalidArgumentException('이메일 또는 비밀번호가 올바르지 않습니다.');
         }
         if (($user['status'] ?? 'active') !== 'active') {

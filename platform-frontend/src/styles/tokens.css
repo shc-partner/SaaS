@@ -5,102 +5,148 @@
  */
 
 :root {
-  /* Brand — indigo 계열 */
-  --brand-50:  #eef2ff;
-  --brand-100: #e0e7ff;
-  --brand-200: #c7d2fe;
-  --brand-500: #6366f1;
-  --brand-600: #4f46e5;
-  --brand-700: #4338ca;
-  --brand-on:  #ffffff;
+  /* ── 새 컬러 시스템 ── */
+  --bg:         #f8f7f4;
+  --surface-1:  #ffffff;
+  --surface-2:  #f1efea;
+  --surface-3:  #e7e3dc;
 
-  /* Surfaces */
-  --bg-app:      #f4f6fa;          /* 페이지 배경 */
-  --bg-surface:  #ffffff;          /* 카드/패널 */
-  --bg-subtle:   #f7f8fb;          /* 보조 패널/요약 카드 */
-  --bg-muted:    #eef0f4;          /* code chip / divider 영역 */
-  --bg-elevated: #ffffff;          /* hover/popover */
-
-  /* Borders */
-  --border-1: #e4e7ee;             /* 기본 경계 */
-  --border-2: #d4d8e2;             /* 강조 경계/입력 */
-  --border-dashed: #d9dce5;
-
-  /* Text */
-  --text-1: #1a1d2b;               /* 본문/헤딩 */
-  --text-2: #4a4f5e;               /* 보조 */
-  --text-3: #7e8493;               /* 캡션/플레이스홀더 */
+  --text-1:     #1f2933;
+  --text-2:     #52616f;
+  --text-3:     #8a94a3;
   --text-inverse: #ffffff;
-  --link:    var(--brand-600);
 
-  /* Status */
-  --success:    #1a6a2a;
-  --success-bg: #e7f4e9;
-  --warning:    #6b5500;
-  --warning-bg: #fff3d6;
-  --danger:     #b3261e;
-  --danger-bg:  #fdecea;
-  --info:       #1f4f8b;
-  --info-bg:    #e7eef8;
+  --border-subtle:  #e5e0d8;
+  --border-strong:  #d6cec2;
+  --border-dashed:  #e5e0d8;
 
-  /* Radius */
-  --radius-sm:  6px;
-  --radius-md:  8px;
-  --radius-lg:  12px;
+  --primary:       #3f6f8f;
+  --primary-hover: #345f7b;
+  --primary-soft:  #e4eef4;
+
+  --success:      #5f8f72;
+  --success-soft: #e8f1ea;
+
+  --warning:      #b7791f;
+  --warning-soft: #f5ead7;
+
+  --danger:       #b85c5c;
+  --danger-soft:  #f4dddd;
+
+  --info:         #3f6f8f;
+  --info-soft:    #e4eef4;
+
+  --priority-low:    #9ca3af;
+  --priority-medium: #c28f3c;
+  --priority-high:   #b85c5c;
+
+  /* ── 하위 호환 별칭 ── */
+  --bg-app:      var(--bg);
+  --bg-surface:  var(--surface-1);
+  --bg-subtle:   var(--surface-2);
+  --bg-muted:    var(--surface-3);
+  --bg-elevated: var(--surface-1);
+  --bg-card:     var(--surface-1);
+
+  --border-1: var(--border-subtle);
+  --border-2: var(--border-strong);
+
+  --brand-50:  var(--primary-soft);
+  --brand-100: var(--primary-soft);
+  --brand-200: #c5dae8;
+  --brand-500: var(--primary);
+  --brand-600: var(--primary);
+  --brand-700: var(--primary-hover);
+  --brand-on:  #ffffff;
+  --brand:     var(--primary);
+  --link:      var(--primary);
+
+  --success-bg: var(--success-soft);
+  --warning-bg: var(--warning-soft);
+  --danger-bg:  var(--danger-soft);
+  --info-bg:    var(--info-soft);
+
+  /* ── Radius ── */
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
   --radius-pill: 999px;
 
-  /* Shadows — 라이트 톤은 흐릿한 인디고 그림자 */
-  --shadow-sm: 0 1px 2px rgba(20, 24, 40, 0.06), 0 1px 1px rgba(20, 24, 40, 0.04);
-  --shadow-md: 0 4px 14px rgba(20, 24, 40, 0.08), 0 2px 4px rgba(20, 24, 40, 0.04);
-  --shadow-lg: 0 18px 40px rgba(20, 24, 40, 0.10), 0 4px 10px rgba(20, 24, 40, 0.05);
-  --ring-focus: 0 0 0 3px rgba(99, 102, 241, 0.30);
+  /* ── Shadows — warm neutral ── */
+  --shadow-sm: 0 1px 2px rgba(31, 41, 51, 0.06), 0 1px 1px rgba(31, 41, 51, 0.04);
+  --shadow-md: 0 4px 14px rgba(31, 41, 51, 0.08), 0 2px 4px rgba(31, 41, 51, 0.04);
+  --shadow-lg: 0 18px 40px rgba(31, 41, 51, 0.10), 0 4px 10px rgba(31, 41, 51, 0.05);
+  --ring-focus: 0 0 0 3px rgba(63, 111, 143, 0.28);
 
-  /* Layout */
-  --header-h:   60px;
+  /* ── Layout ── */
+  --header-h:    60px;
   --content-max: 1200px;
-  --sidebar-w:  440px;
+  --sidebar-w:   440px;
 
-  /* Motion */
+  /* ── Motion ── */
   --t-fast: 120ms ease;
   --t-base: 180ms ease;
 }
 
 [data-theme="dark"] {
-  --brand-50:  #1f2540;
-  --brand-100: #25305a;
-  --brand-200: #2d3a78;
-  --brand-500: #818cf8;
-  --brand-600: #6366f1;
-  --brand-700: #4f46e5;
-  --brand-on:  #ffffff;
+  --bg:         #111315;
+  --surface-1:  #181b1f;
+  --surface-2:  #20242a;
+  --surface-3:  #2a3038;
 
-  --bg-app:      #0e1118;
-  --bg-surface:  #161a23;
-  --bg-subtle:   #1b2029;
-  --bg-muted:    #232936;
-  --bg-elevated: #1d2331;
+  --text-1:     #f3f0ea;
+  --text-2:     #b8c0cc;
+  --text-3:     #7f8997;
+  --text-inverse: #111315;
 
-  --border-1: #262b38;
-  --border-2: #353b48;
-  --border-dashed: #2f3543;
+  --border-subtle: #2f353d;
+  --border-strong: #3b434d;
+  --border-dashed: #2f353d;
 
-  --text-1: #e8eaef;
-  --text-2: #b3b8c4;
-  --text-3: #7e8493;
-  --text-inverse: #0e1118;
-  --link:    var(--brand-500);
+  --primary:       #86adc5;
+  --primary-hover: #9bbdd1;
+  --primary-soft:  rgba(134, 173, 197, 0.16);
 
-  --success:    #5cd673;
-  --success-bg: #142a1c;
-  --warning:    #f5c863;
-  --warning-bg: #2a2510;
-  --danger:     #ff7068;
-  --danger-bg:  #2a1717;
-  --info:       #6fb1ff;
-  --info-bg:    #142235;
+  --success:      #91b89f;
+  --success-soft: rgba(145, 184, 159, 0.16);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.50);
-  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.40);
-  --ring-focus: 0 0 0 3px rgba(129, 140, 248, 0.35);
+  --warning:      #d0a85c;
+  --warning-soft: rgba(208, 168, 92, 0.16);
+
+  --danger:       #d48787;
+  --danger-soft:  rgba(212, 135, 135, 0.16);
+
+  --info:         #86adc5;
+  --info-soft:    rgba(134, 173, 197, 0.16);
+
+  --priority-low:    #7f8997;
+  --priority-medium: #d0a85c;
+  --priority-high:   #d48787;
+
+  --brand-50:  rgba(134, 173, 197, 0.12);
+  --brand-100: rgba(134, 173, 197, 0.18);
+  --brand-200: rgba(134, 173, 197, 0.28);
+  --brand-500: var(--primary);
+  --brand-600: var(--primary);
+  --brand-700: var(--primary-hover);
+
+  --bg-app:      var(--bg);
+  --bg-surface:  var(--surface-1);
+  --bg-subtle:   var(--surface-2);
+  --bg-muted:    var(--surface-3);
+  --bg-elevated: var(--surface-2);
+  --bg-card:     var(--surface-1);
+
+  --border-1: var(--border-subtle);
+  --border-2: var(--border-strong);
+
+  --success-bg: var(--success-soft);
+  --warning-bg: var(--warning-soft);
+  --danger-bg:  var(--danger-soft);
+  --info-bg:    var(--info-soft);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.50), 0 4px 10px rgba(0, 0, 0, 0.35);
+  --ring-focus: 0 0 0 3px rgba(134, 173, 197, 0.30);
 }

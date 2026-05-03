@@ -2,9 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/AuthProvider';
 
-// 헤더 우측 사용자 메뉴.
-// 로그인 상태: 아바타 + 이름 클릭 → 드롭다운(대시보드/내 사이트/로그아웃).
-// 비로그인 상태: 부모가 렌더하지 않음.
 export default function UserMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -42,8 +39,8 @@ export default function UserMenu() {
             <small>{user.email}</small>
           </div>
           <Link to="/dashboard" className="user-menu-item" onClick={() => setOpen(false)}>대시보드</Link>
-          <Link to="/sites"     className="user-menu-item" onClick={() => setOpen(false)}>내 사이트</Link>
-          <Link to="/builder"   className="user-menu-item" onClick={() => setOpen(false)}>빌더</Link>
+          <Link to="/workspaces" className="user-menu-item" onClick={() => setOpen(false)}>워크스페이스</Link>
+          <Link to="/workspaces/new" className="user-menu-item" onClick={() => setOpen(false)}>새 워크스페이스</Link>
           <div className="user-menu-sep" />
           <button
             type="button"

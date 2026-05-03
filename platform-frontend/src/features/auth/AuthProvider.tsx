@@ -21,7 +21,6 @@ import {
   saveAuthToken,
   saveStoredUser,
 } from './storage';
-import { clearMySites } from '../mySites/storage';
 
 // 세션 상태 전역 공유.
 // - 앱 시작 시 토큰이 있으면 /api/auth/me 로 검증.
@@ -74,10 +73,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // 서버 세션 파기 — 실패해도 로컬은 무조건 비움.
     try { await apiLogout(); } catch { /* noop */ }
     // 다른 계정이 같은 브라우저로 로그인할 때 이전 사용자의 사이트 캐시가 보이지 않도록 정리.
-    if (user?.id !== undefined) clearMySites(user.id);
     clearAuthToken();
     setUser(null);
-  }, [user?.id]);
+  }, []);
 
   // OAuth 콜백 처리 — 서버가 이미 세션 토큰을 발급해 URL fragment 로 넘겨주었다.
   // 토큰만 저장한 뒤 /api/auth/me 로 사용자 정보를 정식으로 채운다.

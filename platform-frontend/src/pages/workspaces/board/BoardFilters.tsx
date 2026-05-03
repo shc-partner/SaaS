@@ -1,9 +1,8 @@
-// 보드 상단 필터 영역 — 검색·채널·형식 필터.
-
-import { useBoardState, useBoardDispatch } from '../../../features/workspaces/boardStore';
+import { useBoardDispatch, useBoardState } from '../../../features/workspaces/boardStore';
+import { BOARD_CHANNEL_OPTIONS } from './boardChannels';
 
 export default function BoardFilters() {
-  const state    = useBoardState();
+  const state = useBoardState();
   const dispatch = useBoardDispatch();
 
   return (
@@ -21,10 +20,11 @@ export default function BoardFilters() {
         onChange={(e) => dispatch({ type: 'SET_FILTER_CHANNEL', payload: e.target.value })}
       >
         <option value="">전체 채널</option>
-        <option value="YouTube">YouTube</option>
-        <option value="Twitch">Twitch</option>
-        <option value="Instagram">Instagram</option>
-        <option value="TikTok">TikTok</option>
+        {BOARD_CHANNEL_OPTIONS.map((channel) => (
+          <option key={channel} value={channel}>
+            {channel}
+          </option>
+        ))}
       </select>
       <select
         className="ws-filter-select"

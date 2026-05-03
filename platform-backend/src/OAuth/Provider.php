@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\OAuth;
+namespace CreatorDesk\OAuth;
 
-// OAuth provider 공통 인터페이스.
-// 각 provider 는 authorize URL 빌드 + code→token 교환 + 토큰→프로필 조회를 캡슐화.
+// OAuth provider 공통 ?�터?�이??
+// �?provider ??authorize URL 빌드 + code?�token 교환 + ?�큰?�프로필 조회�?캡슐??
 interface Provider
 {
     public function id(): string;

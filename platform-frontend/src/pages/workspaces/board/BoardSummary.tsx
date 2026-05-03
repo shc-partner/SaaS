@@ -46,7 +46,7 @@ export default function BoardSummary() {
     <div className="ws-summary-row">
       <SummaryCard label="이번 주 업로드" value={thisWeek} accent="var(--brand)" />
       <SummaryCard label="편집중" value={editing} />
-      <SummaryCard label="지연" value={overdue} accent="var(--red-500, #ef4444)" />
+      <SummaryCard label="지연" value={overdue} accent="var(--danger)" />
       <SummaryCard label="아이디어" value={ideas.length} />
     </div>
   );

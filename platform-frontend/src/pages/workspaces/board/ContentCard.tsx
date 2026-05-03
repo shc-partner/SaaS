@@ -2,21 +2,25 @@
 // 클릭 시 우측 상세 패널이 열린다.
 
 import type { ContentItem, Priority } from '../../../features/workspaces/boardTypes';
-import { useBoardDispatch } from '../../../features/workspaces/boardStore';
+import { useBoardDispatch, useBoardState } from '../../../features/workspaces/boardStore';
+import { visibleBoardChannels } from './boardChannels';
 
 function priorityColor(p: Priority): string {
   return p === 'high'
-    ? 'var(--red-500, #ef4444)'
+    ? 'var(--priority-high)'
     : p === 'medium'
-    ? 'var(--amber-500, #f59e0b)'
-    : 'var(--text-3)';
+    ? 'var(--priority-medium)'
+    : 'var(--priority-low)';
 }
 
 export default function ContentCard({ item }: { item: ContentItem }) {
   const dispatch = useBoardDispatch();
+  const { selectedItemId } = useBoardState();
+  const isSelected = selectedItemId === item.id;
+  const channels = visibleBoardChannels(item.channels);
   return (
     <div
-      className="ws-content-card"
+      className={`ws-content-card${isSelected ? ' ws-content-card--selected' : ''}`}
       role="button"
       tabIndex={0}
       onClick={() => dispatch({ type: 'SELECT_ITEM', payload: item.id })}
@@ -28,7 +32,7 @@ export default function ContentCard({ item }: { item: ContentItem }) {
       <div className="ws-card-body">
         <p className="ws-card-title">{item.title}</p>
         <div className="ws-card-meta">
-          {item.channels.map((ch) => (
+          {channels.map((ch) => (
             <span key={ch} className="ws-badge ws-badge--channel">{ch}</span>
           ))}
           {item.contentFormat && (

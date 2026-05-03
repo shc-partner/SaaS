@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-// OAuth provider 설정.
-// 실제 client_id/secret 은 배포 환경 변수로만 주입. 값이 비어 있으면 Service 가 "mock mode" 로 떨어져
-// 실제 외부 호출 없이 가짜 프로필로 사용자 생성/로그인이 완결되도록 한다.
+// OAuth provider ?�정.
+// ?�제 client_id/secret ?� 배포 ?�경 변?�로�?주입. 값이 비어 ?�으�?Service 가 "mock mode" �??�어??
+// ?�제 ?��? ?�출 ?�이 가�??�로?�로 ?�용???�성/로그?�이 ?�결?�도�??�다.
 //
-// 각 provider 콘솔에 등록할 Authorized redirect URI:
+// �?provider 콘솔???�록??Authorized redirect URI:
 //   http://localhost:8000/api/auth/oauth/google/callback
 //   http://localhost:8000/api/auth/oauth/naver/callback
 //   http://localhost:8000/api/auth/oauth/kakao/callback
@@ -36,7 +36,7 @@ return [
     ],
     'kakao' => [
         'clientId'     => getenv('OAUTH_KAKAO_CLIENT_ID')     ?: '',
-        'clientSecret' => getenv('OAUTH_KAKAO_CLIENT_SECRET') ?: '',  // 선택
+        'clientSecret' => getenv('OAUTH_KAKAO_CLIENT_SECRET') ?: '',  // ?�택
         'redirectUri'  => $appBase . '/api/auth/oauth/kakao/callback',
         'authorizeUrl' => 'https://kauth.kakao.com/oauth/authorize',
         'tokenUrl'     => 'https://kauth.kakao.com/oauth/token',

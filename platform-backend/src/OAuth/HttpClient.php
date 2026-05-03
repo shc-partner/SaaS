@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\OAuth;
+namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// OAuth 토큰/프로필 호출용 초경량 HTTP 클라이언트.
-// 외부 의존성 없이 file_get_contents + stream_context 로 구현 — curl 확장 없어도 동작.
+// OAuth ?�큰/?�로???�출??초경??HTTP ?�라?�언??
+// ?��? ?�존???�이 file_get_contents + stream_context �?구현 ??curl ?�장 ?�어???�작.
 final class HttpClient
 {
     /**
@@ -49,24 +49,24 @@ final class HttpClient
                 'method'        => $method,
                 'header'        => $hdr,
                 'content'       => $body,
-                'ignore_errors' => true, // non-2xx 에도 본문을 받기 위해
+                'ignore_errors' => true, // non-2xx ?�도 본문??받기 ?�해
                 'timeout'       => 10,
             ],
         ]);
         $raw = @file_get_contents($url, false, $ctx);
         if ($raw === false) {
-            throw new RuntimeException("OAuth HTTP 호출 실패: {$url}");
+            throw new RuntimeException("OAuth HTTP ?�출 ?�패: {$url}");
         }
         $status = 0;
         if (isset($http_response_header[0]) && preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
             $status = (int)$m[1];
         }
         if ($status < 200 || $status >= 300) {
-            throw new RuntimeException("OAuth 응답 오류 ({$status}) {$url}: " . substr($raw, 0, 300));
+            throw new RuntimeException("OAuth ?�답 ?�류 ({$status}) {$url}: " . substr($raw, 0, 300));
         }
         $decoded = json_decode($raw, true);
         if (!is_array($decoded)) {
-            throw new RuntimeException("OAuth 응답이 JSON 이 아님: {$url}");
+            throw new RuntimeException("OAuth ?�답??JSON ???�님: {$url}");
         }
         return $decoded;
     }

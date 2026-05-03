@@ -1,6 +1,6 @@
 {
-    "name": "siteforge/platform-backend",
-    "description": "SiteForge platform API — plain PHP, PSR-4 autoload only.",
+    "name": "creatordesk/platform-backend",
+    "description": "CreatorDesk platform API - plain PHP, PSR-4 autoload only.",
     "type": "project",
     "license": "proprietary",
     "require": {
@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SiteForge\\": "src/"
+            "CreatorDesk\\": "src/"
         }
     },
     "config": {

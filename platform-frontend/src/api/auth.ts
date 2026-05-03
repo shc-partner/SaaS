@@ -1,7 +1,7 @@
-// 인증 API 클라이언트.
-// 토큰은 Authorization: Bearer 헤더로 전달. 토큰 자체는 localStorage 에 저장한다 (authStorage).
+// Mock auth — 백엔드 없이 localStorage 기반으로 동작하는 MVP용 구현.
+// AuthProvider, LoginPage, SignupPage 등은 이 파일만 보므로 인터페이스를 그대로 유지한다.
 
-import { loadAuthToken } from '../features/auth/storage';
+import { loadStoredUser } from '../features/auth/storage';
 
 export interface AuthUser {
   id: number;
@@ -17,41 +17,56 @@ export interface AuthSession {
   expiresAt: string;
 }
 
-interface ApiOk<T>   { ok: true;  data: T }
-interface ApiError   { ok: false; error: { code: string; message: string; details?: unknown } }
-type ApiEnvelope<T> = ApiOk<T> | ApiError;
+function makeMockUser(email: string, name?: string): AuthUser {
+  return {
+    id: 1,
+    email,
+    name: name ?? email.split('@')[0],
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    lastLoginAt: new Date().toISOString(),
+  };
+}
 
-async function call<T>(path: string, init?: RequestInit): Promise<T> {
-  const token = loadAuthToken();
-  const res = await fetch(path, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(init?.headers ?? {}),
-    },
-  });
-  let body: ApiEnvelope<T>;
-  try {
-    body = await res.json();
-  } catch {
-    throw new Error(`서버 응답을 파싱할 수 없습니다 (status ${res.status})`);
+function makeMockSession(email: string, name?: string): AuthSession {
+  return {
+    user: makeMockUser(email, name),
+    token: `mock-token-${Date.now()}`,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+  };
+}
+
+export function login(input: { email: string; password: string }): Promise<AuthSession> {
+  if (!input.email || !input.password) {
+    return Promise.reject(new Error('이메일과 비밀번호를 입력해주세요'));
   }
-  if (!body.ok) {
-    throw new Error(body.error.message || body.error.code || 'API 오류');
-  }
-  return body.data;
+  return Promise.resolve(makeMockSession(input.email));
 }
 
 export function register(input: { email: string; password: string; name: string }): Promise<AuthSession> {
-  return call<AuthSession>('/api/auth/register', { method: 'POST', body: JSON.stringify(input) });
+  if (!input.email || !input.password) {
+    return Promise.reject(new Error('이메일과 비밀번호를 입력해주세요'));
+  }
+  return Promise.resolve(makeMockSession(input.email, input.name));
 }
-export function login(input: { email: string; password: string }): Promise<AuthSession> {
-  return call<AuthSession>('/api/auth/login', { method: 'POST', body: JSON.stringify(input) });
-}
+
 export function logout(): Promise<{ ok: boolean }> {
-  return call<{ ok: boolean }>('/api/auth/logout', { method: 'POST' });
+  return Promise.resolve({ ok: true });
 }
+
+// 앱 마운트 시 AuthProvider 가 토큰 유효성 검증에 호출한다.
+// mock 에서는 localStorage 에 저장된 사용자 정보를 그대로 반환한다.
 export function me(): Promise<{ user: AuthUser }> {
-  return call<{ user: AuthUser }>('/api/auth/me');
+  const stored = loadStoredUser();
+  if (!stored) return Promise.reject(new Error('세션이 만료되었습니다'));
+  return Promise.resolve({
+    user: {
+      id: stored.id,
+      email: stored.email,
+      name: stored.name,
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastLoginAt: new Date().toISOString(),
+    },
+  });
 }

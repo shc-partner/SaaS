@@ -1,9 +1,8 @@
-// 새 콘텐츠 생성 모달.
-// 폼 제출 시 BoardProvider 상태에 ADD_ITEM 액션을 디스패치한다.
-
 import { useState } from 'react';
 import { useBoardDispatch } from '../../../features/workspaces/boardStore';
 import type { ContentItem, ContentStatus, Priority } from '../../../features/workspaces/boardTypes';
+import DatePickerField from './DatePickerField';
+import { BOARD_CHANNEL_OPTIONS } from './boardChannels';
 
 interface Props {
   workspaceId: string;
@@ -11,12 +10,14 @@ interface Props {
 
 export default function NewContentModal({ workspaceId }: Props) {
   const dispatch = useBoardDispatch();
-  const [title,       setTitle]       = useState('');
-  const [channel,     setChannel]     = useState('YouTube');
-  const [format,      setFormat]      = useState('');
-  const [status,      setStatus]      = useState<ContentStatus>('idea');
+  const [title, setTitle] = useState('');
+  const [channel, setChannel] = useState('유튜브');
+  const [format, setFormat] = useState('');
+  const [status, setStatus] = useState<ContentStatus>('idea');
+  const [shootDate, setShootDate] = useState('');
+  const [editDueDate, setEditDueDate] = useState('');
   const [publishDate, setPublishDate] = useState('');
-  const [tags,        setTags]        = useState('');
+  const [tags, setTags] = useState('');
 
   const submit = () => {
     if (!title.trim()) return;
@@ -28,7 +29,7 @@ export default function NewContentModal({ workspaceId }: Props) {
       status,
       channels: [channel],
       contentFormat: format,
-      tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
+      tags: tags.split(',').map((tag) => tag.trim()).filter(Boolean),
       assignee: '',
       priority: 'medium' as Priority,
       script: '',
@@ -37,8 +38,8 @@ export default function NewContentModal({ workspaceId }: Props) {
       editingNotes: '',
       referenceLinks: [],
       publishDate,
-      shootDate: '',
-      editDueDate: '',
+      shootDate,
+      editDueDate,
       isSponsored: false,
       createdAt: now,
       updatedAt: now,
@@ -51,7 +52,7 @@ export default function NewContentModal({ workspaceId }: Props) {
       className="ws-modal-overlay"
       onClick={() => dispatch({ type: 'TOGGLE_NEW_CONTENT_MODAL' })}
     >
-      <div className="ws-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ws-modal" onClick={(event) => event.stopPropagation()}>
         <div className="ws-modal-header">
           <h3>새 콘텐츠</h3>
           <button
@@ -59,7 +60,7 @@ export default function NewContentModal({ workspaceId }: Props) {
             className="ws-detail-close"
             onClick={() => dispatch({ type: 'TOGGLE_NEW_CONTENT_MODAL' })}
           >
-            ✕
+            ×
           </button>
         </div>
 
@@ -69,34 +70,38 @@ export default function NewContentModal({ workspaceId }: Props) {
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(event) => setTitle(event.target.value)}
               placeholder="콘텐츠 제목"
               autoFocus
             />
           </label>
+
           <label className="field">
             <span className="field-label">채널</span>
-            <select value={channel} onChange={(e) => setChannel(e.target.value)}>
-              <option>YouTube</option>
-              <option>Twitch</option>
-              <option>Instagram</option>
-              <option>TikTok</option>
+            <select value={channel} onChange={(event) => setChannel(event.target.value)}>
+              {BOARD_CHANNEL_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
             </select>
           </label>
+
           <label className="field">
             <span className="field-label">콘텐츠 형식</span>
             <input
               type="text"
               value={format}
-              onChange={(e) => setFormat(e.target.value)}
+              onChange={(event) => setFormat(event.target.value)}
               placeholder="리뷰, 브이로그, 튜토리얼..."
             />
           </label>
+
           <label className="field">
             <span className="field-label">상태</span>
             <select
               value={status}
-              onChange={(e) => setStatus(e.target.value as ContentStatus)}
+              onChange={(event) => setStatus(event.target.value as ContentStatus)}
             >
               <option value="idea">아이디어</option>
               <option value="planning">기획중</option>
@@ -106,20 +111,34 @@ export default function NewContentModal({ workspaceId }: Props) {
               <option value="scheduled">예약됨</option>
             </select>
           </label>
-          <label className="field">
-            <span className="field-label">업로드 예정일</span>
-            <input
-              type="date"
-              value={publishDate}
-              onChange={(e) => setPublishDate(e.target.value)}
+
+          <div className="field ws-modal-date-fields">
+            <DatePickerField
+              label="촬영일"
+              labelClassName="field-label"
+              value={shootDate}
+              onChange={setShootDate}
             />
-          </label>
+            <DatePickerField
+              label="편집마감"
+              labelClassName="field-label"
+              value={editDueDate}
+              onChange={setEditDueDate}
+            />
+            <DatePickerField
+              label="업로드일"
+              labelClassName="field-label"
+              value={publishDate}
+              onChange={setPublishDate}
+            />
+          </div>
+
           <label className="field">
             <span className="field-label">태그 (쉼표 구분)</span>
             <input
               type="text"
               value={tags}
-              onChange={(e) => setTags(e.target.value)}
+              onChange={(event) => setTags(event.target.value)}
               placeholder="#게임, #리뷰"
             />
           </label>

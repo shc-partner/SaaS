@@ -1,23 +1,23 @@
-# SaaS — Website Builder Platform
+# CreatorDesk
 
-Multi-tenant website-builder SaaS. Users sign up, pick a site type (company / blog / reservation / member), edit content, and publish. Platform and generated sites share one stack.
+크리에이터 콘텐츠 운영 워크스페이스 SaaS.
+유튜버, 라이브 스트리밍, 숏폼 크리에이터가 아이디어부터 업로드까지 콘텐츠 제작 전 과정을 한 곳에서 관리한다.
 
-- **Platform stack**: React (admin SPA) + PHP CodeIgniter 4 (API) + MySQL
-- **Generated-site stack**: React (public runtime) + PHP CodeIgniter 4 (shared API) + MySQL
-- **Tenancy (MVP)**: shared MySQL, rows scoped by `site_id`
+- **Platform stack**: React + Vite + TS (frontend) / PHP (backend, MVP 이후) / MySQL
+- **MVP**: localStorage mock 기반, 백엔드 없이 실행
+- **Tenancy**: workspace_id 스코프
 - **Admin UX**: desktop-first
 
-See [CLAUDE.md](CLAUDE.md) for AI-collaboration rules, [docs/](docs/) for architecture and scope.
+See [CLAUDE.md](CLAUDE.md) for AI-collaboration rules.
 
 ## Repository layout
 
 ```
 .
-├─ platform-frontend/   # React + Vite + TS (admin SPA)
-├─ platform-backend/    # CodeIgniter 4 (API)
+├─ platform-frontend/   # React + Vite + TS (CreatorDesk SPA)
+├─ platform-backend/    # PHP API (MVP 이후 구현)
 ├─ infra/               # Dockerfiles, server config
-├─ docs/                # architecture, scope, separation docs
-├─ docker-compose.yml   # dev stack: web (CI4), db (MySQL), phpmyadmin
+├─ docker-compose.yml   # dev stack: web (PHP), db (MySQL)
 └─ CLAUDE.md
 ```
 
@@ -26,12 +26,12 @@ See [CLAUDE.md](CLAUDE.md) for AI-collaboration rules, [docs/](docs/) for archit
 ## Prerequisites
 
 - Docker Desktop
-- Node 20+ and npm (for running `platform-frontend` on the host)
+- Node 20+ and npm
 
 ## First-time setup
 
 ```bash
-# 1. Build and start backend stack
+# 1. Start backend stack (DB only in MVP)
 docker compose up -d --build
 
 # 2. Install frontend deps and start dev server
@@ -40,16 +40,11 @@ npm install
 npm run dev
 ```
 
-Verify:
-
-| Service           | URL                                    |
-| ----------------- | -------------------------------------- |
-| CI4 API           | http://localhost:8080                  |
-| Frontend (Vite)   | http://localhost:5173                  |
-| phpMyAdmin        | http://localhost:8081 (root / root1234) |
-| MySQL (host)      | localhost:3306                         |
-
-Hitting http://localhost:8080 should show the default CI4 welcome page.
+| Service           | URL                     |
+| ----------------- | ----------------------- |
+| Frontend (Vite)   | http://localhost:5173   |
+| PHP API           | http://localhost:8080   |
+| MySQL (host)      | localhost:3306          |
 
 ## Database credentials (dev)
 
@@ -61,16 +56,9 @@ Password: saaspass1234
 Root PW:  root1234
 ```
 
-Copy `platform-backend/env` → `platform-backend/.env` and fill in the DB section before running migrations.
-
 ## Common commands
 
 ```bash
-# Backend
-docker compose exec web composer install            # refresh CI4 deps
-docker compose exec web php spark migrate           # run migrations (after they exist)
-docker compose exec web php spark serve             # optional: run CI4 dev server
-
 # Frontend
 cd platform-frontend
 npm run dev         # start Vite dev server
@@ -85,4 +73,5 @@ docker compose logs -f web     # tail web logs
 
 ## Status
 
-Skeleton only. No features implemented yet. Next work: auth/RBAC, core multi-tenant schema, site CRUD. See [docs/mvp-scope.md](docs/mvp-scope.md) when written.
+MVP — localStorage mock 기반 프론트엔드 동작 중. 백엔드 API는 미구현.
+다음 작업: 워크스페이스 CRUD API, 콘텐츠 아이템 상태 전이 API, 인증 실구현.

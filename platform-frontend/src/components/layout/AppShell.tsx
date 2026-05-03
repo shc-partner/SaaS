@@ -12,7 +12,7 @@ interface Props {
 
 export default function AppShell({ children, flush }: Props) {
   return (
-    <div className="app-shell">
+    <div className="app-shell app-shell--workspace">
       <AppHeader />
       <main className={`app-main ${flush ? '' : 'contained'}`}>{children}</main>
       <AppFooter />

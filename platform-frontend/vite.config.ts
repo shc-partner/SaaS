@@ -15,7 +15,6 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@app/site-renderer': path.resolve(__dirname, '../packages/site-renderer/src'),
       react: path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
       'react/jsx-runtime': path.resolve(__dirname, './node_modules/react/jsx-runtime.js'),

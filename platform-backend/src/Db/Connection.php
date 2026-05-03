@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace SiteForge\Db;
+namespace CreatorDesk\Db;
 
 use PDO;
 use PDOException;
 use RuntimeException;
 
-// PDO 단일 인스턴스 제공. 컨테이너에서 docker-compose 의 db 서비스로 붙는다.
+// PDO ?�일 ?�스?�스 ?�공. 컨테?�너?�서 docker-compose ??db ?�비?�로 붙는??
 final class Connection
 {
     private static ?PDO $pdo = null;
