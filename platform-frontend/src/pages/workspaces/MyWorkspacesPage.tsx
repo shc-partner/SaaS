@@ -4,7 +4,7 @@ import { TEMPLATE_OPTIONS, PRESET_OPTIONS } from '../../features/workspaces/cons
 import { type MyWorkspace } from '../../features/workspaces/types';
 
 // /workspaces — 내 워크스페이스 목록.
-// 로컬 스토리지에서 읽어 표시 (API 미구현 단계).
+// 로컬 스토리지에서 읽어 표시
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
