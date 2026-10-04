@@ -5,7 +5,7 @@ namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// Naver 로그인 response.id를 provider_user_id로 사용하는 프로필 변환기입니다.
+// Naver 로그인 response.id를 provider_user_id로 사용하는 프로필 변환기.
 final class NaverProvider implements Provider
 {
     /** @param array<string,string> $config */
