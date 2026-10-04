@@ -5,8 +5,8 @@ namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// OAuth ?�큰/?�로???�출??초경??HTTP ?�라?�언??
-// ?��? ?�존???�이 file_get_contents + stream_context �?구현 ??curl ?�장 ?�어???�작.
+// OAuth 토큰/프로필 호출에 사용하는 작은 HTTP 클라이언트입니다.
+// curl 확장이 없어도 동작하도록 file_get_contents + stream_context로 구현합니다.
 final class HttpClient
 {
     /**
@@ -42,31 +42,35 @@ final class HttpClient
     private function requestJson(string $method, string $url, array $headers, ?string $body): array
     {
         $hdr = '';
-        foreach ($headers as $k => $v) $hdr .= "{$k}: {$v}\r\n";
+        foreach ($headers as $k => $v) {
+            $hdr .= "{$k}: {$v}\r\n";
+        }
 
         $ctx = stream_context_create([
             'http' => [
                 'method'        => $method,
                 'header'        => $hdr,
                 'content'       => $body,
-                'ignore_errors' => true, // non-2xx ?�도 본문??받기 ?�해
+                'ignore_errors' => true, // non-2xx 응답도 본문을 확인하기 위해 받습니다.
                 'timeout'       => 10,
             ],
         ]);
         $raw = @file_get_contents($url, false, $ctx);
         if ($raw === false) {
-            throw new RuntimeException("OAuth HTTP ?�출 ?�패: {$url}");
+            throw new RuntimeException("OAuth HTTP 호출 실패: {$url}");
         }
+
         $status = 0;
         if (isset($http_response_header[0]) && preg_match('#HTTP/\S+\s+(\d+)#', $http_response_header[0], $m)) {
             $status = (int)$m[1];
         }
         if ($status < 200 || $status >= 300) {
-            throw new RuntimeException("OAuth ?�답 ?�류 ({$status}) {$url}: " . substr($raw, 0, 300));
+            throw new RuntimeException("OAuth 응답 오류 ({$status}) {$url}: " . substr($raw, 0, 300));
         }
+
         $decoded = json_decode($raw, true);
         if (!is_array($decoded)) {
-            throw new RuntimeException("OAuth ?�답??JSON ???�님: {$url}");
+            throw new RuntimeException("OAuth 응답이 JSON이 아닙니다: {$url}");
         }
         return $decoded;
     }

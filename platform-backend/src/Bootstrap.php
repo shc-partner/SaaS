@@ -4,9 +4,12 @@ declare(strict_types=1);
 namespace CreatorDesk;
 
 use CreatorDesk\Auth\Controller as AuthController;
+use CreatorDesk\Ai\Controller as AiController;
 use CreatorDesk\Http\Request;
 use CreatorDesk\Http\Response;
 use CreatorDesk\Http\Router;
+use CreatorDesk\Workspaces\Controller as WorkspacesController;
+use CreatorDesk\Youtube\Controller as YoutubeController;
 use Throwable;
 
 final class Bootstrap
@@ -14,6 +17,7 @@ final class Bootstrap
     public static function run(): void
     {
         self::registerAutoloader();
+        self::loadEnv();
         self::handleCors();
 
         $router = self::buildRouter();
@@ -57,6 +61,39 @@ final class Bootstrap
         }
     }
 
+    private static function loadEnv(): void
+    {
+        $paths = [
+            dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env',
+            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env',
+        ];
+
+        foreach ($paths as $path) {
+            if (!is_file($path) || !is_readable($path)) {
+                continue;
+            }
+
+            $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            if ($lines === false) {
+                continue;
+            }
+
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {
+                    continue;
+                }
+
+                [$key, $value] = array_map('trim', explode('=', $line, 2));
+                $value = trim($value, "\"'");
+                if ($key !== '' && getenv($key) === false) {
+                    putenv("{$key}={$value}");
+                    $_ENV[$key] = $value;
+                }
+            }
+        }
+    }
+
     private static function buildRouter(): Router
     {
         $router = new Router();
@@ -64,6 +101,25 @@ final class Bootstrap
         $router->get('/api/health', static function (): Response {
             return Response::ok(['status' => 'ok']);
         });
+
+        $router->get('/api/youtube/trends', [YoutubeController::class, 'trends']);
+        $router->get('/api/youtube/trend-categories', [YoutubeController::class, 'categories']);
+        $router->post('/api/youtube/trend-categories', [YoutubeController::class, 'saveCategories']);
+        $router->post('/api/youtube/trend-categories/defaults', [YoutubeController::class, 'restoreDefaultCategories']);
+
+        $router->post('/api/ai/trend-ideas', [AiController::class, 'trendIdeas']);
+        $router->post('/api/ai/trend-ideas/from-videos', [AiController::class, 'trendIdeasFromVideos']);
+
+        $router->get('/api/workspaces', [WorkspacesController::class, 'index']);
+        $router->post('/api/workspaces', [WorkspacesController::class, 'create']);
+        $router->post('/api/workspaces/{workspaceId}', [WorkspacesController::class, 'update']);
+        $router->post('/api/workspaces/{workspaceId}/delete', [WorkspacesController::class, 'delete']);
+        $router->get('/api/workspaces/{workspaceId}/members', [WorkspacesController::class, 'members']);
+        $router->post('/api/workspaces/{workspaceId}/members', [WorkspacesController::class, 'addMember']);
+        $router->post('/api/workspaces/{workspaceId}/members/{memberUserId}', [WorkspacesController::class, 'updateMember']);
+        $router->post('/api/workspaces/{workspaceId}/members/{memberUserId}/delete', [WorkspacesController::class, 'removeMember']);
+        $router->get('/api/workspaces/{workspaceId}/board', [WorkspacesController::class, 'board']);
+        $router->post('/api/workspaces/{workspaceId}/board', [WorkspacesController::class, 'syncBoard']);
 
         $router->post('/api/auth/register', [AuthController::class, 'register']);
         $router->post('/api/auth/login', [AuthController::class, 'login']);

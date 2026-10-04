@@ -8,13 +8,12 @@ use RuntimeException;
 use CreatorDesk\Auth\Repository as AuthRepository;
 use CreatorDesk\Auth\Service as AuthService;
 
-// SNS 로그???��??�트?�이??
-// - start(provider): state 발급 + authorize URL 반환
-// - handleCallback(provider, code, state): state 검�???provider ?�큰/?�로????
-//   user_identities 매칭/?�성 ???�규�?users ?�성 ??AuthService 경유�??�션 발급
+// SNS 로그인의 진입점을 담당합니다.
+// - start(provider): state 발급 후 authorize URL 반환
+// - handleCallback(provider, code, state): state 검증, 프로필 조회, 사용자/identity 연결, 세션 발급
 //
-// ?�격증명(client_id) ??비어 ?�으�?"mock mode" ???��? ?�출 ?�이 고정 ?�로?�로 진행.
-// 개발 ?�경?�서 UI/DB ?�로?��? ?�까지 검�?가?�하�??�기 ?�함?�며, ?�영?�선 비활?�화?�야 ?�다.
+// OAuth client_id가 비어 있으면 개발용 mock mode로 동작합니다.
+// 운영 환경에서는 실제 OAuth 설정을 사용하는 것이 전제입니다.
 final class Service
 {
     /** @var array<string, Provider> */
@@ -44,7 +43,7 @@ final class Service
         $expires = (new \DateTimeImmutable('+10 minutes'))->format('Y-m-d H:i:s');
         $this->authRepo->insertOauthState($state, $providerId, $expires);
 
-        // mock mode ??client_id ?�음 ??백엔???�체 콜백?�로 바로 보내 fake 로그?�을 ?�결?�다.
+        // mock mode에서는 백엔드 콜백으로 바로 보내 fake 로그인을 완료합니다.
         if (!$provider->isConfigured()) {
             $base = getenv('APP_BASE_URL') ?: 'http://localhost:8000';
             return [
@@ -67,15 +66,13 @@ final class Service
 
         $st = $this->authRepo->consumeOauthState($state, $providerId);
         if ($st === null) {
-            throw new InvalidArgumentException('OAuth state 가 ?�효?��? ?�거??만료?�었?�니??');
+            throw new InvalidArgumentException('OAuth state가 유효하지 않거나 만료되었습니다.');
         }
 
-        // ---- profile ?�집 ----
         if ($provider->isConfigured()) {
             $tok     = $provider->exchangeCode($code, $state);
             $profile = $provider->fetchProfile($tok['accessToken']);
         } else {
-            // mock profile ???�버 ?�시?�해???�일 ?�로 ?�별?�도�?provider �?고정�?
             $profile = new NormalizedProfile(
                 providerUserId: "mock-{$providerId}-1",
                 email: "mock+{$providerId}@CreatorDesk.app",
@@ -84,12 +81,10 @@ final class Service
             );
         }
 
-        // ---- ?�별??매칭 ?�는 ?�성 ----
         $identity = $this->authRepo->findIdentity($providerId, $profile->providerUserId);
         $profileJson = json_encode($profile->raw, JSON_UNESCAPED_UNICODE) ?: '{}';
 
         if ($identity !== null) {
-            // ?��? ?�결??계정 ??최신 ?�로??갱신.
             $this->authRepo->updateIdentityProfile(
                 (int)$identity['id'],
                 $profile->email,
@@ -98,23 +93,20 @@ final class Service
             );
             $userId = (int)$identity['user_id'];
         } else {
-            // 같�? ?�메?�의 로컬 계정???�으�??�당 계정??SNS ?�결.
             $existing = $profile->email !== null ? $this->authRepo->findUserByEmail(strtolower($profile->email)) : null;
 
             if ($existing !== null) {
                 $userId = (int)$existing['id'];
             } else {
-                // ?�규 ?�용???�성 ???�셜 ?�용(password_hash NULL).
                 $userId = $this->authRepo->insertUser([
                     'email'         => $profile->email !== null
                         ? strtolower($profile->email)
                         : "{$providerId}-{$profile->providerUserId}@social.CreatorDesk.app",
-                    'password_hash' => '',   // NULL ?�용 ?�직 ?�벽�??�아 �?문자?�로 ?�텁
+                    'password_hash' => '',
                     'name'          => $profile->name !== null && trim($profile->name) !== ''
                         ? $profile->name
                         : ucfirst($providerId) . ' User',
                 ]);
-                // password ?�음 ?�시 ??NULL �??�데?�트.
                 $this->authRepo->pdo()->prepare('UPDATE users SET password_hash = NULL WHERE id = :id')
                     ->execute([':id' => $userId]);
             }
@@ -131,20 +123,19 @@ final class Service
 
         $this->authRepo->touchLastLogin($userId);
 
-        // AuthService ???��? ?�션 발급 로직???�사?�하�??�해 리플?�션 ?�??
-        // 별도 public 진입?�을 만들지 ?�고, ?�기??바로 insertSession + ?�용??조회.
         $days = (int)(getenv('AUTH_SESSION_DAYS') ?: 14);
-        if ($days < 1) $days = 14;
+        if ($days < 1) {
+            $days = 14;
+        }
         $token     = bin2hex(random_bytes(32));
         $expiresAt = (new \DateTimeImmutable('+' . $days . ' days'))->format('Y-m-d H:i:s');
         $this->authRepo->insertSession($token, $userId, $expiresAt, $userAgent, $ip);
 
         $u = $this->authRepo->findUserById($userId);
         if ($u === null) {
-            throw new RuntimeException('?�션 발급 직후 ?�용??조회 ?�패');
+            throw new RuntimeException('세션 발급 직후 사용자 조회 실패');
         }
-        // AuthService �?직접 건드리�? ?�고 ?�일 ?�태 ?�답 구성.
-        unset($this->auth); // static 분석 조용??
+        unset($this->auth); // static 분석 도구의 미사용 경고를 피합니다.
         return [
             'user' => [
                 'id'          => (int)$u['id'],
@@ -162,7 +153,7 @@ final class Service
     private function requireProvider(string $id): Provider
     {
         if (!isset($this->providers[$id])) {
-            throw new InvalidArgumentException("지?�하지 ?�는 provider: {$id}");
+            throw new InvalidArgumentException("지원하지 않는 provider: {$id}");
         }
         return $this->providers[$id];
     }

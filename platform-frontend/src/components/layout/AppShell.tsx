@@ -8,14 +8,17 @@ import AppFooter from './AppFooter';
 interface Props {
   children: ReactNode;
   flush?: boolean;
+  fullScreen?: boolean;
 }
 
-export default function AppShell({ children, flush }: Props) {
+export default function AppShell({ children, flush, fullScreen }: Props) {
   return (
-    <div className="app-shell app-shell--workspace">
+    <div className={`app-shell app-shell--workspace${fullScreen ? ' app-shell--full-screen' : ''}`}>
       <AppHeader />
-      <main className={`app-main ${flush ? '' : 'contained'}`}>{children}</main>
-      <AppFooter />
+      <main className={`app-main ${flush || fullScreen ? '' : 'contained'}${fullScreen ? ' app-main--full-screen' : ''}`}>
+        {children}
+      </main>
+      {!fullScreen && <AppFooter />}
     </div>
   );
 }

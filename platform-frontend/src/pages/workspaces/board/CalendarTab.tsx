@@ -19,7 +19,7 @@ const STATUS_LABEL: Record<string, string> = {
   planning: '기획중',
   scripting: '대본 작성',
   shooting: '촬영',
-  editing: '편집중',
+  editing: '작업중',
   'edit-review': '검수',
   thumbnail: '썸네일',
   scheduled: '예약',
@@ -70,7 +70,7 @@ function buildMonthDays(year: number, month: number) {
 
 function itemsToRanges(items: ContentItem[]): CalendarRange[] {
   return items.flatMap((item) => {
-    const dates = [item.shootDate, item.editDueDate, item.publishDate].filter(Boolean).sort();
+    const dates = [item.shootDate, item.editDueDate].filter(Boolean).sort();
     if (dates.length === 0) return [];
 
     return [{
@@ -189,14 +189,14 @@ export default function CalendarTab({ workspace: _workspace }: { workspace: MyWo
     setSelectedRangeId(null);
   }
 
-  function updateRangeDates(range: CalendarRange, field: 'shootDate' | 'editDueDate' | 'publishDate', value: string) {
+  function updateRangeDates(range: CalendarRange, field: 'shootDate' | 'editDueDate', value: string) {
     dispatch({
       type: 'UPDATE_ITEM_DATES',
       payload: {
         id: range.item.id,
         shootDate: field === 'shootDate' ? value : range.item.shootDate,
         editDueDate: field === 'editDueDate' ? value : range.item.editDueDate,
-        publishDate: field === 'publishDate' ? value : range.item.publishDate,
+        publishDate: range.item.publishDate,
       },
     });
   }
@@ -223,7 +223,7 @@ export default function CalendarTab({ workspace: _workspace }: { workspace: MyWo
             className="btn primary"
             onClick={() => dispatch({ type: 'TOGGLE_NEW_CONTENT_MODAL' })}
           >
-            + 콘텐츠 추가
+            + 컨텐츠 추가
           </button>
         </div>
       </div>
@@ -232,7 +232,7 @@ export default function CalendarTab({ workspace: _workspace }: { workspace: MyWo
         <input
           className="ws-calendar-search"
           type="search"
-          placeholder="콘텐츠 제목 검색"
+          placeholder="컨텐츠 제목 검색"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
@@ -251,7 +251,7 @@ export default function CalendarTab({ workspace: _workspace }: { workspace: MyWo
       </div>
 
       <div className="ws-calendar-layout">
-        <section className="ws-calendar-main" aria-label="월간 콘텐츠 캘린더">
+        <section className="ws-calendar-main" aria-label="월간 컨텐츠 캘린더">
           <div className="ws-calendar-weekdays">
             {WEEKDAYS.map((weekday, index) => (
               <div
@@ -325,8 +325,8 @@ export default function CalendarTab({ workspace: _workspace }: { workspace: MyWo
 
           {selectedRanges.length === 0 ? (
             <div className="ws-calendar-empty">
-              <strong>진행 중인 콘텐츠가 없습니다</strong>
-              <p>콘텐츠에 촬영일, 편집 마감일, 업로드일을 입력하면 기간 바로 표시됩니다.</p>
+              <strong>진행 중인 컨텐츠가 없습니다</strong>
+              <p>컨텐츠에 시작일자와 마감일자를 입력하면 기간이 바로 표시됩니다.</p>
             </div>
           ) : (
             <div className="ws-calendar-agenda-list">
@@ -346,19 +346,14 @@ export default function CalendarTab({ workspace: _workspace }: { workspace: MyWo
                   <h3>{range.item.title}</h3>
                   <div className="ws-calendar-date-editor">
                     <DatePickerField
-                      label="촬영일"
+                      label="시작일자"
                       value={range.item.shootDate}
                       onChange={(value) => updateRangeDates(range, 'shootDate', value)}
                     />
                     <DatePickerField
-                      label="편집 마감"
+                      label="마감일자"
                       value={range.item.editDueDate}
                       onChange={(value) => updateRangeDates(range, 'editDueDate', value)}
-                    />
-                    <DatePickerField
-                      label="업로드일"
-                      value={range.item.publishDate}
-                      onChange={(value) => updateRangeDates(range, 'publishDate', value)}
                     />
                   </div>
                   <div className="ws-calendar-agenda-meta">

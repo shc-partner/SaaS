@@ -1,5 +1,5 @@
 // 칸반 보드 전용 타입 정의.
-// ContentItem — 콘텐츠 제작 단위, Idea — 아이디어 카드, BoardColumn — 칸반 컬럼.
+// ContentItem — 컨텐츠 제작 단위, Idea — 아이디어 카드, BoardColumn — 칸반 컬럼.
 
 export type ContentStatus =
   | 'idea'
@@ -13,6 +13,12 @@ export type ContentStatus =
   | 'published';
 
 export type Priority = 'high' | 'medium' | 'low';
+export type ContentTaskRequestStatus =
+  | 'requested'
+  | 'in-progress'
+  | 'review-requested'
+  | 'review-completed'
+  | 'completed';
 
 export interface ContentItem {
   id: string;
@@ -49,14 +55,31 @@ export interface Idea {
   createdAt: string;
 }
 
+export interface ContentTaskRequest {
+  id: string;
+  workspaceId: string;
+  contentItemId: string;
+  taskName: string;
+  description: string;
+  requester: string;
+  worker: string;
+  reviewer: string;
+  status: ContentTaskRequestStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface BoardColumn {
   id: ContentStatus;
   label: string;
 }
 
 export interface BoardState {
+  workspaceId: string;
+  boardLoaded: boolean;
   items: ContentItem[];
   ideas: Idea[];
+  taskRequests: ContentTaskRequest[];
   selectedItemId: string | null;
   showNewContentModal: boolean;
   showNewIdeaModal: boolean;
@@ -67,8 +90,13 @@ export interface BoardState {
 }
 
 export type BoardAction =
+  | { type: 'HYDRATE_BOARD'; payload: { items: ContentItem[]; ideas: Idea[]; taskRequests?: ContentTaskRequest[] } }
   | { type: 'ADD_ITEM'; payload: ContentItem }
+  | { type: 'DELETE_ITEM'; payload: string }
   | { type: 'ADD_IDEA'; payload: Idea }
+  | { type: 'ADD_TASK_REQUEST'; payload: ContentTaskRequest }
+  | { type: 'UPDATE_TASK_REQUEST_STATUS'; payload: { id: string; status: ContentTaskRequestStatus } }
+  | { type: 'UPDATE_ITEM_STATUS'; payload: { id: string; status: ContentStatus } }
   | { type: 'UPDATE_ITEM_DATES'; payload: { id: string; shootDate: string; editDueDate: string; publishDate: string } }
   | { type: 'SELECT_ITEM'; payload: string | null }
   | { type: 'TOGGLE_NEW_CONTENT_MODAL' }

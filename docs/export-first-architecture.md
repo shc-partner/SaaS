@@ -72,7 +72,7 @@ company-{slug}-{timestamp}/
 │  └─ .htaccess (or nginx hint)
 ├─ database/
 │  ├─ schema.sql            # 스키마 DDL
-│  └─ seed.sql              # 초기 콘텐츠 (회사 정보, 메뉴, 페이지)
+│  └─ seed.sql              # 초기 컨텐츠 (회사 정보, 메뉴, 페이지)
 └─ media/                   # 업로드된 이미지/로고 (있으면)
 ```
 

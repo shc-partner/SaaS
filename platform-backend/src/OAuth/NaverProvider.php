@@ -5,7 +5,7 @@ namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// ?�이�?로그????response.id 가 provider_user_id.
+// Naver 로그인 response.id를 provider_user_id로 사용하는 프로필 변환기입니다.
 final class NaverProvider implements Provider
 {
     /** @param array<string,string> $config */
@@ -38,7 +38,7 @@ final class NaverProvider implements Provider
             'state'         => $state,
         ]);
         if (!isset($tok['access_token'])) {
-            throw new RuntimeException('Naver ?�큰 ?�답??access_token ???�습?�다.');
+            throw new RuntimeException('Naver 토큰 응답에 access_token이 없습니다.');
         }
         return ['accessToken' => (string)$tok['access_token'], 'raw' => $tok];
     }
@@ -51,7 +51,7 @@ final class NaverProvider implements Provider
         $resp = is_array($p['response'] ?? null) ? $p['response'] : [];
         $id = (string)($resp['id'] ?? '');
         if ($id === '') {
-            throw new RuntimeException('Naver ?�로?�에 id 가 ?�습?�다.');
+            throw new RuntimeException('Naver 프로필에 id가 없습니다.');
         }
         return new NormalizedProfile(
             providerUserId: $id,

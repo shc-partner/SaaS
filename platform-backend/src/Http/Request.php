@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace CreatorDesk\Http;
 
-// ?¤ì–´??HTTP ?”ì²­??ì¢ì? ?œë©´ë§??¸ì¶œ ??superglobal ì§ì ‘ ?‘ê·¼??ì»¨íŠ¸ë¡¤ëŸ¬?ì„œ ë§‰ê¸° ?„í•´.
 final class Request
 {
     /**
      * @param array<string,string> $params
-     * @param array<string,string> $query   URL ì¿¼ë¦¬ ?Œë¼ë¯¸í„° (?key=value)
-     * @param array<string,string> $headers ?Œë¬¸???¤ë¡œ ?•ê·œ?”ëœ ?¤ë” ë§?
+     * @param array<string,string> $query
+     * @param array<string,string> $headers
      */
     public function __construct(
         public readonly string $method,
@@ -26,7 +25,6 @@ final class Request
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
         $path = parse_url($uri, PHP_URL_PATH) ?: '/';
 
-        // JSON body ë§?ì§€?? form-encoded ê°€ ?„ìš”???”ë“œ?¬ì¸?¸ëŠ” ?„ì¬ ?†ë‹¤.
         $body = null;
         $raw = file_get_contents('php://input');
         if ($raw !== false && $raw !== '') {
@@ -36,17 +34,17 @@ final class Request
             }
         }
 
-        // Query
         $query = [];
         $qs = parse_url($uri, PHP_URL_QUERY);
         if (is_string($qs) && $qs !== '') {
             parse_str($qs, $parsed);
             foreach ($parsed as $k => $v) {
-                if (is_scalar($v)) $query[(string)$k] = (string)$v;
+                if (is_scalar($v)) {
+                    $query[(string)$k] = (string)$v;
+                }
             }
         }
 
-        // Headers ??$_SERVER ??HTTP_* ?„ë¦¬?½ìŠ¤ë¥??•ê·œ??
         $headers = [];
         foreach ($_SERVER as $k => $v) {
             if (strncmp($k, 'HTTP_', 5) === 0) {
@@ -54,8 +52,12 @@ final class Request
                 $headers[$name] = (string)$v;
             }
         }
-        if (isset($_SERVER['CONTENT_TYPE']))   $headers['content-type']   = (string)$_SERVER['CONTENT_TYPE'];
-        if (isset($_SERVER['CONTENT_LENGTH'])) $headers['content-length'] = (string)$_SERVER['CONTENT_LENGTH'];
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            $headers['content-type'] = (string)$_SERVER['CONTENT_TYPE'];
+        }
+        if (isset($_SERVER['CONTENT_LENGTH'])) {
+            $headers['content-length'] = (string)$_SERVER['CONTENT_LENGTH'];
+        }
 
         return new self($method, $path, [], $body, $query, $headers);
     }
@@ -68,15 +70,30 @@ final class Request
     public function bearerToken(): ?string
     {
         $auth = $this->header('authorization');
-        if ($auth === null) return null;
-        if (stripos($auth, 'Bearer ') !== 0) return null;
-        $tok = trim(substr($auth, 7));
-        return $tok === '' ? null : $tok;
+        if ($auth === null) {
+            return null;
+        }
+        if (stripos($auth, 'Bearer ') !== 0) {
+            return null;
+        }
+        $token = trim(substr($auth, 7));
+        return $token === '' ? null : $token;
+    }
+
+    public function userAgent(): ?string
+    {
+        return $this->header('user-agent');
     }
 
     public function queryParam(string $name, ?string $default = null): ?string
     {
         return $this->query[$name] ?? $default;
+    }
+
+    /** @return array<string,mixed> */
+    public function json(): array
+    {
+        return is_array($this->body) ? $this->body : array();
     }
 
     /** @param array<string,string> $params */

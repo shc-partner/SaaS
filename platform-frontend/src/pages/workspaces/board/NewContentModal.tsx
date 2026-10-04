@@ -16,7 +16,6 @@ export default function NewContentModal({ workspaceId }: Props) {
   const [status, setStatus] = useState<ContentStatus>('idea');
   const [shootDate, setShootDate] = useState('');
   const [editDueDate, setEditDueDate] = useState('');
-  const [publishDate, setPublishDate] = useState('');
   const [tags, setTags] = useState('');
 
   const submit = () => {
@@ -37,7 +36,7 @@ export default function NewContentModal({ workspaceId }: Props) {
       thumbnailTexts: [],
       editingNotes: '',
       referenceLinks: [],
-      publishDate,
+      publishDate: '',
       shootDate,
       editDueDate,
       isSponsored: false,
@@ -54,7 +53,7 @@ export default function NewContentModal({ workspaceId }: Props) {
     >
       <div className="ws-modal" onClick={(event) => event.stopPropagation()}>
         <div className="ws-modal-header">
-          <h3>새 콘텐츠</h3>
+          <h3>새 컨텐츠</h3>
           <button
             type="button"
             className="ws-detail-close"
@@ -71,7 +70,7 @@ export default function NewContentModal({ workspaceId }: Props) {
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              placeholder="콘텐츠 제목"
+              placeholder="컨텐츠 제목"
               autoFocus
             />
           </label>
@@ -88,7 +87,7 @@ export default function NewContentModal({ workspaceId }: Props) {
           </label>
 
           <label className="field">
-            <span className="field-label">콘텐츠 형식</span>
+            <span className="field-label">컨텐츠 형식</span>
             <input
               type="text"
               value={format}
@@ -107,29 +106,23 @@ export default function NewContentModal({ workspaceId }: Props) {
               <option value="planning">기획중</option>
               <option value="scripting">대본 작성</option>
               <option value="shooting">촬영중</option>
-              <option value="editing">편집중</option>
+              <option value="editing">작업중</option>
               <option value="scheduled">예약됨</option>
             </select>
           </label>
 
           <div className="field ws-modal-date-fields">
             <DatePickerField
-              label="촬영일"
+              label="시작일자"
               labelClassName="field-label"
               value={shootDate}
               onChange={setShootDate}
             />
             <DatePickerField
-              label="편집마감"
+              label="마감일자"
               labelClassName="field-label"
               value={editDueDate}
               onChange={setEditDueDate}
-            />
-            <DatePickerField
-              label="업로드일"
-              labelClassName="field-label"
-              value={publishDate}
-              onChange={setPublishDate}
             />
           </div>
 

@@ -16,7 +16,7 @@ export default function AppFooter() {
             CreatorDesk
           </span>
           <p className="brand-desc">
-            유튜버, 라이브 스트리밍, 숏폼 크리에이터를 위한 콘텐츠 운영 워크스페이스.
+            유튜버, 라이브 스트리밍, 숏폼 크리에이터를 위한 컨텐츠 운영 워크스페이스.
             아이디어부터 업로드까지, 제작 흐름 전체를 한 곳에서 관리하세요.
           </p>
         </div>

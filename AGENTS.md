@@ -4,10 +4,10 @@ This file guides Codex (and any AI collaborator) when working in this repository
 
 ## Product
 
-**CreatorDesk** — 크리에이터 콘텐츠 운영 워크스페이스 SaaS.
-유튜버, 라이브 스트리밍, 숏폼 크리에이터가 아이디어부터 업로드까지 콘텐츠 제작 전 과정을 한 곳에서 관리한다.
+**CreatorDesk** — 크리에이터 컨텐츠 운영 워크스페이스 SaaS.
+유튜버, 라이브 스트리밍, 숏폼 크리에이터가 아이디어부터 업로드까지 컨텐츠 제작 전 과정을 한 곳에서 관리한다.
 
-**핵심 기능**: 워크스페이스(채널 단위) · 콘텐츠 아이템(9단계 상태 머신) · 아이디어 보관함 · 월간 캘린더 · 제작 자산(대본·제목 후보·썸네일 문구·편집 메모)
+**핵심 기능**: 워크스페이스(채널 단위) · 컨텐츠 아이템(9단계 상태 머신) · 아이디어 보관함 · 월간 캘린더 · 제작 자산(대본·제목 후보·썸네일 문구·편집 메모)
 
 **공개 사이트 생성, 페이지 빌더, 사이트 export, 내 서버 이관은 CreatorDesk 범위 아님.**
 
@@ -34,7 +34,7 @@ This file guides Codex (and any AI collaborator) when working in this repository
 ## Ground rules when writing code
 
 - **모든 테넌트 쿼리는 workspace_id 포함 필수**. 교차 워크스페이스 조회 금지.
-- **콘텐츠 상태 전이는 서비스 레이어에서만 처리**.
+- **컨텐츠 상태 전이는 서비스 레이어에서만 처리**.
 - **Admin UI는 데스크탑 전용**. 모바일 레이아웃에 시간 쓰지 않음.
 - **JSON 응답 포맷 통일**: `{ ok: boolean, data?, error?: { code, message, details? } }`.
 - **Auth**: RBAC — 워크스페이스 역할(owner / editor / viewer) + 플랫폼 슈퍼관리자. MVP는 mock 기반.
@@ -42,7 +42,7 @@ This file guides Codex (and any AI collaborator) when working in this repository
 
 ## Not in MVP (explicitly deferred)
 
-- 콘텐츠 운영 데이터 내보내기 (CSV, ICS, Markdown, PDF)
+- 컨텐츠 운영 데이터 내보내기 (CSV, ICS, Markdown, PDF)
 - 팀 협업 (워크스페이스 멤버십, 담당자 배정)
 - 카카오 / 이메일 / SMS 알림
 - 커스텀 도메인 SSL 자동화

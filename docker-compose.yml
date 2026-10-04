@@ -1,6 +1,5 @@
 services:
   frontend:
-<<<<<<< HEAD
     build:
       context: .
       dockerfile: infra/Dockerfile.frontend
@@ -25,30 +24,21 @@ services:
       - web
 
   web:
-=======
-    image: node:24-bookworm
-    container_name: saas_frontend
-    working_dir: /app
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./platform-frontend:/app
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 8080"
-    depends_on:
-      - backend
-
-  backend:
->>>>>>> 3e4b835ce910371b1be45acf592df021faeaa6e8
     build:
       context: ./infra
       dockerfile: Dockerfile.web
     container_name: saas_backend
+    environment:
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
+      AI_DAILY_LIMIT_FREE: ${AI_DAILY_LIMIT_FREE:-5}
+      AI_DAILY_LIMIT_STARTER: ${AI_DAILY_LIMIT_STARTER:-30}
+      AI_DAILY_LIMIT_PRO: ${AI_DAILY_LIMIT_PRO:-100}
+      AI_DAILY_LIMIT_TEAM: ${AI_DAILY_LIMIT_TEAM:-300}
     ports:
-<<<<<<< HEAD
       - "8000:80"
-=======
-      - "8081:80"
->>>>>>> 3e4b835ce910371b1be45acf592df021faeaa6e8
     volumes:
       - ./platform-backend:/var/www/html
     depends_on:
@@ -68,24 +58,6 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
-<<<<<<< HEAD
 volumes:
   mysql_data:
   frontend_node_modules:
-=======
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: saas_phpmyadmin
-    restart: always
-    depends_on:
-      - db
-    environment:
-      PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: root1234
-    ports:
-      - "8082:80"
-
-volumes:
-  mysql_data:
->>>>>>> 3e4b835ce910371b1be45acf592df021faeaa6e8

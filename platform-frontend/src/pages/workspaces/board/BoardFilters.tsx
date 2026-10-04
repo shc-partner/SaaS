@@ -10,7 +10,7 @@ export default function BoardFilters() {
       <input
         type="text"
         className="ws-filter-search"
-        placeholder="콘텐츠 검색..."
+        placeholder="컨텐츠 검색..."
         value={state.searchQuery}
         onChange={(e) => dispatch({ type: 'SET_SEARCH', payload: e.target.value })}
       />

@@ -21,7 +21,8 @@ export default function ContentDetailPanel() {
         <Row label="채널">{channels.join(', ') || '-'}</Row>
         <Row label="형식">{item.contentFormat}</Row>
         <Row label="담당자">{item.assignee || '-'}</Row>
-        <Row label="업로드 예정일">{item.publishDate || '-'}</Row>
+        <Row label="시작일자">{item.shootDate || '-'}</Row>
+        <Row label="마감일자">{item.editDueDate || '-'}</Row>
         <Row label="태그">{item.tags.join(' ') || '-'}</Row>
         {item.isSponsored && (
           <Row label="협찬">

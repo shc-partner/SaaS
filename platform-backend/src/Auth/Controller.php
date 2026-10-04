@@ -8,7 +8,7 @@ use CreatorDesk\Http\Request;
 use CreatorDesk\Http\Response;
 use CreatorDesk\OAuth\Service as OAuthService;
 
-// Auth ?�드?�인??컨트롤러. ?��? HTTP ??Service 변?�만.
+// Auth 도메인의 HTTP 컨트롤러. 비즈니스 규칙은 Service에 위임합니다.
 final class Controller
 {
     public function __construct(
@@ -18,18 +18,19 @@ final class Controller
 
     public function register(Request $req): Response
     {
-        $body = \is_array($req->body) ? $req->body : [];
         try {
-            $result = $this->service->register(
-                [
-                    'email'    => (string)($body['email']    ?? ''),
-                    'password' => (string)($body['password'] ?? ''),
-                    'name'     => (string)($body['name']     ?? ''),
-                ],
-                $req->header('user-agent'),
-                $this->clientIp(),
-            );
-            return Response::ok($result, 201);
+            $result = $this->service->register($req->json(), $req->userAgent(), $this->clientIp());
+            setcookie('cd_session', $result['token'], [
+                'expires'  => strtotime($result['expiresAt']),
+                'path'     => '/',
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+            return Response::ok([
+                'user' => $result['user'],
+                'token' => $result['token'],
+                'expiresAt' => $result['expiresAt'],
+            ], 201);
         } catch (InvalidArgumentException $e) {
             return Response::error(400, 'validation_failed', $e->getMessage());
         }
@@ -37,17 +38,19 @@ final class Controller
 
     public function login(Request $req): Response
     {
-        $body = \is_array($req->body) ? $req->body : [];
         try {
-            $result = $this->service->login(
-                [
-                    'email'    => (string)($body['email']    ?? ''),
-                    'password' => (string)($body['password'] ?? ''),
-                ],
-                $req->header('user-agent'),
-                $this->clientIp(),
-            );
-            return Response::ok($result);
+            $result = $this->service->login($req->json(), $req->userAgent(), $this->clientIp());
+            setcookie('cd_session', $result['token'], [
+                'expires'  => strtotime($result['expiresAt']),
+                'path'     => '/',
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+            return Response::ok([
+                'user' => $result['user'],
+                'token' => $result['token'],
+                'expiresAt' => $result['expiresAt'],
+            ]);
         } catch (InvalidArgumentException $e) {
             return Response::error(401, 'invalid_credentials', $e->getMessage());
         }
@@ -55,17 +58,23 @@ final class Controller
 
     public function logout(Request $req): Response
     {
-        $token = $req->bearerToken();
-        if ($token !== null) {
+        $token = $this->sessionToken($req);
+        if (\is_string($token) && $token !== '') {
             $this->service->logout($token);
         }
-        return Response::ok(['ok' => true]);
+        setcookie('cd_session', '', [
+            'expires'  => time() - 3600,
+            'path'     => '/',
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+        return Response::ok(['loggedOut' => true]);
     }
 
     public function me(Request $req): Response
     {
-        $token = $req->bearerToken();
-        if ($token === null) {
+        $token = $this->sessionToken($req);
+        if (!\is_string($token) || $token === '') {
             return Response::error(401, 'unauthenticated', '로그인이 필요합니다.');
         }
         $user = $this->service->me($token);
@@ -75,12 +84,6 @@ final class Controller
         return Response::ok(['user' => $user]);
     }
 
-    // ---------- OAuth (SNS 로그?? ----------
-
-    /**
-     * 1) ?�론?��? ???�드?�인?�로 진입 ??302 �?provider ?�의 ?�면?�로 리다?�렉??
-     *    provider 미설????백엔???�체 콜백?�로 바로 ?�돌??mock 로그???�결.
-     */
     public function oauthStart(Request $req): Response
     {
         $provider = (string)($req->params['provider'] ?? '');
@@ -92,57 +95,56 @@ final class Controller
         }
     }
 
-    /**
-     * 2) provider ???�기�??�아?? code/state 검�????�용??find-or-create ???�션 발급 ??
-     *    ?�론??/auth/callback ?�로 리다?�렉?�하�??�큰??URL fragment �??�달.
-     *    fragment ???�버 로그???��? ?�음.
-     */
     public function oauthCallback(Request $req): Response
     {
         $provider = (string)($req->params['provider'] ?? '');
-        $code     = $req->queryParam('code')  ?? '';
-        $state    = $req->queryParam('state') ?? '';
-        $error    = $req->queryParam('error');
-
-        $front = (getenv('OAUTH_FRONTEND_CALLBACK_URL') ?: 'http://localhost:8080/auth/callback');
-
-        if ($error !== null && $error !== '') {
-            return Response::redirect($front . '#error=' . rawurlencode($error));
-        }
-        if ($code === '' || $state === '') {
-            return Response::redirect($front . '#error=missing_params');
-        }
+        $q = $req->query;
+        $code  = (string)($q['code'] ?? '');
+        $state = (string)($q['state'] ?? '');
 
         try {
-            $session = $this->oauth->handleCallback(
-                $provider,
-                $code,
-                $state,
-                $req->header('user-agent'),
-                $this->clientIp(),
-            );
+            $result = $this->oauth->handleCallback($provider, $code, $state, $req->userAgent(), $this->clientIp());
+            setcookie('cd_session', $result['token'], [
+                'expires'  => strtotime($result['expiresAt']),
+                'path'     => '/',
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+            $front = getenv('FRONTEND_URL') ?: 'http://localhost:8080';
+            $fragment = http_build_query(array(
+                'token' => $result['token'],
+                'expiresAt' => $result['expiresAt'],
+                'provider' => $provider,
+                'uid' => (string)$result['user']['id'],
+                'name' => (string)$result['user']['name'],
+                'email' => (string)$result['user']['email'],
+            ));
+            $url = $front . '/auth/callback#' . $fragment;
+            return Response::redirect($url);
         } catch (\Throwable $e) {
-            return Response::redirect($front . '#error=' . rawurlencode($e->getMessage()));
+            $front = getenv('FRONTEND_URL') ?: 'http://localhost:8080';
+            $url = $front . '/auth/callback#ok=0&error=' . rawurlencode($e->getMessage());
+            return Response::redirect($url);
         }
-
-        $frag = http_build_query([
-            'token'     => $session['token'],
-            'expiresAt' => $session['expiresAt'],
-            'provider'  => $provider,
-            'uid'       => (string)$session['user']['id'],
-            'name'      => (string)$session['user']['name'],
-            'email'     => (string)$session['user']['email'],
-        ]);
-        return Response::redirect($front . '#' . $frag);
     }
 
     private function clientIp(): ?string
     {
-        // ?�록???�에 ?�을 ???�으??X-Forwarded-For ?�선.
         $fwd = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
         if (\is_string($fwd) && $fwd !== '') {
             return trim(explode(',', $fwd)[0]);
         }
-        return $_SERVER['REMOTE_ADDR'] ?? null;
+        $remote = $_SERVER['REMOTE_ADDR'] ?? null;
+        return \is_string($remote) ? $remote : null;
+    }
+
+    private function sessionToken(Request $req): ?string
+    {
+        $token = $req->bearerToken();
+        if ($token !== null && $token !== '') {
+            return $token;
+        }
+        $cookie = $_COOKIE['cd_session'] ?? null;
+        return \is_string($cookie) && $cookie !== '' ? $cookie : null;
     }
 }

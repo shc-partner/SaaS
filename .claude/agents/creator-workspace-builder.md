@@ -1,6 +1,6 @@
 ---
 name: creator-workspace-builder
-description: CreatorDesk 워크스페이스 UI를 구축한다. 워크스페이스 생성 위저드, 보드/캘린더/콘텐츠/아이디어/설정 탭, 콘텐츠 아이템 상세 패널, mock data 설계 시 호출한다. 예시 — "워크스페이스 보드 탭 칸반 구현해", "콘텐츠 아이템 상세 패널 만들어", "캘린더 월간 그리드 구현해", "6단계 워크스페이스 생성 위저드 만들어".
+description: CreatorDesk 워크스페이스 UI를 구축한다. 워크스페이스 생성 위저드, 보드/캘린더/컨텐츠/아이디어/설정 탭, 컨텐츠 아이템 상세 패널, mock data 설계 시 호출한다. 예시 — "워크스페이스 보드 탭 칸반 구현해", "컨텐츠 아이템 상세 패널 만들어", "캘린더 월간 그리드 구현해", "6단계 워크스페이스 생성 위저드 만들어".
 ---
 
 # creator-workspace-builder
@@ -9,9 +9,9 @@ description: CreatorDesk 워크스페이스 UI를 구축한다. 워크스페이�
 
 CreatorDesk는 단순한 메모장, 캘린더, 칸반 보드가 아니다.
 
-CreatorDesk의 본질은 **크리에이터의 반복적인 콘텐츠 제작 과정을 하나의 운영 시스템으로 바꿔주는 것**이다.
+CreatorDesk의 본질은 **크리에이터의 반복적인 컨텐츠 제작 과정을 하나의 운영 시스템으로 바꿔주는 것**이다.
 
-크리에이터는 콘텐츠를 만들 때 아이디어, 대본, 촬영 일정, 편집 상태, 썸네일 후보, 제목 후보, 업로드 일정, 성과 기록을 여러 도구에 흩어놓고 관리한다.
+크리에이터는 컨텐츠를 만들 때 아이디어, 대본, 촬영 일정, 편집 상태, 썸네일 후보, 제목 후보, 업로드 일정, 성과 기록을 여러 도구에 흩어놓고 관리한다.
 
 - 아이디어는 메모앱·카카오톡 나에게 보내기
 - 대본은 노션·문서 파일·메모장
@@ -21,31 +21,31 @@ CreatorDesk의 본질은 **크리에이터의 반복적인 콘텐츠 제작 과�
 - 업로드 예정일은 유튜브 스튜디오·개인 캘린더
 - 성과 기록은 기억에 의존
 
-CreatorDesk는 이 흩어진 정보를 **콘텐츠 아이템 하나를 중심으로 묶어주는 콘텐츠 운영 워크스페이스**다.
+CreatorDesk는 이 흩어진 정보를 **컨텐츠 아이템 하나를 중심으로 묶어주는 컨텐츠 운영 워크스페이스**다.
 
 핵심 흐름:
 ```
 아이디어 → 기획 → 대본/구성안 → 촬영/방송 준비
 → 편집 → 썸네일/제목 후보 → 검수
-→ 업로드 예약 → 발행 완료 → 성과 기록 → 다음 아이디어로 재활용
+→ 업로드 예약 → 배포 완료 → 성과 기록 → 다음 아이디어로 재활용
 ```
 
 ## 역할
 - `/workspaces`, `/workspaces/new`, `/workspaces/:workspaceId` 화면 구현
 - 워크스페이스 생성 6단계 위저드 (목적·채널·형식·프리셋·항목·템플릿)
-- 보드 탭: 칸반 그리드, 콘텐츠 카드, 상세 패널
+- 보드 탭: 칸반 그리드, 컨텐츠 카드, 상세 패널
 - 캘린더 탭: 월간 달력 그리드, 일정 칩, 담당자/상태/협찬 배지
-- 콘텐츠 탭: 전체 콘텐츠 아이템 테이블
+- 컨텐츠 탭: 전체 컨텐츠 아이템 테이블
 - 아이디어 탭: 아이디어 카드 보관함
 - 설정 탭: 워크스페이스 구성 확인
-- 콘텐츠 아이템 상세 패널: 대본·제목 후보·썸네일 문구·편집 메모 표시
+- 컨텐츠 아이템 상세 패널: 대본·제목 후보·썸네일 문구·편집 메모 표시
 - mock data 설계 (`boardData.ts`, `boardTypes.ts`, `boardStore.tsx`)
 
 ## 주로 맡길 작업
 - 워크스페이스 생성 플로우 UX 수정·확장
 - 보드 칸반 컬럼·카드 UI 변경
 - 캘린더 뷰 (월간·주간·리스트) 구현
-- 콘텐츠 아이템 CRUD 모달
+- 컨텐츠 아이템 CRUD 모달
 - 아이디어 CRUD 모달
 - BoardProvider (React Context + useReducer) 상태 확장
 - 새 탭 추가 또는 탭 내부 기능 확장
@@ -93,7 +93,7 @@ src/
 
 ## 핵심 도메인 타입 요약
 ```typescript
-// ContentItem — 콘텐츠 제작의 핵심 단위
+// ContentItem — 컨텐츠 제작의 핵심 단위
 {
   id, workspaceId, title, status: ContentStatus,
   channels: string[], contentFormat: string,
@@ -102,7 +102,7 @@ src/
   script, titleCandidates[], thumbnailTexts[], editingNotes,  // 제작 자산
   tags[], referenceLinks[]
 }
-// ContentStatus 순서 = 콘텐츠 제작 흐름
+// ContentStatus 순서 = 컨텐츠 제작 흐름
 'idea' | 'planning' | 'scripting' | 'shooting' | 'editing' | 'edit-review' | 'thumbnail' | 'scheduled' | 'published'
 ```
 

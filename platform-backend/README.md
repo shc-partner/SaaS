@@ -9,7 +9,7 @@ CreatorDesk 플랫폼 API. **프레임워크 없는 plain PHP** 구조.
   - `Http/` — Router, Request, Response. JSON envelope `{ ok, data?, error? }` 통일.
   - `Db/Connection.php` — PDO 단일 인스턴스.
   - `Workspaces/` — 워크스페이스 도메인 (Repository / Service / Controller).
-  - `ContentItems/` — 콘텐츠 아이템 도메인 (상태 머신, 제작 자산).
+  - `ContentItems/` — 컨텐츠 아이템 도메인 (상태 머신, 제작 자산).
   - `Ideas/` — 아이디어 보관함 도메인.
 - `config/db.php` — DB 자격증명 (환경변수 우선).
 - `migrations/` — `*.sql` + `apply.php` (가벼운 러너).
@@ -30,8 +30,8 @@ curl http://localhost:8080/api/health
 | POST   | `/api/auth/login`                          | 로그인 |
 | GET    | `/api/workspaces`                          | 워크스페이스 목록 |
 | POST   | `/api/workspaces`                          | 워크스페이스 생성 |
-| GET    | `/api/workspaces/{id}/content-items`       | 콘텐츠 아이템 목록 |
-| POST   | `/api/workspaces/{id}/content-items`       | 콘텐츠 아이템 생성 |
+| GET    | `/api/workspaces/{id}/content-items`       | 컨텐츠 아이템 목록 |
+| POST   | `/api/workspaces/{id}/content-items`       | 컨텐츠 아이템 생성 |
 | PATCH  | `/api/workspaces/{id}/content-items/{cid}` | 상태 변경·정보 수정 |
 | GET    | `/api/workspaces/{id}/ideas`               | 아이디어 목록 |
 | POST   | `/api/workspaces/{id}/ideas`               | 아이디어 저장 |

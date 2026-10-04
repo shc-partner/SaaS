@@ -1,4 +1,4 @@
-// 칸반 컬럼 내 개별 콘텐츠 카드.
+// 칸반 컬럼 내 개별 컨텐츠 카드.
 // 클릭 시 우측 상세 패널이 열린다.
 
 import type { ContentItem, Priority } from '../../../features/workspaces/boardTypes';
@@ -48,8 +48,8 @@ export default function ContentCard({ item }: { item: ContentItem }) {
           </div>
         )}
         <div className="ws-card-footer">
-          {item.publishDate && (
-            <span className="ws-card-date">📅 {item.publishDate}</span>
+          {item.editDueDate && (
+            <span className="ws-card-date">📅 {item.editDueDate}</span>
           )}
           {item.assignee && (
             <span className="ws-card-assignee">{item.assignee}</span>

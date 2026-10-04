@@ -55,7 +55,7 @@ export default function MyWorkspacesPage() {
         <div className="card" style={{ padding: '48px 32px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
           <h3 style={{ margin: 0 }}>아직 만든 워크스페이스가 없어요</h3>
           <p style={{ margin: 0, color: 'var(--text-2)', fontSize: 14 }}>
-            새 워크스페이스를 만들어 콘텐츠 제작 흐름을 관리해 보세요.
+            새 워크스페이스를 만들어 컨텐츠 제작 흐름을 관리해 보세요.
           </p>
           <Link to="/workspaces/new" className="btn primary">워크스페이스 만들기</Link>
         </div>

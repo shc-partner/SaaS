@@ -6,25 +6,23 @@ namespace CreatorDesk\Auth;
 use InvalidArgumentException;
 use RuntimeException;
 
-// 계정 · ?�션 관??비즈?�스 규칙.
-// - 비�?번호: password_hash + password_verify (bcrypt)
-// - ?�션 ?�큰: 32바이??random_bytes ??hex(64??. user_sessions.id ???�??
-// - ?�션 만료: 기본 14??(?�경변??AUTH_SESSION_DAYS �??�버?�이??가??.
+// 계정과 세션 관련 비즈니스 규칙.
+// - 비밀번호: password_hash + password_verify (bcrypt)
+// - 세션 토큰: 32바이트 random_bytes를 hex로 인코딩
+// - 세션 만료: 기본 14일, AUTH_SESSION_DAYS로 조정 가능
 final class Service
 {
     private const EMAIL_REGEX = '/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/';
 
-    public function __construct(
-        private Repository $repo = new Repository(),
-    ) {}
+    public function __construct(private Repository $repo = new Repository()) {}
 
     /**
-     * @param array{email:string, password:string, name:string} $input
+     * @param array<string,mixed> $input
      * @return array{user:array<string,mixed>, token:string, expiresAt:string}
      */
-    public function register(array $input, ?string $userAgent = null, ?string $ip = null): array
+    public function register(array $input, ?string $userAgent, ?string $ip): array
     {
-        $email = trim(strtolower((string)($input['email'] ?? '')));
+        $email = strtolower(trim((string)($input['email'] ?? '')));
         $pw    = (string)($input['password'] ?? '');
         $name  = trim((string)($input['name'] ?? ''));
 
@@ -41,33 +39,31 @@ final class Service
             throw new InvalidArgumentException('이미 등록된 이메일입니다.');
         }
 
-        $hash = password_hash($pw, PASSWORD_BCRYPT);
+        $hash = password_hash($pw, PASSWORD_DEFAULT);
         if ($hash === false) {
             throw new RuntimeException('비밀번호 해시 실패');
         }
 
-        $id = $this->repo->insertUser([
+        $userId = $this->repo->insertUser([
             'email'         => $email,
             'password_hash' => $hash,
             'name'          => $name,
         ]);
-        $this->repo->touchLastLogin($id);
 
-        return $this->issueSession($id, $userAgent, $ip);
+        return $this->issueSession($userId, $userAgent, $ip);
     }
 
     /**
-     * @param array{email:string, password:string} $input
+     * @param array<string,mixed> $input
      * @return array{user:array<string,mixed>, token:string, expiresAt:string}
      */
-    public function login(array $input, ?string $userAgent = null, ?string $ip = null): array
+    public function login(array $input, ?string $userAgent, ?string $ip): array
     {
-        $email = trim(strtolower((string)($input['email'] ?? '')));
+        $email = strtolower(trim((string)($input['email'] ?? '')));
         $pw    = (string)($input['password'] ?? '');
 
         $user = $this->repo->findUserByEmail($email);
         if ($user === null || !password_verify($pw, (string)$user['password_hash'])) {
-            // 계정 존재 ?��?�??�리지 ?�기 ?�해 ?�일 메시지.
             throw new InvalidArgumentException('이메일 또는 비밀번호가 올바르지 않습니다.');
         }
         if (($user['status'] ?? 'active') !== 'active') {
@@ -84,12 +80,17 @@ final class Service
     }
 
     /** @return array<string,mixed>|null */
-    public function me(string $token): ?array
+    public function me(?string $token): ?array
     {
+        if ($token === null || $token === '') {
+            return null;
+        }
         $row = $this->repo->findSessionWithUser($token);
-        if ($row === null) return null;
+        if ($row === null) {
+            return null;
+        }
         return [
-            'id'          => (int)$row['user_id'],
+            'id'          => (int)$row['id'],
             'email'       => (string)$row['email'],
             'name'        => (string)$row['name'],
             'status'      => (string)$row['status'],
@@ -104,25 +105,27 @@ final class Service
     private function issueSession(int $userId, ?string $userAgent, ?string $ip): array
     {
         $days = (int)(getenv('AUTH_SESSION_DAYS') ?: 14);
-        if ($days < 1) $days = 14;
+        if ($days < 1) {
+            $days = 14;
+        }
 
-        $token     = bin2hex(random_bytes(32));
+        $token = bin2hex(random_bytes(32));
         $expiresAt = (new \DateTimeImmutable('+' . $days . ' days'))->format('Y-m-d H:i:s');
-
         $this->repo->insertSession($token, $userId, $expiresAt, $userAgent, $ip);
 
-        $u = $this->repo->findUserById($userId);
-        if ($u === null) {
+        $user = $this->repo->findUserById($userId);
+        if ($user === null) {
             throw new RuntimeException('세션 발급 직후 사용자 조회 실패');
         }
+
         return [
             'user' => [
-                'id'          => (int)$u['id'],
-                'email'       => (string)$u['email'],
-                'name'        => (string)$u['name'],
-                'status'      => (string)$u['status'],
-                'createdAt'   => (string)$u['created_at'],
-                'lastLoginAt' => $u['last_login_at'] !== null ? (string)$u['last_login_at'] : null,
+                'id'          => (int)$user['id'],
+                'email'       => (string)$user['email'],
+                'name'        => (string)$user['name'],
+                'status'      => (string)$user['status'],
+                'createdAt'   => (string)$user['created_at'],
+                'lastLoginAt' => $user['last_login_at'] !== null ? (string)$user['last_login_at'] : null,
             ],
             'token'     => $token,
             'expiresAt' => $expiresAt,

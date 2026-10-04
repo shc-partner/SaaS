@@ -1,7 +1,6 @@
 import { type ReactNode, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../features/auth/AuthProvider';
-import { upsertMyWorkspace } from '../../features/workspaces/storage';
+import { createWorkspace } from '../../api/workspaces';
 import {
   BASE_MANAGEMENT_ITEMS,
   CHANNEL_OPTIONS,
@@ -11,12 +10,13 @@ import {
   PRESET_OPTIONS,
   PRESET_RECOMMENDED_ITEMS,
   PURPOSE_OPTIONS,
+  REQUIRED_MANAGEMENT_ITEMS,
   STEP_LABELS,
+  STREAMING_MANAGEMENT_ITEMS,
 } from '../../features/workspaces/constants';
 import {
   type ContentFormat,
   type ManagementItem,
-  type MyWorkspace,
   type ProductionPreset,
   type WorkspaceChannel,
   type WorkspaceCreationState,
@@ -43,6 +43,7 @@ function uniqItems(items: ManagementItem[]): ManagementItem[] {
 }
 
 function getRecommendedItems(
+  purpose: WorkspacePurpose | null,
   preset: ProductionPreset | null,
   format: ContentFormat | null,
 ): ManagementItem[] {
@@ -50,11 +51,18 @@ function getRecommendedItems(
   const formatItems = format
     ? FORMAT_MANAGEMENT_ITEM_GROUPS[format]?.items.map((item) => item.id) ?? []
     : [];
+  const streamingItems = purpose === 'streamer'
+    ? STREAMING_MANAGEMENT_ITEMS.map((item) => item.id)
+    : [];
 
-  return uniqItems([...presetItems, ...formatItems]);
+  return uniqItems([...REQUIRED_MANAGEMENT_ITEMS, ...presetItems, ...formatItems, ...streamingItems]);
 }
 
-function getTemplateKey(preset: ProductionPreset): WorkspaceTemplateKey {
+function getTemplateKey(state: WorkspaceCreationState): WorkspaceTemplateKey {
+  if (state.format === 'shortform') return 'shortform';
+  if (state.format === 'blog') return 'blog-newsletter';
+  if (state.purpose === 'streamer') return 'streaming';
+  const preset = state.preset;
   if (preset === 'simple') return 'creator-simple';
   if (preset === 'team') return 'creator-team';
   return 'creator-standard';
@@ -65,18 +73,18 @@ function getWorkspaceName(state: WorkspaceCreationState): string {
   const format = FORMAT_OPTIONS.find((option) => option.id === state.format)?.label;
 
   if (channel && format) return `${channel} ${format} 워크스페이스`;
-  if (channel) return `${channel} 콘텐츠 워크스페이스`;
+  if (channel) return `${channel} 컨텐츠 워크스페이스`;
   return 'CreatorDesk 워크스페이스';
 }
 
 export default function WorkspaceNewPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [state, setState] = useState<WorkspaceCreationState>(INITIAL_STATE);
+  const [submitting, setSubmitting] = useState(false);
 
   const recommendedItems = useMemo(
-    () => getRecommendedItems(state.preset, state.format),
-    [state.preset, state.format],
+    () => getRecommendedItems(state.purpose, state.preset, state.format),
+    [state.purpose, state.preset, state.format],
   );
 
   function canProceed(): boolean {
@@ -86,7 +94,7 @@ export default function WorkspaceNewPage() {
       case 2:
         return state.preset !== null && state.name.trim().length > 0;
       case 3:
-        return uniqItems([...BASE_MANAGEMENT_ITEMS, ...state.items]).length > 0;
+        return REQUIRED_MANAGEMENT_ITEMS.every((item) => state.items.includes(item));
       default:
         return false;
     }
@@ -99,7 +107,7 @@ export default function WorkspaceNewPage() {
       setState((prev) => ({
         ...prev,
         step: 3,
-        items: getRecommendedItems(prev.preset, prev.format),
+        items: getRecommendedItems(prev.purpose, prev.preset, prev.format),
       }));
       return;
     }
@@ -117,25 +125,27 @@ export default function WorkspaceNewPage() {
     }
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!state.purpose || !state.format || !state.preset) return;
+    if (submitting) return;
 
-    const workspace: MyWorkspace = {
-      id: crypto.randomUUID(),
-      name: state.name.trim(),
-      description: state.description.trim(),
-      purpose: state.purpose,
-      channels: state.channels,
-      format: state.format,
-      templateKey: getTemplateKey(state.preset),
-      preset: state.preset,
-      items: uniqItems([...BASE_MANAGEMENT_ITEMS, ...state.items]),
-      createdAt: new Date().toISOString(),
-      status: 'active' as WorkspaceStatus,
-    };
-
-    upsertMyWorkspace(user?.id ?? null, workspace);
-    navigate(`/workspaces/${workspace.id}`);
+    setSubmitting(true);
+    try {
+      const workspace = await createWorkspace({
+        name: state.name.trim(),
+        description: state.description.trim(),
+        purpose: state.purpose,
+        channels: state.channels,
+        format: state.format,
+        templateKey: getTemplateKey(state),
+        preset: state.preset,
+        items: uniqItems([...REQUIRED_MANAGEMENT_ITEMS, ...state.items]),
+        status: 'active' as WorkspaceStatus,
+      });
+      navigate(`/workspaces/${workspace.id}`);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -167,7 +177,7 @@ export default function WorkspaceNewPage() {
             setState((prev) => ({
               ...prev,
               format,
-              items: prev.step >= 3 ? getRecommendedItems(prev.preset, format) : prev.items,
+              items: prev.step >= 3 ? getRecommendedItems(prev.purpose, prev.preset, format) : prev.items,
             }));
           }}
         />
@@ -182,7 +192,7 @@ export default function WorkspaceNewPage() {
               ...prev,
               preset,
               name: prev.name || getWorkspaceName({ ...prev, preset }),
-              items: getRecommendedItems(preset, prev.format),
+              items: getRecommendedItems(prev.purpose, preset, prev.format),
             }));
           }}
           onNameChange={(name) => setState((prev) => ({ ...prev, name }))}
@@ -193,6 +203,7 @@ export default function WorkspaceNewPage() {
         <StepManagementItems
           value={state.items}
           recommendedItems={recommendedItems}
+          purpose={state.purpose}
           format={state.format}
           onChange={(items) => setState((prev) => ({ ...prev, items }))}
         />
@@ -211,9 +222,9 @@ export default function WorkspaceNewPage() {
           type="button"
           className={`btn primary${!canProceed() ? ' disabled' : ''}`}
           onClick={handleNext}
-          disabled={!canProceed()}
+          disabled={!canProceed() || submitting}
         >
-          {state.step === TOTAL_STEPS ? '워크스페이스 만들기' : '다음'}
+          {state.step === TOTAL_STEPS ? (submitting ? '저장 중...' : '워크스페이스 만들기') : '다음'}
         </button>
       </div>
     </div>
@@ -276,7 +287,7 @@ function StepTarget({
         </div>
       </WizardQuestion>
 
-      <WizardQuestion title="주로 어떤 형식의 콘텐츠를 만드시나요?">
+      <WizardQuestion title="주로 어떤 형식의 컨텐츠를 만드시나요?">
         <div className="ws-pill-grid">
           {FORMAT_OPTIONS.map((option) => (
             <button
@@ -331,7 +342,7 @@ function StepTemplate({
           <textarea
             value={description}
             onChange={(event) => onDescriptionChange(event.target.value)}
-            placeholder="이 워크스페이스에서 관리할 콘텐츠 방향을 간단히 적어주세요."
+            placeholder="이 워크스페이스에서 관리할 컨텐츠 방향을 간단히 적어주세요."
             maxLength={180}
             rows={3}
           />
@@ -357,25 +368,43 @@ function StepTemplate({
 function StepManagementItems({
   value,
   recommendedItems,
+  purpose,
   format,
   onChange,
 }: {
   value: ManagementItem[];
   recommendedItems: ManagementItem[];
+  purpose: WorkspacePurpose | null;
   format: ContentFormat | null;
   onChange: (value: ManagementItem[]) => void;
 }) {
   const formatGroup = format ? FORMAT_MANAGEMENT_ITEM_GROUPS[format] : null;
+  const streamingGroup = purpose === 'streamer'
+    ? { id: 'streaming', title: '스트리밍 추천 항목', items: STREAMING_MANAGEMENT_ITEMS }
+    : null;
   const [openGroups, setOpenGroups] = useState<string[]>([
     'base',
     'production',
     'collaboration',
     'revenue',
     formatGroup ? 'format' : '',
+    streamingGroup ? 'streaming' : '',
   ].filter(Boolean));
-  const groups = formatGroup
-    ? [...MANAGEMENT_ITEM_GROUPS, { id: 'format', title: formatGroup.title, items: formatGroup.items }]
-    : MANAGEMENT_ITEM_GROUPS;
+  const groups = [
+    ...MANAGEMENT_ITEM_GROUPS,
+    ...(formatGroup ? [{ id: 'format', title: formatGroup.title, items: formatGroup.items }] : []),
+    ...(streamingGroup ? [streamingGroup] : []),
+  ].map((group) => {
+    const seen = new Set<ManagementItem>();
+    return {
+      ...group,
+      items: group.items.filter((item) => {
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
+        return true;
+      }),
+    };
+  });
 
   function toggleGroup(groupId: string) {
     setOpenGroups((prev) => (
@@ -384,7 +413,7 @@ function StepManagementItems({
   }
 
   function toggleItem(id: ManagementItem) {
-    if (BASE_MANAGEMENT_ITEMS.includes(id)) return;
+    if (REQUIRED_MANAGEMENT_ITEMS.includes(id)) return;
 
     if (value.includes(id)) {
       onChange(value.filter((item) => item !== id));
@@ -398,7 +427,7 @@ function StepManagementItems({
       <div className="workspace-new-header">
         <h2>어떤 항목을 관리할까요?</h2>
         <p>
-          콘텐츠 카드에 표시하고 싶은 관리 항목을 선택해 주세요.
+          컨텐츠 카드에 표시하고 싶은 관리 항목을 선택해 주세요.
           선택한 항목은 나중에 추가하거나 제거할 수 있습니다.
         </p>
       </div>
@@ -422,23 +451,24 @@ function StepManagementItems({
               {isOpen && (
                 <div className="ws-item-check-grid">
                   {group.items.map((item) => {
-                    const isBase = BASE_MANAGEMENT_ITEMS.includes(item.id);
-                    const checked = isBase || value.includes(item.id);
+                    const isRequired = REQUIRED_MANAGEMENT_ITEMS.includes(item.id);
+                    const checked = isRequired || value.includes(item.id);
                     const recommended = recommendedItems.includes(item.id);
 
                     return (
                       <label
                         key={item.id}
-                        className={`ws-check-option${checked ? ' selected' : ''}${isBase ? ' locked' : ''}`}
+                        className={`ws-check-option${checked ? ' selected' : ''}${isRequired ? ' locked' : ''}`}
                       >
                         <input
                           type="checkbox"
                           checked={checked}
-                          disabled={isBase}
+                          disabled={isRequired}
                           onChange={() => toggleItem(item.id)}
                         />
                         <span>{item.label}</span>
-                        {recommended && <em>추천</em>}
+                        {isRequired && <em>필수</em>}
+                        {!isRequired && recommended && <em>추천</em>}
                       </label>
                     );
                   })}

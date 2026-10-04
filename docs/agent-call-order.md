@@ -58,7 +58,7 @@
 ```
 1. backend-api                 ← 컨트롤러/서비스/리포지토리·공통 응답 포맷
 2. auth-rbac                   ← 미들웨어·정책 헬퍼 구현
-3. reservation-module          ← 예약 API·상태머신·이벤트 발행
+3. reservation-module          ← 예약 API·상태머신·이벤트 배포
 ```
 
 ### 4.2 프런트엔드 뒤

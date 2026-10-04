@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS site_pages;
 DROP TABLE IF EXISTS site_features;
 DROP TABLE IF EXISTS sites;
 
--- 워크스페이스 — 크리에이터 콘텐츠 운영 단위.
+-- 워크스페이스 — 크리에이터 컨텐츠 운영 단위.
 -- 한 사용자가 여러 워크스페이스를 보유할 수 있다 (채널·목적 별로 분리).
 -- channels / items 은 복수값이므로 JSON 배열로 저장.
 CREATE TABLE IF NOT EXISTS workspaces (

@@ -5,7 +5,7 @@ namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// 카카??로그????kakao_account.email, properties.nickname ?�용.
+// Kakao 로그인 프로필을 표준 프로필로 변환합니다.
 final class KakaoProvider implements Provider
 {
     /** @param array<string,string> $config */
@@ -42,7 +42,7 @@ final class KakaoProvider implements Provider
         }
         $tok = $this->http->postForm($this->config['tokenUrl'], $params);
         if (!isset($tok['access_token'])) {
-            throw new RuntimeException('Kakao ?�큰 ?�답??access_token ???�습?�다.');
+            throw new RuntimeException('Kakao 토큰 응답에 access_token이 없습니다.');
         }
         return ['accessToken' => (string)$tok['access_token'], 'raw' => $tok];
     }
@@ -54,7 +54,7 @@ final class KakaoProvider implements Provider
         ]);
         $id = isset($p['id']) ? (string)$p['id'] : '';
         if ($id === '') {
-            throw new RuntimeException('Kakao ?�로?�에 id 가 ?�습?�다.');
+            throw new RuntimeException('Kakao 프로필에 id가 없습니다.');
         }
         $account = is_array($p['kakao_account'] ?? null) ? $p['kakao_account'] : [];
         $props   = is_array($p['properties'] ?? null)    ? $p['properties']    : [];
