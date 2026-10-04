@@ -4,7 +4,7 @@
 > "이 값을 어디에 둘 것인가?" 에 답하기 위해 사용한다.
 > 도입 배경은 [redux-toolkit-adoption.md](redux-toolkit-adoption.md) 참조.
 
-## 1. 세 곳의 저장소
+## 1. 저장소
 
 | 저장소 | 책임 | 예시 |
 |---|---|---|
@@ -21,8 +21,8 @@
 
 ### 2.1 Redux 로 관리 (`siteBuilder`)
 - `siteType`, `siteName`, `slug`, `industry`, `summary`, `selectedFeatures`
-- 이유: 4단계 위저드가 같은 값을 읽고 쓰며, 새로고침/뒤로가기에 살아남아야 한다.
-- 영속: `siteBuilder` 슬라이스만 `localStorage` 동기화. 다음 Phase 에서 서버 영속(`projects.input_data`)으로 이전 예정.
+- 이유: 4단계 Flow가 같은 값을 읽고 쓰며, 새로고침/뒤로가기에 살아남아야 한다.
+- 영속: `Builder` 슬라이스만 `localStorage` 동기화. 다음 Phase 에서 서버 영속(`projects.input_data`)으로 이전 예정.
 - **단계 진행 상태(현재 어느 화면인지)는 Redux 에 넣지 않는다.** 라우트가 진실원이며, 단계 표시(WizardSteps)는 `useLocation()` 으로 파생한다. URL 과 store 두 곳에 같은 값을 두면 뒤로가기/직접 URL 진입에서 동기화 부담만 생긴다.
 
 ### 2.2 Redux 로 관리 (`auth`, placeholder)
@@ -95,7 +95,7 @@ function PageActions() {
 ### 4.4 폼 입력 임시 상태 (local 권장)
 - 사용자가 타이핑하는 동안의 `value` 가 **여러 화면에서 동시에 보여야** 한다면 Redux.
 - 그렇지 않다면 `useState`. (예: 검색창의 입력)
-- 위저드는 단계 간 이동에서 값을 보존해야 하므로 Redux 에 둔다.
+- Flow는 단계 간 이동에서 값을 보존해야 하므로 Redux 에 둔다.
 
 ## 5. 향후 도입 검토 (지금은 도입 금지)
 
@@ -105,11 +105,11 @@ function PageActions() {
 
 ## 6. 안티패턴 (피할 것)
 
-- ❌ 한 컴포넌트만 쓰는 toggle/hover 상태를 Redux 에 올림
-- ❌ URL 로 이미 표현되는 값(현재 단계, 현재 탭, 현재 사이트 id) 을 Redux 에 따로 둠 — 라우트가 이미 진실원
-- ❌ selector 안에서 매번 새 배열·객체를 `map`/`filter` 로 만들어 반환 → 무한 리렌더 위험
-- ❌ 슬라이스에서 import 가능한 도메인 상수(`PAGE_FEATURE_IDS` 같은) 를 화면마다 magic 문자열로 다시 적기
-- ❌ 비밀번호·세션 토큰을 action payload 에 노출
-- ❌ slice 1개 = 화면 1개 (slice 가 화면 수만큼 늘어나면 도메인 기준으로 합치기)
-- ❌ Redux 와 서버 DB 양쪽에 동일 데이터를 동시 저장하면서 동기화 코드를 화면마다 작성 — 진실원을 한쪽으로 몰 것
-- ❌ Redux 에 dispatch 만 하고 아무도 select 하지 않는 키 — 죽은 상태. 추가 시 "누가 읽는가" 를 먼저 답할 것
+- 한 컴포넌트만 쓰는 toggle/hover 상태를 Redux 에 올림
+- URL 로 이미 표현되는 값(현재 단계, 현재 탭, 현재 사이트 id) 을 Redux 에 따로 둠 — 라우트가 이미 진실원
+- selector 안에서 매번 새 배열·객체를 `map`/`filter` 로 만들어 반환 → 무한 리렌더 위험
+- 슬라이스에서 import 가능한 도메인 상수(`PAGE_FEATURE_IDS` 같은) 를 화면마다 magic 문자열로 다시 적기
+- 비밀번호·세션 토큰을 action payload 에 노출
+- slice 1개 = 화면 1개 (slice 가 화면 수만큼 늘어나면 도메인 기준으로 합치기)
+- Redux 와 서버 DB 양쪽에 동일 데이터를 동시 저장하면서 동기화 코드를 화면마다 작성 — 진실원을 한쪽으로 몰 것
+- Redux 에 dispatch 만 하고 아무도 select 하지 않는 키 — 죽은 상태. 추가 시 "누가 읽는가" 를 먼저 답할 것
