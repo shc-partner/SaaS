@@ -1,10 +1,8 @@
 # Legal Review Checklist (초안 / Draft)
 
-본 체크리스트는 [terms-of-service-draft.md](terms-of-service-draft.md), [privacy-policy-draft.md](privacy-policy-draft.md), [refund-cancellation-policy.md](refund-cancellation-policy.md), [service-lifecycle-policy.md](service-lifecycle-policy.md), [export-and-migration-policy.md](export-and-migration-policy.md)와 한 세트로 검토되어야 한다.
-
 ---
 
-## 1. 변호사 검토가 필요한 조항
+## 1. 검토가 필요한 조항
 
 ### 1.1 이용약관(ToS)
 - [ ] 약관의 명시·동의 절차 (전자상거래법 §13)
