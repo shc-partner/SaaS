@@ -5,7 +5,7 @@
 이 SaaS는 **반-lock-in**을 핵심 가치로 한다. 고객은 사이트를 자신의 자산으로 인식하고, 언제든 자기 인프라로 이전할 수 있다.
 
 ## 2. Export 산출물 구성
-표준 export zip 구조 (제안):
+표준 export zip 구조
 
 ```
 site-{slug}-{timestamp}.zip
