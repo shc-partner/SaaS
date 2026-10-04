@@ -8,7 +8,7 @@ use CreatorDesk\Http\Request;
 use CreatorDesk\Http\Response;
 use CreatorDesk\OAuth\Service as OAuthService;
 
-// Auth 도메인의 HTTP 컨트롤러. 비즈니스 규칙은 Service에 위임합니다.
+// Auth 도메인의 HTTP 컨트롤러. 비즈니스 규칙은 Service에 위임.
 final class Controller
 {
     public function __construct(
