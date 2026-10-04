@@ -8,12 +8,12 @@ use RuntimeException;
 use CreatorDesk\Auth\Repository as AuthRepository;
 use CreatorDesk\Auth\Service as AuthService;
 
-// SNS 로그인의 진입점을 담당합니다.
+// SNS 로그인의 진입점.
 // - start(provider): state 발급 후 authorize URL 반환
 // - handleCallback(provider, code, state): state 검증, 프로필 조회, 사용자/identity 연결, 세션 발급
 //
-// OAuth client_id가 비어 있으면 개발용 mock mode로 동작합니다.
-// 운영 환경에서는 실제 OAuth 설정을 사용하는 것이 전제입니다.
+// OAuth client_id가 비어 있으면 개발용 mock mode로 동작.
+// 운영 환경에서는 실제 OAuth 설정을 사용 전제.
 final class Service
 {
     /** @var array<string, Provider> */
@@ -43,7 +43,7 @@ final class Service
         $expires = (new \DateTimeImmutable('+10 minutes'))->format('Y-m-d H:i:s');
         $this->authRepo->insertOauthState($state, $providerId, $expires);
 
-        // mock mode에서는 백엔드 콜백으로 바로 보내 fake 로그인을 완료합니다.
+        // mock mode에서는 백엔드 콜백으로 바로 보내 fake 로그인 완료.
         if (!$provider->isConfigured()) {
             $base = getenv('APP_BASE_URL') ?: 'http://localhost:8000';
             return [
@@ -135,7 +135,7 @@ final class Service
         if ($u === null) {
             throw new RuntimeException('세션 발급 직후 사용자 조회 실패');
         }
-        unset($this->auth); // static 분석 도구의 미사용 경고를 피합니다.
+        unset($this->auth); // static 분석 도구의 미사용 경고 피함.
         return [
             'user' => [
                 'id'          => (int)$u['id'],
