@@ -20,7 +20,7 @@
 ## 2. 어떤 상태가 어디에 있나 (현재 프로젝트 기준)
 
 ### 2.1 Redux 로 관리 (`siteBuilder`)
-- `siteType`, `siteName`, `slug`, `industry`, `summary`, `selectedFeatures`
+- `siteType`, `workspaceName`, `slug`, `industry`, `summary`, `selectedFeatures`
 - 이유: 4단계 Flow가 같은 값을 읽고 쓰며, 새로고침/뒤로가기에 살아남아야 한다.
 - 영속: `Builder` 슬라이스만 `localStorage` 동기화. 다음 Phase 에서 서버 영속(`projects.input_data`)으로 이전 예정.
 - **단계 진행 상태(현재 어느 화면인지)는 Redux 에 넣지 않는다.** 라우트가 진실원이며, 단계 표시(WizardSteps)는 `useLocation()` 으로 파생한다. URL 과 store 두 곳에 같은 값을 두면 뒤로가기/직접 URL 진입에서 동기화 부담만 생긴다.
