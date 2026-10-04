@@ -12,14 +12,9 @@
 | 단계 | 사용자 행동 | 대상 시스템 |
 |---|---|---|
 | 1 | SaaS 사이트에 접속 (랜딩 → 가입/로그인) | 플랫폼 |
-| 2 | 사이트 유형 선택 (Stage 1은 "기업 소개형"만) | 플랫폼 |
+| 2 | 워크스페이스 유형 선택 (Stage 1은 "기업 소개형"만) | 플랫폼 |
 | 3 | 구성 설정 — 3-1 기본 정보 / 3-2 기능 선택 (위저드) | 플랫폼 |
-| 4 | 생성 결과 확인 (미리보기/요약) | 플랫폼 |
-| 5 | 생성 실행 (템플릿 렌더 → 패키징 → 토큰 발급) | 플랫폼 |
-| 6 | 생성 완료 후 관리자 진입 (산출물 실행 + 첫 로그인) | 산출물 |
-| 7 | 사이트 운영 (관리자 CRUD, 공개 페이지) | 산출물 |
-| 8 | export (재-export, 백업) | 플랫폼 + 산출물 |
-| 9 | 도메인·오프보딩·전용 분리 | Stage 2 이후 |
+| 4 | 생성 결과 확인 (대시보드/요약) | 플랫폼 |
 
 **Stage 1 완료선 = 1–8단계**. 9단계는 설계 스케치만 남기고 구현은 Stage 2.
 
@@ -57,7 +52,6 @@
 - [ ] 빈 plain PHP API가 `/api/health` → `{ ok:true, data:{ version } }` 반환
 - [ ] MySQL 컨테이너가 뜨고 PHP에서 연결 가능
 - [ ] `docker compose up` 한 번에 위 3개가 동시에 뜬다
-- [ ] CLAUDE.md · architecture 문서가 실제 경로와 일치
 
 **제외**
 - 실제 비즈니스 엔드포인트
@@ -89,46 +83,24 @@
 ### Phase 2 — Site Type Selection (UI 단계 2)
 
 **목표**
-- "새 사이트 만들기" → 사이트 유형 선택 화면
+- "새 워크스페이스 만들기" → 유형 선택 화면
 - 대시보드에 내 프로젝트 목록
 - 프로젝트 생성 API: `POST /api/projects` (type, name)
 - Stage 1에서 선택 가능한 유형: **company-intro 1종만**. UI엔 "추후 추가 예정" 카드(비활성) 표시 가능하나 서버는 거부
 
 **완료 조건**
-- [ ] 대시보드에서 "새 사이트" 버튼 → 유형 선택 → `company-intro` 카드 선택 → 프로젝트 생성
+- [ ] 대시보드에서 "새 워크스페이스" 버튼 → 유형 선택 → `company-intro` 카드 선택 → 프로젝트 생성
 - [ ] 프로젝트 상세로 라우팅 (내용은 Phase 3)
 - [ ] 목록이 본인 것만 보인다 (RLS 아닌 `WHERE user_id = ?`)
 
 **제외**
-- 다른 사이트 유형 구현
+- 다른 워크스페이스 유형 구현
 - 프로젝트 삭제/보관 (Phase 7 혹은 Stage 2)
 
 ---
 
-### Phase 3 — Wizard: Basic Info & Feature Selection (UI 단계 3-1, 3-2)
 
-**목표**
-- 단계형 위저드:
-  - 3-1: 회사 기본 정보 (회사명, 슬로건, 연락처, 로고 업로드, 브랜드 컬러 등)
-  - 3-2: 기능(섹션/메뉴) 선택 (About / Services / Contact / News 등을 on/off + 순서)
-- 위저드 입력은 `projects.input_data` (JSON)에 단계별로 저장
-- 중도 이탈해도 다시 들어오면 이어쓰기
-- 입력 스키마 = `generator/templates/company-intro/manifest.json` 의 JSON Schema (서버 검증과 동일 출처)
-
-**완료 조건**
-- [ ] 모든 필수 필드 미입력 시 "생성 실행" 비활성
-- [ ] 위저드 마지막 단계에서 "다음" → Phase 4 화면으로
-- [ ] 로고/이미지 업로드는 플랫폼 측에 저장 (산출물에 복사되는 것은 Phase 5)
-- [ ] 서버와 클라이언트가 같은 JSON Schema를 공유 (복붙 아님)
-
-**제외**
-- 실시간 미리보기 렌더 (Phase 4에서 정적 요약만)
-- 다국어 입력
-- 협업(여러 사용자 동시 편집)
-
----
-
-### Phase 4 — Result Preview / Configuration Review (UI 단계 4)
+### Phase 3 — Result Preview / Configuration Review (UI 단계 4)
 
 **목표**
 - 사용자가 입력한 값으로 만들어질 사이트의 **구성 요약**을 본다
@@ -147,7 +119,7 @@
 
 ---
 
-### Phase 5 — Generation Execution (UI 단계 5)
+### Phase 4 — Generation Execution (UI 단계 4)
 
 **목표**
 - `POST /api/projects/{id}/generate` → `generation_jobs` 레코드 생성 → 동기 또는 워커로 파이프라인 실행
@@ -175,13 +147,11 @@
 
 ---
 
-### Phase 6 — Deliverable Boot & First Admin Login (UI 단계 6)
+### Phase 5 — Deliverable Boot & First Admin Login (UI 단계 5)
 
 **목표**
 - 사용자가 zip 풀고 `docker compose up` 한 번으로 전체 뜬다
 - DB 컨테이너가 `schema.sql + seed.sql` 자동 적용
-- 관리자 첫 로그인: seed의 초기 계정(이메일/임시 비밀번호) 또는 `.env`에 주입된 값
-- 공개 사이트도 동시에 접근 가능
 
 **완료 조건**
 - [ ] 외부 머신 3종(본인 로컬, 다른 OS, 또는 VM)에서 그대로 부팅
@@ -190,24 +160,23 @@
 - [ ] 산출물에 플랫폼 URL·API 키 유출 0건
 
 **제외**
-- HTTPS/도메인 자동화 (사용자 몫)
 - 자동 업데이트 훅
 
 ---
 
-### Phase 7 — Deliverable Operation (UI 단계 7)
+### Phase 6 — Deliverable Operation (UI 단계 6)
 
 **목표**
 - 산출물 내 관리자 기능:
   - 페이지 CRUD (title, slug, body_html, 정렬)
   - 메뉴 CRUD
-  - 회사 정보 편집 (singleton)
+  - 워크스페이스 정보 편집 (singleton)
   - 미디어 업로드
 - 공개 사이트: React 프런트엔드가 산출물 백엔드 API를 읽어 렌더
 - 관리자는 데스크톱 전용 (모바일 최적화 안 함)
 
 **완료 조건**
-- [ ] 관리자에서 페이지/메뉴/회사정보 편집 → 공개 사이트 즉시 반영
+- [ ] 워크스페이스 설정에서 메뉴/권한 편집
 - [ ] 미디어 업로드가 산출물 로컬 디스크 또는 컨테이너 볼륨에 저장
 - [ ] 산출물 내부에 어떤 외부 의존도 없음 (플랫폼 없이 돌아감)
 - [ ] 산출물 DB 스키마가 플랫폼이 생성한 `schema.sql`과 동일
@@ -219,7 +188,7 @@
 
 ---
 
-### Phase 8 — Export / Re-export (UI 단계 8)
+### Phase 7 — Export / Re-export (UI 단계 8)
 
 **목표**
 - 프로젝트 상세에서 "다시 생성" → 새 `generation_job` + 새 아카이브
@@ -237,44 +206,18 @@
 
 ---
 
-### Phase 9 — Domain / Offboarding / Dedicated (UI 단계 9) *(Stage 2)*
+### Phase 8 — Domain / Offboarding / Dedicated (UI 단계 8) *(Stage 2)*
 
 > 본 Phase는 Stage 1에서는 **구현하지 않는다**. 설계·인터페이스만 결정하여
 > [service-lifecycle-policy.md](service-lifecycle-policy.md), [export-and-migration-policy.md](export-and-migration-policy.md)에 반영한다.
 
 **Stage 2 전환 시 다룰 항목**
-- 도메인 매핑 / SSL 자동화
 - 오프보딩 상태 머신 (suspend → grace → export → delete → backup expiry)
 - 전용(dedicated) 스택 분리 (DB/컨테이너 단독 할당)
 - `site_id` 도입, connection resolver
 - 결제·구독
 
 **Stage 1 완료 시점의 유일한 요구**: 위 항목들이 **지금의 코드 가정을 위반하지 않음**을 docs에 명시.
-
----
-
-## 3. 기존 단계안(agent-call-order.md)과의 차이 · 수정 제안
-
-`agent-call-order.md`는 **에이전트 호출 순서**를 정의한다. 본 문서의 Phase와는 직교 관계다.
-단, 아래 2가지 조정이 필요하다.
-
-### 3.1 변경 제안
-
-1. **agent-call-order.md §1(Bootstrapping) 산출물 목록에서 `docs/mvp-scope.md` 제거**
-   - Stage 1 목표는 이미 [mvp-goal.md](mvp-goal.md)로 고정됨. `mvp-scope.md`는 중복·혼동 유발.
-   - 대신 [mvp-goal.md](mvp-goal.md), [export-first-architecture.md](export-first-architecture.md), **본 문서**를 명시.
-
-2. **agent-call-order.md §4(Implementation)의 FE 순서를 위저드 중심으로 재배치**
-   - 현재: 레이아웃 → 위저드 → 예약관리. 예약관리는 Stage 1 제외.
-   - 제안: 레이아웃/라우팅 → **사이트 유형 선택 → 위저드(3-1,3-2) → 결과 확인 → 생성 진행 → 다운로드**. 즉 본 문서의 Phase 2–5를 FE 작업 순서로 그대로 채택.
-
-3. **새 에이전트 필요 여부**: 없음.
-   - 템플릿 엔진 / 패키저는 `backend-api` 또는 신설 없이 backend-api의 sub-module로 구현. 에이전트 책임만 명확히 명기 (backend-api.md 내부에 `generator/` 소유권 추가) — **이 작업은 `docs-maintainer` 호출 시점에 반영**.
-
-### 3.2 유지
-
-- 결정자 → 실행자 → 검토자 원칙
-- 검토 단계(Review)는 각 Phase 완료 직전에 매번 호출
 
 ---
 
@@ -297,22 +240,14 @@
 
 ---
 
-## 5. Claude Code 후속 구현 프롬프트 (순서대로)
-
-> 한 프롬프트 = 한 Phase. 각 프롬프트는 **이전 Phase가 완료 조건을 만족한 상태**를 가정한다.
-> 각 프롬프트의 마지막 요구는 "완료 조건 체크리스트를 실제로 검증했음을 보고할 것"이다.
-
 ### P0. Foundation
 ```
 Phase 0(Foundation)을 구현한다.
-- 저장소 레이아웃을 CLAUDE.md의 제안대로 실제로 생성: platform-frontend/ (Vite React TS),
+- 저장소 레이아웃 생성: platform-frontend/ (Vite React TS),
   platform-backend/ (plain PHP, no framework), generator/templates/company-intro/ (빈 스캐폴드),
   exports/, infra/ (docker-compose.yml).
 - platform-backend: public/index.php 라우터 + /api/health 엔드포인트만. JSON 엔벨롭 {ok,data,error}.
 - infra/docker-compose.yml: web(php:8.3-apache) + db(mysql:8) + 프런트는 개발 중엔 npm run dev로 별도.
-- .env.example과 최소 README.
-완료 조건은 docs/build-phases-aligned-with-ui-flow.md Phase 0의 체크리스트와 정확히 일치해야 한다.
-검증 결과를 보고할 것.
 ```
 
 ### P1. Landing + Auth
@@ -323,7 +258,6 @@ Phase 1(Landing / Signup / Login)을 구현한다.
 - platform-frontend: 랜딩 + /signup + /login + 로그인 후 /dashboard(빈 화면).
   AuthContext로 세션 유지, 보호 라우트 가드.
 - 에러 코드 prefix AUTH_* 사용.
-agent-rbac.md의 인증 모델과 일치해야 한다. Phase 1의 체크리스트를 검증 후 보고.
 ```
 
 ### P2. Site Type Selection
@@ -331,7 +265,7 @@ agent-rbac.md의 인증 모델과 일치해야 한다. Phase 1의 체크리스�
 Phase 2(Site Type Selection)를 구현한다.
 - projects 테이블 (id, user_id, name, slug, type, input_data JSON, status, timestamps).
 - POST /api/projects, GET /api/projects, GET /api/projects/{id}.
-- 프런트: /dashboard에 내 프로젝트 목록 + "새 사이트" → 유형 선택 화면(카드 UI).
+- 프런트: /dashboard에 내 프로젝트 목록 + 새 워크스페이스 → 유형 선택 화면(카드 UI).
   Stage 1은 company-intro 1개만 활성, 나머지는 "추후 제공" 비활성 카드.
 - 생성 후 /projects/{id}로 라우팅(본문은 Phase 3).
 본인 소유만 조회/수정 가능해야 함. Phase 2 체크리스트 검증 후 보고.
@@ -408,7 +342,7 @@ Phase 8(Re-export)을 구현한다.
 Phase 8 체크리스트 검증 후 보고.
 ```
 
-### P9. Stage 2 준비 (설계만)
+### P9. Stage 2 준비
 ```
 Phase 9는 Stage 2 영역이므로 구현 금지. 아래 문서만 갱신한다.
 - docs/service-lifecycle-policy.md: 오프보딩 상태 머신(suspend→grace→export→delete→backup expiry) 확정.
@@ -421,7 +355,7 @@ Phase 9는 Stage 2 영역이므로 구현 금지. 아래 문서만 갱신한다.
 
 ## 6. 단계 전환 규칙
 
-- 한 Phase의 **완료 체크리스트 전부 ✅ 전에는 다음 Phase 시작 금지**.
+- 한 Phase의 **완료 체크리스트 전부 검증 전에는 다음 Phase 시작 금지**.
 - 각 Phase 완료 직전에 `qa-reviewer`, 권한/보안이 관련되면 `security-guard`를 호출한다([agent-call-order.md §5](agent-call-order.md) 그대로).
 - 차단 이슈 발생 시 해당 Phase 내에서 수정하고 체크리스트 재검증.
 - 문서 변경(인터페이스 추가, 정책 보완)은 Phase 완료와 동시에 `docs-maintainer`로 동기화.
@@ -432,18 +366,6 @@ Phase 9는 Stage 2 영역이므로 구현 금지. 아래 문서만 갱신한다.
 
 > 본 절은 단계 전환을 빠르게 추적하기 위한 라이브 상태표다. 각 Phase 의 정식 완료 조건은 §2 의 체크리스트가 진실원이다.
 > 사용자 UI 플로우의 상세는 [site-creation-flow.md](site-creation-flow.md) 참고.
-
-| Phase | 항목 | 상태 | 비고 |
-|---|---|---|---|
-| 0 | Repo & Foundation | ✅ 구현 | platform-frontend (Vite + React + TS), platform-backend (plain PHP), `/api/health`, docker-compose, vite proxy |
-| 1 | Landing / Signup / Login | 🟨 부분 | 랜딩 페이지 + Redux auth slice 자리잡음. Signup/Login API 와 세션은 미구현 |
-| 2 | Site Type Selection | 🟨 UI mock | `TypeSelect` 화면 + Redux `siteType` 상태. 라우트 `/sites/new/type`. `POST /api/projects` 미연결 |
-| 3 | Wizard 3-1 / 3-2 | 🟨 UI mock | `BasicInfo`, `Features` 완성. 라우트 `/sites/new/setup/basic`, `/sites/new/setup/features`. 서버 PATCH 미구현, manifest.json 미작성 |
-| 4 | Result Preview | 🟨 UI mock | `Review` 좌/우 분할 요약 완성. 라우트 `/sites/new/review`. mock 생성 → `/sites/new/done/:id` |
-| 5 | Generation Pipeline | ❌ 미시작 | `POST /api/projects/{id}/generate` 미구현. generator/engine 디렉토리 자체가 미생성 |
-| 6 | Deliverable Boot | ❌ 미시작 | `templates/company-intro/` 디렉토리만 존재, 템플릿 파일 비어 있음 |
-| 7 | Deliverable Ops | ❌ 미시작 | 산출물 admin/공개 사이트 미구현 |
-| 8 | Re-export | ❌ 미시작 | 토큰/만료 정책 코드 미반영 |
 
 ### 현재 mock 처리된 부분 (Phase 2~4)
 
