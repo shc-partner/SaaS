@@ -5,7 +5,7 @@ namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// Google OAuth 2.0과 OpenID Connect 기반 userinfo 응답을 표준 프로필로 변환합니다.
+// Google OAuth 2.0과 OpenID Connect 기반 userinfo 응답을 표준 프로필로 변환.
 final class GoogleProvider implements Provider
 {
     /** @param array<string,string> $config */
