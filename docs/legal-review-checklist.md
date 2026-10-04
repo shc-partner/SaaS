@@ -1,7 +1,5 @@
 # Legal Review Checklist (초안 / Draft)
 
-> ⚠️ **본 문서는 초안입니다.** 본 체크리스트는 법률 검토를 **대체하지 않으며**, 변호사·전문가에게 전달할 검토 항목을 정리한 자료다.
-
 본 체크리스트는 [terms-of-service-draft.md](terms-of-service-draft.md), [privacy-policy-draft.md](privacy-policy-draft.md), [refund-cancellation-policy.md](refund-cancellation-policy.md), [service-lifecycle-policy.md](service-lifecycle-policy.md), [export-and-migration-policy.md](export-and-migration-policy.md)와 한 세트로 검토되어야 한다.
 
 ---
