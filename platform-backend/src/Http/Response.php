@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace CreatorDesk\Http;
 
-// ?戨嫷 ?嵓.
-// - JSON envelope: { ok: bool, data?, error? }  (API ?戨嫷 ?勲?)
-// - redirect:      OAuth ?岆?办矘??敫岆澕?办?毳??るジ URL 搿?氤措偞??瓴届毎
+// - JSON envelope: { ok: bool, data?, error? }  (API ? 靹标车)
+// - redirect:      OAuth
 final class Response
 {
     /** @param array<string,mixed>|null $payload */
