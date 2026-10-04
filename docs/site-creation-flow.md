@@ -1,6 +1,6 @@
-# Site Creation Flow — Stage 1 (UI-Only)
+# Workspace Creation Flow — Stage 1 (UI-Only)
 
-> 기업 소개형 사이트를 만드는 **사용자 UI 플로우**의 단일 진실원.
+> 컨텐츠 관리 워크스페이스를 만드는 **사용자 UI 플로우**의 단일 진실원.
 > 실제 생성 엔진·DB·API 는 아직 연결되지 않았고, 이 문서는 "끊김 없이 진행 가능한 흐름" 을 기록한다.
 > 단계 정의의 상위 문서는 [build-phases-aligned-with-ui-flow.md](build-phases-aligned-with-ui-flow.md) 의 Phase 2–4.
 > UI 정책 (데스크탑 전용) 은 [ui-policy.md](ui-policy.md) 참고.
@@ -10,13 +10,13 @@
 ## 1. 흐름 개요
 
 ```
-/                       Landing (CTA "사이트 만들기 시작")
+/                       Landing (CTA "워크스페이스 만들기 시작")
    │
    ▼
 /sites/new/type         1. 유형 선택          (1종만 활성: company-intro)
    │
    ▼
-/sites/new/setup/basic  2-1. 기본 정보        (이름, slug, 업종, 소개)
+/sites/new/setup/basic  2-1. 기본 정보        (이름, slug, 유형, 소개)
    │
    ▼
 /sites/new/setup/features
@@ -26,7 +26,7 @@
 /sites/new/review       3. 결과 확인 (좌/우)  (페이지 구조 + 입력 요약)
    │
    ▼ (mock)
-/sites/new/done/:id     mock 완료 화면        (실제 zip 생성 없음)
+/sites/new/done/:id     mock 완료 화면
 ```
 
 `/start` 는 별칭 — `/sites/new/type` 으로 자동 리다이렉트. 구 경로 `/sites/new/basic`, `/sites/new/features` 도 새 `/setup/...` 경로로 자동 이전.
@@ -35,11 +35,11 @@
 
 ## 2. 단계별 세부
 
-### 1단계 — 사이트 유형 선택 (`/sites/new/type`)
+### 1단계 — 워크스페이스 유형 선택 (`/sites/new/type`)
 
 | 항목 | 내용 |
 |---|---|
-| 목적 | 만들 사이트의 대분류 선택 |
+| 목적 | 만들 워크스페이스의 대분류 선택 |
 | 입력 | `siteType` (단일) |
 | 옵션 | `company-intro` (활성), `reservation`/`blog` (비활성 placeholder) |
 | 이동 | 카드 클릭 → 자동으로 `/sites/new/setup/basic` |
@@ -51,8 +51,8 @@
 | 항목 | 내용 |
 |---|---|
 | 목적 | 산출물 폴더명과 공개 페이지 헤더에 들어갈 식별 정보 수집 |
-| 입력 | `siteName`, `slug`, `industry`, `summary` |
-| 자동화 | `siteName` 입력 시 `slug` 를 실시간 추출 (사용자가 직접 `slug` 를 수정하면 자동 추출 중단) |
+| 입력 | `workspaceName`, `slug`, `industry`, `summary` |
+| 자동화 | `workspaceName` 입력 시 `slug` 를 실시간 추출 (사용자가 직접 `slug` 를 수정하면 자동 추출 중단) |
 | 검증 | `validateBasic()` — 모두 필수, `slug` 는 `^[a-z0-9](-?[a-z0-9])*$` |
 | 이동 | "다음" → `/sites/new/setup/features` |
 | 가드 | `siteType` 없으면 `/sites/new/type` 로 되돌림 (`<Navigate replace>`) |
@@ -62,7 +62,7 @@
 
 | 항목 | 내용 |
 |---|---|
-| 목적 | 산출물에 포함할 페이지와 관리자 기능 토글 |
+| 목적 | 산출물에 포함할 메뉴와 기능 토글 |
 | 입력 | `selectedFeatures: FeatureId[]` |
 | 옵션 | `aboutPage`, `servicesPage`, `contactPage` (페이지), `adminEditable` (플래그) |
 | 검증 | `validateFeatures()` — 페이지 3종 중 최소 1개 |
@@ -115,7 +115,6 @@ Redux 에 `currentStep` 키를 두지 않는다. "지금 어느 단계?" 는 `us
 
 ### 3.3 지속성
 
-- `localStorage` 키 `siteforge:store:v2` 에 siteBuilder 슬라이스만 직렬화 보존.
 - 새로고침·탭 재진입 후에도 중도 이탈 지점에서 이어쓰기 가능.
 - 슬라이스 모양 변경 시 키 버전(`v3`)으로 올려 과거 저장값을 자동 무효화.
 
