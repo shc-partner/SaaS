@@ -221,7 +221,7 @@
 
 ---
 
-## 4. Phase × Agent 매트릭스
+## 3. Phase × Agent 매트릭스
 
 | Phase | 주 결정자 | 주 실행자 | 검토 |
 |---|---|---|---|
@@ -353,7 +353,7 @@ Phase 9는 Stage 2 영역이므로 구현 금지. 아래 문서만 갱신한다.
 
 ---
 
-## 6. 단계 전환 규칙
+## 4. 단계 전환 규칙
 
 - 한 Phase의 **완료 체크리스트 전부 검증 전에는 다음 Phase 시작 금지**.
 - 각 Phase 완료 직전에 `qa-reviewer`, 권한/보안이 관련되면 `security-guard`를 호출한다([agent-call-order.md §5](agent-call-order.md) 그대로).
@@ -362,7 +362,7 @@ Phase 9는 Stage 2 영역이므로 구현 금지. 아래 문서만 갱신한다.
 
 ---
 
-## 6.1 현재 진행 상태 (2026-04-22 기준)
+## 5.1 현재 진행 상태 (2026-04-22 기준)
 
 > 본 절은 단계 전환을 빠르게 추적하기 위한 라이브 상태표다. 각 Phase 의 정식 완료 조건은 §2 의 체크리스트가 진실원이다.
 > 사용자 UI 플로우의 상세는 [site-creation-flow.md](site-creation-flow.md) 참고.
@@ -387,7 +387,7 @@ Phase 9는 Stage 2 영역이므로 구현 금지. 아래 문서만 갱신한다.
 
 ---
 
-## 7. 참고 문서
+## 6. 참고 문서
 
 - [mvp-goal.md](mvp-goal.md) — Stage 1 목표의 단일 진실원
 - [export-first-architecture.md](export-first-architecture.md) — 플랫폼/산출물 구조와 생성 파이프라인
