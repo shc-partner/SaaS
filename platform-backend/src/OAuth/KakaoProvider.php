@@ -5,7 +5,7 @@ namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// Kakao 로그인 프로필을 표준 프로필로 변환합니다.
+// Kakao 로그인 프로필을 표준 프로필로 변환.
 final class KakaoProvider implements Provider
 {
     /** @param array<string,string> $config */
