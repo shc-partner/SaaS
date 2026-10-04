@@ -7,8 +7,6 @@
 - **Tenancy**: workspace_id 스코프
 - **Admin UX**: desktop-first
 
-See [CLAUDE.md](CLAUDE.md) for AI-collaboration rules.
-
 ## Repository layout
 
 ```
