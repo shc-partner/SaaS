@@ -5,8 +5,8 @@ namespace CreatorDesk\OAuth;
 
 use RuntimeException;
 
-// OAuth 토큰/프로필 호출에 사용하는 작은 HTTP 클라이언트입니다.
-// curl 확장이 없어도 동작하도록 file_get_contents + stream_context로 구현합니다.
+// OAuth 토큰/프로필 호출에 사용하는 HTTP 클라이언트.
+// curl 확장이 없어도 동작하도록 file_get_contents + stream_context로 구현.
 final class HttpClient
 {
     /**
